@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18d6b8f77197acde5854fc386d15ba7085cba402")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68cc5251494c5ac61ec9086e9018aec2d6d07537")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

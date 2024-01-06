@@ -10,3 +10,7 @@ C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Applica
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\refint\StaffSync.Application.dll
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.pdb
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\ref\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.csproj.AssemblyReference.cache
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\bin\Debug\net8.0\StaffSync.Domain.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\bin\Debug\net8.0\StaffSync.Domain.pdb
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.csproj.CopyComplete

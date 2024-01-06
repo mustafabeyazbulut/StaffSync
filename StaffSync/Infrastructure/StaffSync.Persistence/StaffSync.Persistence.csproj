@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\StaffSync.Application\StaffSync.Application.csproj" />
     <ProjectReference Include="..\..\Core\StaffSync.Domain\StaffSync.Domain.csproj" />
   </ItemGroup>
 

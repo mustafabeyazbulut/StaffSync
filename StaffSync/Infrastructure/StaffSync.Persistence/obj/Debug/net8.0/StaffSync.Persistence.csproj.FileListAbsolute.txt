@@ -16,3 +16,5 @@ C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSy
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSync.Persistence\obj\Debug\net8.0\StaffSync.Persistence.pdb
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSync.Persistence\obj\Debug\net8.0\StaffSync.Persistence.genruntimeconfig.cache
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSync.Persistence\obj\Debug\net8.0\ref\StaffSync.Persistence.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSync.Persistence\bin\Debug\net8.0\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Infrastructure\StaffSync.Persistence\bin\Debug\net8.0\StaffSync.Application.pdb

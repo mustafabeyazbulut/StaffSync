@@ -1,8 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "r1SbapVpnoq2YqQpTD9j6i0gRdsvR1D8BmpirS4wp56/8jyflJ883MjZSIym7UxQyFKK3zbcp4bj32Fs9lfYZQ==",
+  "dgSpecHash": "nS6pbraqe2Lwtaa8UJtt/zrGglVuYnGIuy4cRQxFTC1VlbXRP/elNiLXbR8/0oUC/xXE0g8N0xi9FEXcEpN7fw==",
   "success": true,
   "projectFilePath": "C:\\Users\\mbeyazbulut\\Documents\\GitHub\\StaffSync\\StaffSync\\Core\\StaffSync.Application\\StaffSync.Application.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr\\12.2.0\\mediatr.12.2.0.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\11.0.0\\mediatr.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

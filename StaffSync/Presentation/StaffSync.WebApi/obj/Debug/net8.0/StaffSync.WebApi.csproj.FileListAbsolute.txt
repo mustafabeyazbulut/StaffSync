@@ -139,3 +139,8 @@ C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\obj\Debug\net8.0\StaffSync.WebApi.pdb
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\obj\Debug\net8.0\StaffSync.WebApi.genruntimeconfig.cache
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\obj\Debug\net8.0\ref\StaffSync.WebApi.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\MediatR.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\MediatR.Contracts.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Application.pdb

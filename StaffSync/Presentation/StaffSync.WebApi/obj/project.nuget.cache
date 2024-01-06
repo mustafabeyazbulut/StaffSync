@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "auf2P61Pg8CJMQENnRTtWD4Xh70nxQ3pyLVaHR4ev42QdtsnzNwYs+W8+cLppI51NxVxTgKMVxsTQRPX5+4Gog==",
+  "dgSpecHash": "LidrRc0rT7N6Uy2lJiYV4h4IzkpzgVuhnBFH3MMSBI/Dp3RyZMYEsiznRmkcY+1VQz2r+poH6ESid7ejvcXoJw==",
   "success": true,
   "projectFilePath": "C:\\Users\\mbeyazbulut\\Documents\\GitHub\\StaffSync\\StaffSync\\Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr\\12.2.0\\mediatr.12.2.0.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\mbeyazbulut\\.nuget\\packages\\mediatr.extensions.microsoft.dependencyinjection\\11.0.0\\mediatr.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\mbeyazbulut\\.nuget\\packages\\microsoft.codeanalysis.common\\4.5.0\\microsoft.codeanalysis.common.4.5.0.nupkg.sha512",
