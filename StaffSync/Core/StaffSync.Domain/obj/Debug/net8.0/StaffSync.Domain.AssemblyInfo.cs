@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18d6b8f77197acde5854fc386d15ba7085cba402")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

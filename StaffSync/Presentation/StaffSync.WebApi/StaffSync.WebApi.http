@@ -1,0 +1,6 @@
+@StaffSync.WebApi_HostAddress = http://localhost:5220
+
+GET {{StaffSync.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

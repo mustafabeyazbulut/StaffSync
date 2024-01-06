@@ -1,0 +1,12 @@
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\bin\Debug\net8.0\StaffSync.Application.deps.json
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\bin\Debug\net8.0\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\bin\Debug\net8.0\StaffSync.Application.pdb
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.AssemblyInfoInputs.cache
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.AssemblyInfo.cs
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.csproj.CoreCompileInputs.cache
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.sourcelink.json
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\refint\StaffSync.Application.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\StaffSync.Application.pdb
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Application\obj\Debug\net8.0\ref\StaffSync.Application.dll
