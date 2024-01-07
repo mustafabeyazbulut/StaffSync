@@ -1,4 +1,4 @@
-﻿namespace StaffSync.Application.Interfaces
+﻿namespace StaffSync.Application.Interfaces.Repositories
 {
     public interface IRepository<T> where T : class
     {

@@ -1,13 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StaffSync.Domain.Entities;
+using System.Reflection;
 
 namespace StaffSync.Persistence.Context
 {
     public class StaffSyncContext:DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public StaffSyncContext() { }
+        public StaffSyncContext(DbContextOptions options):base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=StaffSyncDb;User Id=sa;Password=12sa;MultipleActiveResultSets=true;TrustServerCertificate=True");
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public DbSet<Contact> Contacts { get; set; }
     }

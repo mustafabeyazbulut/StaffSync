@@ -4,11 +4,11 @@ namespace StaffSync.Application.Features.Mediator.Commands
 {
     public class RemoveContactCommand:IRequest
     {
-        public int ContactId { get; set; }
+        public int Id { get; set; }
 
-        public RemoveContactCommand(int contactId)
+        public RemoveContactCommand(int id)
         {
-            ContactId = contactId;
+            Id = id;
         }
     }
 }

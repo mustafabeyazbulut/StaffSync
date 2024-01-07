@@ -4,7 +4,7 @@ namespace StaffSync.Application.Features.Mediator.Commands
 {
     public class UpdateContactCommand:IRequest
     {
-        public int ContactId { get; set; }
+        public int Id { get; set; }
         public string CoverImageUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

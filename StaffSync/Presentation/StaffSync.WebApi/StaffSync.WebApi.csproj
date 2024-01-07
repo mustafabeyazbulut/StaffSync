@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\StaffSync.Mapper\StaffSync.Mapper.csproj" />
     <ProjectReference Include="..\..\Infrastructure\StaffSync.Persistence\StaffSync.Persistence.csproj" />
   </ItemGroup>
 

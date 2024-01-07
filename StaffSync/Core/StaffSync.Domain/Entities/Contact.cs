@@ -1,9 +1,10 @@
 ﻿
+using StaffSync.Domain.Common;
+
 namespace StaffSync.Domain.Entities
 {
-    public class Contact
+    public class Contact: EntityBase,IEntityBase
     {
-        public int ContactId { get; set; }
         public string CoverImageUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -144,3 +144,9 @@ C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Application.dll
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Application.pdb
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\appsettings.Production.json
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Bogus.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Mapper.dll
+C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Mapper.pdb

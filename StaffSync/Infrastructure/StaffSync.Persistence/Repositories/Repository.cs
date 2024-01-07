@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StaffSync.Application.Interfaces;
+using StaffSync.Application.Interfaces.Repositories;
 using StaffSync.Persistence.Context;
 
 namespace StaffSync.Persistence.Repositories

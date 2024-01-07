@@ -3,7 +3,7 @@ namespace StaffSync.Application.Features.Mediator.Results.ContactResults
 {
     public class GetContactByIdQueryResult
     {
-        public int ContactId { get; set; }
+        public int Id { get; set; }
         public string CoverImageUrl { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
