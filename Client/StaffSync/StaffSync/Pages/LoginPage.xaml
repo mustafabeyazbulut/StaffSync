@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StaffSync.Pages.LoginPage" BackgroundColor="#DDDDDD">
+
+    <StackLayout Padding="15" Margin="10" BackgroundColor="#DDDDDD">
+        <ContentView Padding="0" Margin="0">
+            <ContentView.BackgroundColor>
+                <OnPlatform x:TypeArguments="Color">
+                    <On Platform="Android" Value="Transparent" />
+                    <On Platform="iOS" Value="Transparent" />
+                </OnPlatform>
+            </ContentView.BackgroundColor>
+            <ContentView.Content>
+                <Grid
+                HeightRequest="340"
+                WidthRequest="330"
+                VerticalOptions="Center"
+                HorizontalOptions="Center">
+                    <BoxView
+                    BackgroundColor="#164194"
+                    CornerRadius="0,0,200,60" Margin="20,0,20,0"/>
+                    <Label
+                        Text="STAFFSYNC"
+                        Padding="0,50,0,0"
+                        HorizontalOptions="Center"
+                        TextColor="White"
+                        FontSize="32"
+                        FontAttributes="Bold" />
+                    <Label
+                        Text="Hoş Geldiniz"
+                        Padding="0,90,0,0"
+                        HorizontalOptions="Center"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Italic" />
+                    <Image
+                        Source="Resources/Images/loginlogo.png"   
+                        HeightRequest="100"
+                        Margin="0,0,30,0"
+                        WidthRequest="150"
+                        VerticalOptions="EndAndExpand"
+                        HorizontalOptions="EndAndExpand" />
+
+
+                </Grid>
+            </ContentView.Content>
+        </ContentView>
+        <ContentView Padding="15,40,15,0" Margin="0">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Entry Placeholder="Mail"
+                       TextColor="Black"
+                       PlaceholderColor="Black"
+                       VerticalOptions="Center"
+                       HorizontalOptions="FillAndExpand" 
+                       Grid.Column="0"/>
+                <Button Text="Kod Gönder"
+                        BackgroundColor="#164194"
+                        HeightRequest="30"
+                        Padding="4"
+                        Margin="0"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Grid.Column="1"/>
+            </Grid>
+        </ContentView>
+
+        <ContentView Padding="15" Margin="0">
+            <Grid Margin="10">
+                <Entry Placeholder="Kodu Giriniz"
+                TextColor="White"
+                PlaceholderColor="Black"
+                VerticalOptions="Center"
+                HorizontalOptions="FillAndExpand" 
+                       IsPassword="True"/>
+            </Grid>
+        </ContentView>
+        <ContentView Padding="10" Margin="0">
+            <Grid Margin="10">
+                <Button Text="Giriş Yapınız" BackgroundColor="#164194" TextColor="White"/>
+            </Grid>
+        </ContentView>
+    </StackLayout>
+
+
+</ContentPage>

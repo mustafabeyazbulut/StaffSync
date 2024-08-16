@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PD7Sv/36aeU=",
+  "dgSpecHash": "WXDE/GHpXaY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\StaffSync.csproj",
+  "projectFilePath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\StaffSync.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\MBEYAZBULUT\\.nuget\\packages\\googlegson\\2.10.1.4\\googlegson.2.10.1.4.nupkg.sha512",
     "C:\\Users\\MBEYAZBULUT\\.nuget\\packages\\microsoft.extensions.configuration\\8.0.0\\microsoft.extensions.configuration.8.0.0.nupkg.sha512",
@@ -113,12 +113,5 @@
     "C:\\Users\\MBEYAZBULUT\\.nuget\\packages\\xamarin.kotlinx.coroutines.core.jvm\\1.7.2.1\\xamarin.kotlinx.coroutines.core.jvm.1.7.2.1.nupkg.sha512",
     "C:\\Users\\MBEYAZBULUT\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.31\\microsoft.windows.sdk.net.ref.10.0.19041.31.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  "logs": []
 }

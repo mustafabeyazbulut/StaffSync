@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\StaffSync.csproj": {}
+    "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\StaffSync.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\StaffSync.csproj": {
+    "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\StaffSync.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\StaffSync.csproj",
+        "projectUniqueName": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\StaffSync.csproj",
         "projectName": "StaffSync",
-        "projectPath": "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\StaffSync.csproj",
+        "projectPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\StaffSync.csproj",
         "packagesPath": "C:\\Users\\MBEYAZBULUT\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MBEYAZBULUT\\Desktop\\StaffSync\\StaffSync\\obj\\",
+        "outputPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [

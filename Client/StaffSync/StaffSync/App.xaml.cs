@@ -1,4 +1,6 @@
-﻿namespace StaffSync
+﻿using StaffSync.Pages;
+
+namespace StaffSync
 {
     public partial class App : Application
     {
@@ -6,7 +8,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new LoginPage();
         }
     }
 }
