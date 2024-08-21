@@ -1,1 +1,0 @@
-C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Client\StaffSync\StaffSync\StaffSync.csproj;x64

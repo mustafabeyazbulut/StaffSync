@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using StaffSync.Application.Features.Mediator.Commands;
+using StaffSync.Application.Features.Mediator.Commands.ContactCommands;
 using StaffSync.Application.Features.Mediator.Queries.ContactQueries;
 
 namespace StaffSync.WebApi.Controllers

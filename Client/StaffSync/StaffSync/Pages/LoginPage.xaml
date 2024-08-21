@@ -81,7 +81,7 @@
         </ContentView>
         <ContentView Padding="10" Margin="0">
             <Grid Margin="10">
-                <Button Text="Giriş Yapınız" BackgroundColor="#164194" TextColor="White"/>
+                <Button x:Name="LoginButton" Clicked="LoginButton_Clicked" Text="Giriş Yapınız" BackgroundColor="#164194" TextColor="White"/>
             </Grid>
         </ContentView>
     </StackLayout>

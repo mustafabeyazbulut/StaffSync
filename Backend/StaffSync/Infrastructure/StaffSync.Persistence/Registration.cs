@@ -15,7 +15,6 @@ namespace StaffSync.Persistence
         {
             services.AddDbContext<StaffSyncContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))); //appsettingden çekiyor
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
             services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
             

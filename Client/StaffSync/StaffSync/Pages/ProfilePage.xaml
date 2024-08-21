@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StaffSync.Pages.ProfilePage"
+             xmlns:viewModels="clr-namespace:StaffSync.ViewModels">
+    <ContentPage.Resources>
+        <Style x:Key="LabelColumn0" TargetType="Label">
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Padding" Value="16,13,10,10" />
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+        <Style x:Key="LabelColumn1" TargetType="Label">
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+        <Style x:Key="LabelColumn2" TargetType="Label">
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style x:Key="TogleColumn2" TargetType="Switch">
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+
+        </Style>
+    </ContentPage.Resources>
+    <StackLayout BackgroundColor="#DDDDDD">
+
+        <StackLayout Orientation="Horizontal"  VerticalOptions="Start">
+            <Grid Padding="0,0,0,0" HorizontalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <BoxView Grid.Row="0"  CornerRadius="0,0,30,30" BackgroundColor="#164194" VerticalOptions="FillAndExpand" />
+                <StackLayout Grid.Row="0" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Padding="10">
+                    <Image Source="Resources/Images/profilavatar.png" HeightRequest="100"  HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                    <Label x:Name="labelName" Text="Mustafa Beyazbulut" FontSize="20" HorizontalOptions="Center" VerticalOptions="EndAndExpand" TextColor="White" Padding="0,10,0,0"/>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+
+        <!-- Orta bölüm -->
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="Fill" Padding="10">
+            <Grid Padding="0,0,0,0" HorizontalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- BoxView with corner radius -->
+                <BoxView CornerRadius="30" BackgroundColor="#FFFFFF" VerticalOptions="FillAndExpand" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
+
+
+                <!-- Row 1 -->
+                <Label Grid.Row="0" Grid.Column="0" Text="Ünvan"           Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="0" Grid.Column="1" Text=":"               Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="0" Grid.Column="2" Text="Software Expert" Style="{StaticResource LabelColumn2}" />
+
+                <!-- Row 2 -->
+                <Label Grid.Row="1" Grid.Column="0" Text="Bölüm"   Style="{StaticResource LabelColumn0}"/>
+                <Label Grid.Row="1" Grid.Column="1" Text=":"                 Style="{StaticResource LabelColumn1}"/>
+                <Label Grid.Row="1" Grid.Column="2" Text="IT" Style="{StaticResource LabelColumn2}"/>
+
+                <!-- Row 3 -->
+                <Label Grid.Row="2" Grid.Column="0" Text="Şirket"   Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="2" Grid.Column="1" Text=":"                 Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="2" Grid.Column="2" Text="AUNDE TEKNIK Tekstil Sanayi ve Ticaret A.Ş." Style="{StaticResource LabelColumn2}" />
+
+                <!-- Row 4 -->
+                <Label Grid.Row="3" Grid.Column="0" Text="E-Posta"   Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="3" Grid.Column="1" Text=":"                 Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="3" Grid.Column="2" Text="mbeyazbulut@aundeteknik.com" Style="{StaticResource LabelColumn2}" />
+
+                <!-- Row 5 -->
+                <Label Grid.Row="4" Grid.Column="0" Text="Cep"   Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="4" Grid.Column="1" Text=":"                 Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="4" Grid.Column="2" Text="+905498068544" Style="{StaticResource LabelColumn2}" />
+
+                <!-- Row 6 -->
+                <Label Grid.Row="5" Grid.Column="0" Text="İş"    Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="5" Grid.Column="1" Text=":"                  Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="5" Grid.Column="2" Text="+905498068544"  Style="{StaticResource LabelColumn2}" />
+
+                <!-- Row 7 -->
+                <Label Grid.Row="6" Grid.Column="0" Text="Kısa Kod"    Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="6" Grid.Column="1" Text=":"                  Style="{StaticResource LabelColumn1}" />
+                <Label Grid.Row="6" Grid.Column="2" Text="2225"  Style="{StaticResource LabelColumn2}" />
+            </Grid>
+            <Grid Padding="0,10,0,0" HorizontalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- BoxView with corner radius -->
+                <BoxView CornerRadius="30" BackgroundColor="#FFFFFF" VerticalOptions="FillAndExpand" Grid.RowSpan="7" Grid.ColumnSpan="3"/>
+
+
+                <!-- Row 1 -->
+                <Label Grid.Row="0" Grid.Column="0" Text="Senkronizasyon"           Style="{StaticResource LabelColumn0}" />
+                <Label Grid.Row="0" Grid.Column="1" Text=":"               Style="{StaticResource LabelColumn1}" />
+                <Switch  Grid.Row="0" Grid.Column="2" IsToggled="{Binding IsSyncEnabled}" Style="{StaticResource TogleColumn2}">
+                    <Switch.BindingContext>
+                        <viewModels:SyncSettingViewModel />
+                    </Switch.BindingContext>
+                </Switch>
+            </Grid>
+        </StackLayout>
+
+
+        <!-- Alt bölüm -->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="End">
+            <Grid HeightRequest="50" Padding="0,5,0,0" HorizontalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <BoxView Grid.RowSpan="1" Grid.ColumnSpan="4" CornerRadius="30,30,0,0" BackgroundColor="#164194" />
+                <Button x:Name="MainButton" Clicked="MainButton_Clicked" Grid.Row="0" Grid.Column="1" ImageSource="Resources/Images/mainp.png" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Button x:Name="ProfileButton" Clicked="ProfileButton_Clicked" Grid.Row="0" Grid.Column="2" ImageSource="Resources/Images/profilea.png" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Grid>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

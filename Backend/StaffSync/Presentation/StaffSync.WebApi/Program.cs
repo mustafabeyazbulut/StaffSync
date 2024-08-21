@@ -1,6 +1,7 @@
 ﻿using StaffSync.Persistence;
 using StaffSync.Application;
 using StaffSync.Mapper;
+using StaffSync.Application.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.ConfigureExceptionHandlingMiddleware();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

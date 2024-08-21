@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4c9f66e875700028def2e1167874eb5d73dba74c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b36ebad37860824c559529169ba7bef836185fae")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{09254291-4E25-4010-AD39-23A3B4433B65}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{DFEBB7AF-82F6-49FF-BC50-4A66E44512F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A88E2D7A-FB27-4B5C-B157-4C792E78C059}"
@@ -19,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSync.Application", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSync.WebApi", "Presentation\StaffSync.WebApi\StaffSync.WebApi.csproj", "{C03105F9-EBF6-4212-8B59-C48F6B176E21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffSync.Mapper", "Core\StaffSync.Mapper\StaffSync.Mapper.csproj", "{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StaffSync.Mapper", "Core\StaffSync.Mapper\StaffSync.Mapper.csproj", "{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaffSync.Infrastructure", "Infrastructure\StaffSync.Infrastructure\StaffSync.Infrastructure.csproj", "{61A6C6E1-B653-45D1-8E21-CD499D5759B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +91,18 @@ Global
 		{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711}.Release|iPhone.Build.0 = Release|Any CPU
 		{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|iPhone.Build.0 = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +113,7 @@ Global
 		{0F5848AE-B753-4B34-B5E1-B0690CA775AD} = {DFEBB7AF-82F6-49FF-BC50-4A66E44512F6}
 		{C03105F9-EBF6-4212-8B59-C48F6B176E21} = {17AFBD02-2DE3-44BF-AD6C-A938D7315CBC}
 		{36C5A160-12B6-4EBD-91FF-9EB7F0E4B711} = {DFEBB7AF-82F6-49FF-BC50-4A66E44512F6}
+		{61A6C6E1-B653-45D1-8E21-CD499D5759B3} = {A88E2D7A-FB27-4B5C-B157-4C792E78C059}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AA89750-E67A-45AB-B96F-5A7247645B4F}

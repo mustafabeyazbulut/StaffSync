@@ -11,3 +11,16 @@ C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Domain\
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.pdb
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\ref\StaffSync.Domain.dll
 C:\Users\mbeyazbulut\Documents\GitHub\StaffSync\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.csproj.AssemblyReference.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\bin\Debug\net8.0\StaffSync.Domain.deps.json
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\bin\Debug\net8.0\StaffSync.Domain.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\bin\Debug\net8.0\StaffSync.Domain.pdb
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.csproj.AssemblyReference.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.AssemblyInfoInputs.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.AssemblyInfo.cs
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.csproj.CoreCompileInputs.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.sourcelink.json
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\refint\StaffSync.Domain.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\StaffSync.Domain.pdb
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Core\StaffSync.Domain\obj\Debug\net8.0\ref\StaffSync.Domain.dll

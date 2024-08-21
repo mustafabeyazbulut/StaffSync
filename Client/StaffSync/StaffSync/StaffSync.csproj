@@ -19,7 +19,8 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
+		
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<!-- Display name -->
 		<ApplicationTitle>StaffSync</ApplicationTitle>
 
@@ -38,11 +39,15 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\applogo.png" color="#ffff"/>
+		<MauiIcon Include="Resources\AppIcon\applogo.png" color="#ffff" />
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splashlogo.png" BaseSize="512,512"  color="#ffff"/>
+		<MauiSplashScreen Include="Resources\Splash\splashlogo.png" BaseSize="512,512" color="#ffff" />
 		
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -53,6 +58,16 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\maina.png" />
+	  <None Remove="Resources\Images\mainavatar.png" />
+	  <None Remove="Resources\Images\mainp.png" />
+	  <None Remove="Resources\Images\profilavatar.png" />
+	  <None Remove="Resources\Images\profilea.png" />
+	  <None Remove="Resources\Images\profilp.png" />
+	  <None Remove="Resources\Images\telephone.png" />
+	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
@@ -62,6 +77,12 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Pages\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProfilePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
