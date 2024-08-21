@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using StaffSync.Application.Beheviors;
 using StaffSync.Application.Exceptions;
+using System.Globalization;
 using System.Reflection;
 
 namespace StaffSync.Application
@@ -13,6 +17,11 @@ namespace StaffSync.Application
             services.AddTransient < ExceptionMiddleware>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+
+            services.AddValidatorsFromAssembly(assembly);
+            ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("tr");
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>));
+
         }
     }
 }

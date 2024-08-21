@@ -306,3 +306,4 @@ C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\S
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\SendGrid.dll
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StarkbankEcdsa.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll

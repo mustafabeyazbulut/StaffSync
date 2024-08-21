@@ -2,7 +2,7 @@
 
 namespace StaffSync.Application.Features.Mediator.Commands.ContactCommands
 {
-    public class CreateContactCommand : IRequest
+    public class CreateContactCommand : IRequest<Unit>
     {
         public string CoverImageUrl { get; set; }
         public string FirstName { get; set; }

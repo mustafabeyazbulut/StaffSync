@@ -1,12 +1,122 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\createcontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\createcontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\mediator\\commands\\contactcommands\\createcontactcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\mediator\\commands\\contactcommands\\createcontactcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\validators\\contactvalidators\\createcontactcommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\validators\\contactvalidators\\createcontactcommandvalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\exceptions\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\exceptions\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\beheviors\\fluentvalidationbehevior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\beheviors\\fluentvalidationbehevior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CreateContactCommand.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Commands\\ContactCommands\\CreateContactCommand.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Mediator\\Commands\\ContactCommands\\CreateContactCommand.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Commands\\ContactCommands\\CreateContactCommand.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Mediator\\Commands\\ContactCommands\\CreateContactCommand.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:52:14.055Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Registration.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Registration.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Registration.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Registration.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Registration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:44:40.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CreateContactCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB8AAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:42:22.286Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreateContactCommandValidator.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Validators\\ContactValidators\\CreateContactCommandValidator.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Validators\\ContactValidators\\CreateContactCommandValidator.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Validators\\ContactValidators\\CreateContactCommandValidator.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Validators\\ContactValidators\\CreateContactCommandValidator.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:42:04.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ExceptionMiddleware.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Exceptions\\ExceptionMiddleware.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Exceptions\\ExceptionMiddleware.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Exceptions\\ExceptionMiddleware.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Exceptions\\ExceptionMiddleware.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:39:50.001Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FluentValidationBehevior.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Beheviors\\FluentValidationBehevior.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Beheviors\\FluentValidationBehevior.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Beheviors\\FluentValidationBehevior.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Beheviors\\FluentValidationBehevior.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-21T14:37:51.713Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

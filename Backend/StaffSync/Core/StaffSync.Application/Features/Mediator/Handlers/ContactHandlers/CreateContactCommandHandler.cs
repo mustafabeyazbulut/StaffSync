@@ -5,7 +5,7 @@ using StaffSync.Domain.Entities;
 
 namespace StaffSync.Application.Features.Mediator.Handlers.ContactHandlers
 {
-    public class CreateContactCommandHandler : IRequestHandler<CreateContactCommand>
+    public class CreateContactCommandHandler : IRequestHandler<CreateContactCommand,Unit>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -13,7 +13,7 @@ namespace StaffSync.Application.Features.Mediator.Handlers.ContactHandlers
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task Handle(CreateContactCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateContactCommand request, CancellationToken cancellationToken)
         {
            
             await _unitOfWork.GetWriteRepository<Contact>().AddAysnc(new Contact
@@ -29,6 +29,7 @@ namespace StaffSync.Application.Features.Mediator.Handlers.ContactHandlers
                 TelephoneNumber = request.TelephoneNumber,
             });
             var result = await _unitOfWork.SaveAsync();
+            return Unit.Value;
         }
     }
 }
