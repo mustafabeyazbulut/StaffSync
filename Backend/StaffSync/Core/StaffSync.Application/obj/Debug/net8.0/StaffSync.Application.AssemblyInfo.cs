@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30645905e6121b8828428b5226056dc1a4c56278")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+774d48aff48a7ae3edc3e515280de42e5f35c8b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
