@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace StaffSync.Persistence.Context
 {
-    public class StaffSyncContext:DbContext
+    public class StaffSyncContext:IdentityDbContext<User,Role,Guid>
     {
         public StaffSyncContext() { }
         public StaffSyncContext(DbContextOptions options):base(options) { }

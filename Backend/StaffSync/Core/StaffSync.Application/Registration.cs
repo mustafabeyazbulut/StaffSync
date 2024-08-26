@@ -16,14 +16,17 @@ namespace StaffSync.Application
         {
             var assembly= Assembly.GetExecutingAssembly();
 
-            services.AddTransient < ExceptionMiddleware>();
+            services.AddTransient <ExceptionMiddleware>();
+
+            // BaseRules, tüm rule'ların base class'ıdır. Tüm rule'lar BaseRules'dan türemelidir.
             services.AddRulesFromAssemblyContaining(assembly,typeof(BaseRules)); // tüm rule'ları register etmek için BaseRules'dan türeyenleri alıyoruz
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 
+            // FluentValidation, .NET platformu için bir doğrulama kütüphanesidir. 
             services.AddValidatorsFromAssembly(assembly);
             ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("tr");
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>)); //
 
            
         }

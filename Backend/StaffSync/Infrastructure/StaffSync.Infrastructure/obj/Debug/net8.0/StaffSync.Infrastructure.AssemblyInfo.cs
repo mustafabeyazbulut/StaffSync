@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b36ebad37860824c559529169ba7bef836185fae")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2732a7e078719bd5f631e192f31dc81158c8a4f")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

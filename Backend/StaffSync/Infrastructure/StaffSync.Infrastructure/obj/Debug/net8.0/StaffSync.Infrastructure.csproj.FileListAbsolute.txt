@@ -1,0 +1,12 @@
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\bin\Debug\net8.0\StaffSync.Infrastructure.deps.json
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\bin\Debug\net8.0\StaffSync.Infrastructure.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\bin\Debug\net8.0\StaffSync.Infrastructure.pdb
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.AssemblyInfo.cs
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.sourcelink.json
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\refint\StaffSync.Infrastructure.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\StaffSync.Infrastructure.pdb
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Infrastructure\StaffSync.Infrastructure\obj\Debug\net8.0\ref\StaffSync.Infrastructure.dll

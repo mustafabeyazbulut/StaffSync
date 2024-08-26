@@ -1,12 +1,88 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\infrastructure\\staffsync.persistence\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|solutionrelative:infrastructure\\staffsync.persistence\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\infrastructure\\staffsync.persistence\\context\\staffsynccontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|solutionrelative:infrastructure\\staffsync.persistence\\context\\staffsynccontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A85F3098-41C6-4312-B4D9-456C5A66A7AF}|Core\\StaffSync.Domain\\StaffSync.Domain.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A85F3098-41C6-4312-B4D9-456C5A66A7AF}|Core\\StaffSync.Domain\\StaffSync.Domain.csproj|solutionrelative:core\\staffsync.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A85F3098-41C6-4312-B4D9-456C5A66A7AF}|Core\\StaffSync.Domain\\StaffSync.Domain.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.domain\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A85F3098-41C6-4312-B4D9-456C5A66A7AF}|Core\\StaffSync.Domain\\StaffSync.Domain.csproj|solutionrelative:core\\staffsync.domain\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Registration.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Registration.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\StaffSync.Persistence\\Registration.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Registration.cs",
+              "RelativeToolTip": "Infrastructure\\StaffSync.Persistence\\Registration.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB4AAAA5AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-26T07:37:54.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StaffSyncContext.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Context\\StaffSyncContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\StaffSync.Persistence\\Context\\StaffSyncContext.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Context\\StaffSyncContext.cs",
+              "RelativeToolTip": "Infrastructure\\StaffSync.Persistence\\Context\\StaffSyncContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-26T07:37:02.951Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Role.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Domain\\Entities\\Role.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Domain\\Entities\\Role.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Domain\\Entities\\Role.cs",
+              "RelativeToolTip": "Core\\StaffSync.Domain\\Entities\\Role.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-26T07:36:16.234Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Domain\\Entities\\User.cs",
+              "RelativeToolTip": "Core\\StaffSync.Domain\\Entities\\User.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-26T07:28:30.677Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

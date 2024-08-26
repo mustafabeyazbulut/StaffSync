@@ -1,10 +1,5 @@
 ﻿using FluentValidation;
 using StaffSync.Application.Features.Mediator.Commands.ContactCommands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StaffSync.Application.Features.Validators.ContactValidators
 {
@@ -16,6 +11,11 @@ namespace StaffSync.Application.Features.Validators.ContactValidators
                 .NotEmpty()
                 .EmailAddress()
                 .WithName("Email");
+
+            RuleFor(x => x.TelephoneNumber)
+                .NotEmpty().WithMessage("{TelephoneNumber} cannot be empty")
+                .Matches(@"^\+?\d{10,15}$").WithMessage("{TelephoneNumber} must be a valid phone number")
+                .WithName("TelephoneNumber");
         }
     }
 }
