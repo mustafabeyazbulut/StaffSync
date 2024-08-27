@@ -2,6 +2,7 @@
 using StaffSync.Application;
 using StaffSync.Mapper;
 using StaffSync.Application.Exceptions;
+using StaffSync.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Configuration
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true); // production ve Environment ayarlaması
 
 builder.Services.AddPersistence(builder.Configuration); //dbcontext için gerekli ayarlamaları environmentname e göre gönderiyoruz
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddCustomMapper();
 
