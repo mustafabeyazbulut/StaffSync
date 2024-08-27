@@ -312,3 +312,6 @@ C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\S
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Infrastructure.dll
+C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Backend\StaffSync\Presentation\StaffSync.WebApi\bin\Debug\net8.0\StaffSync.Infrastructure.pdb
