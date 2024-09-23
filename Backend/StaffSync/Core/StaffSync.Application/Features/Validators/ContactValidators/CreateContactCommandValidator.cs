@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using StaffSync.Application.Features.Mediator.Commands.ContactCommands;
+using StaffSync.Application.Features.Commands.ContactCommands;
 
 namespace StaffSync.Application.Features.Validators.ContactValidators
 {

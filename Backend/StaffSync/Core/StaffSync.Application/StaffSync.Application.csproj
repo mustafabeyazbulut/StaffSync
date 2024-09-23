@@ -22,9 +22,4 @@
     <ProjectReference Include="..\StaffSync.Domain\StaffSync.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Exceptions\AuthExceptions\" />
-    <Folder Include="Features\Rules\AuthRules\" />
-  </ItemGroup>
-
 </Project>

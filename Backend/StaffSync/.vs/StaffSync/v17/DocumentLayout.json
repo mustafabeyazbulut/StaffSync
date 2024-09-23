@@ -1,24 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\getcontactqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\getcontactqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\getcontactbyidqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\mediator\\handlers\\contacthandlers\\getcontactbyidqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\presentation\\staffsync.webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|solutionrelative:presentation\\staffsync.webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61A6C6E1-B653-45D1-8E21-CD499D5759B3}|Infrastructure\\StaffSync.Infrastructure\\StaffSync.Infrastructure.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\infrastructure\\staffsync.infrastructure\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61A6C6E1-B653-45D1-8E21-CD499D5759B3}|Infrastructure\\StaffSync.Infrastructure\\StaffSync.Infrastructure.csproj|solutionrelative:infrastructure\\staffsync.infrastructure\\registration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -26,61 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "GetContactQueryHandler.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactQueryHandler.cs",
-              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactQueryHandler.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactQueryHandler.cs",
-              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactQueryHandler.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-27T08:04:14.43Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "GetContactByIdQueryHandler.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactByIdQueryHandler.cs",
-              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactByIdQueryHandler.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactByIdQueryHandler.cs",
-              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Mediator\\Handlers\\ContactHandlers\\GetContactByIdQueryHandler.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-27T08:04:07.821Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Program.cs",
-              "RelativeDocumentMoniker": "Presentation\\StaffSync.WebApi\\Program.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Program.cs",
-              "RelativeToolTip": "Presentation\\StaffSync.WebApi\\Program.cs",
-              "ViewState": "AQIAAAcAAAAAAAAAAAAIwB4AAABoAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-27T08:00:40.371Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Registration.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Infrastructure\\Registration.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\StaffSync.Infrastructure\\Registration.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Infrastructure\\Registration.cs",
-              "RelativeToolTip": "Infrastructure\\StaffSync.Infrastructure\\Registration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAABDAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-27T06:26:23.307Z",
-              "EditorCaption": ""
-            }
-          ]
+          "SelectedChildIndex": -1,
+          "Children": []
         }
       ]
     }
