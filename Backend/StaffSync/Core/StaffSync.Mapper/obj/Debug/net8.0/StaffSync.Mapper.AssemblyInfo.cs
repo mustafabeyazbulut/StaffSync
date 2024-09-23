@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StaffSync.Mapper")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+036101a0dbcb91a0256c620f0af22cc7f6089afe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43a998beb2a63cb7ab13af3b5f612a2d40a41033")]
 [assembly: System.Reflection.AssemblyProductAttribute("StaffSync.Mapper")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StaffSync.Mapper")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

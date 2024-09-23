@@ -7,11 +7,7 @@ using StaffSync.Application.Features.Rules.AuthRules;
 using StaffSync.Application.Interfaces.AutoMapper;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace StaffSync.Application.Features.Handlers.AuthHandlers
 {

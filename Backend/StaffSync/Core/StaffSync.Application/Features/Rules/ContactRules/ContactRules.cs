@@ -4,7 +4,7 @@ using StaffSync.Domain.Entities;
 
 namespace StaffSync.Application.Features.Rules.ContactRules
 {
-    public class ContactRules:BaseRules
+    public class ContactRules : BaseRules
     {
         public Task ContactTelephoneNumberMustNotBeSame(IList<Contact> contacts,string requestTitle)
         {

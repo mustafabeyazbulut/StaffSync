@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using StaffSync.Application.Bases;
 using StaffSync.Application.Beheviors;
 using StaffSync.Application.Exceptions;
-using StaffSync.Application.Features.Rules.ContactRules;
 using System.Globalization;
 using System.Reflection;
 
@@ -26,15 +25,16 @@ namespace StaffSync.Application
             // FluentValidation, .NET platformu için bir doğrulama kütüphanesidir. 
             services.AddValidatorsFromAssembly(assembly);
             ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("tr");
+
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidationBehevior<,>)); //
 
            
         }
         // tüm rule'ları register etmek için
         private static IServiceCollection AddRulesFromAssemblyContaining(
-            this IServiceCollection services,
-            Assembly assembly,
-            Type type)
+          this IServiceCollection services,
+          Assembly assembly,
+          Type type)
         {
             var types = assembly.GetTypes().Where(t => t.IsSubclassOf(type) && type != t).ToList();
             foreach (var item in types)

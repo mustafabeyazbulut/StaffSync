@@ -1,12 +1,13 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StaffSync.Application.Features.Commands.ContactCommands;
-using StaffSync.Application.Features.Mediator.Queries.ContactQueries;
+using StaffSync.Application.Features.Queries.ContactQueries;
 
 namespace StaffSync.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ContactsController : ControllerBase
     {
@@ -17,6 +18,7 @@ namespace StaffSync.WebApi.Controllers
             _mediator = mediator;
         }
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ContactList()
         {
             var values = await _mediator.Send(new GetContactQuery());
