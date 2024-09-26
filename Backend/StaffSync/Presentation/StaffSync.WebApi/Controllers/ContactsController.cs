@@ -31,18 +31,28 @@ namespace StaffSync.WebApi.Controllers
             return Ok(value);
         }
         [HttpPost]
+        public async Task<IActionResult> GetContactsWithPagination(GetContactsWithPaginationQuery query)
+        {
+            var value = await _mediator.Send(query);
+            return Ok(value);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateContact(CreateContactCommand command)
         {
             await _mediator.Send(command);
             return Ok("Contact added");
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> RemoveContact(int id)
         {
             await _mediator.Send(new RemoveContactCommand(id));
             return Ok("Contact removed");
         }
         [HttpPut]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateContact(UpdateContactCommand command)
         {
             await _mediator.Send(command);

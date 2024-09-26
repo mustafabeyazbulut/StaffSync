@@ -21,20 +21,20 @@ namespace StaffSync.Application.Features.Handlers.ContactHandlers
         public async Task<Unit> Handle(CreateContactCommand request, CancellationToken cancellationToken)
         {
             IList<Contact> contacts = await unitOfWork.GetReadRepository<Contact>().GetAllAsync();
-            //if(contacts.Any(x=>x.TelephoneNumber==request.TelephoneNumber)) throw new Exception("Contact already exists");
             await _contactRules.ContactTelephoneNumberMustNotBeSame(contacts, request.TelephoneNumber);
 
             Contact contact = new Contact
             {
-                Company = request.Company,
-                CoverImageUrl = request.CoverImageUrl,
-                Department = request.Department,
                 DisplayName = request.DisplayName,
+                ImageUrl=request.ImageUrl,
                 Email = request.Email,
-                FirstName = request.FirstName,
-                JobTitle = request.JobTitle,
-                LastName = request.LastName,
                 TelephoneNumber = request.TelephoneNumber,
+                Home=request.Home,
+                Office = request.Office,
+                JobTitle = request.JobTitle,
+                Department = request.Department,
+                Company = request.Company,
+                ManagerName = request.ManagerName
             };
             await unitOfWork.GetWriteRepository<Contact>().AddAysnc(contact);
             var result = await unitOfWork.SaveAsync();

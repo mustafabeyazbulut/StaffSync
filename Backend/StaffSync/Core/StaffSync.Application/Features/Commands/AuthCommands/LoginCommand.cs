@@ -13,7 +13,7 @@ namespace StaffSync.Application.Features.Commands.AuthCommands
     {
         [DefaultValue("mustafabeyazbulut@gmail.com")]
         public string Email { get; set; }
-        [DefaultValue("123456")]
+        [DefaultValue("789+Asdf")]
         public string Password { get; set; }
     }
 }
