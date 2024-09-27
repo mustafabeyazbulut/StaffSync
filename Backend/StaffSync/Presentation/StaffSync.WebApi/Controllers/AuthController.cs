@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StaffSync.Application.Features.Commands.AuthCommands;
@@ -36,6 +37,7 @@ namespace StaffSync.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Revoke(RevokeCommand request)
         {
             await mediator.Send(request);
@@ -43,6 +45,7 @@ namespace StaffSync.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> RevokeAll()
         {
             await mediator.Send(new RevokeAllCommand());

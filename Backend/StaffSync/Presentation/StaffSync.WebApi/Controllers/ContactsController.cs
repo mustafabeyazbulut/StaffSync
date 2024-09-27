@@ -25,12 +25,14 @@ namespace StaffSync.WebApi.Controllers
             return Ok(values);
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetContact(int id)
         {
             var value = await _mediator.Send(new GetContactByIdQuery(id));
             return Ok(value);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> GetContactsWithPagination(GetContactsWithPaginationQuery query)
         {
             var value = await _mediator.Send(query);
