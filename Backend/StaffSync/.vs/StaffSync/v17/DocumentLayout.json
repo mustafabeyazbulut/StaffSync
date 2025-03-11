@@ -3,24 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\presentation\\staffsync.webapi\\controllers\\contactscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|solutionrelative:presentation\\staffsync.webapi\\controllers\\contactscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\presentation\\staffsync.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|solutionrelative:presentation\\staffsync.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\handlers\\contacthandlers\\createcontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\handlers\\contacthandlers\\createcontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\handlers\\contacthandlers\\getcontactswithpaginationqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\handlers\\contacthandlers\\getcontactswithpaginationqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\infrastructure\\staffsync.persistence\\repositories\\readrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2B6C1CB-7159-4BA8-87EF-BC943F5AB0FC}|Infrastructure\\StaffSync.Persistence\\StaffSync.Persistence.csproj|solutionrelative:infrastructure\\staffsync.persistence\\repositories\\readrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,66 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ContactsController.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
-              "RelativeDocumentMoniker": "Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
-              "RelativeToolTip": "Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAAwwC4AAAAcAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T14:20:06.733Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
               "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
               "RelativeToolTip": "Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAAsAAAAAAAAAAAAQwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T14:20:03.917Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CreateContactCommandHandler.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
-              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
-              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\CreateContactCommandHandler.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T13:48:18.635Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ReadRepository.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Repositories\\ReadRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\StaffSync.Persistence\\Repositories\\ReadRepository.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Infrastructure\\StaffSync.Persistence\\Repositories\\ReadRepository.cs",
-              "RelativeToolTip": "Infrastructure\\StaffSync.Persistence\\Repositories\\ReadRepository.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAA8wB4AAAAcAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T13:32:51.47Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GetContactsWithPaginationQueryHandler.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\GetContactsWithPaginationQueryHandler.cs",
-              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\GetContactsWithPaginationQueryHandler.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\GetContactsWithPaginationQueryHandler.cs",
-              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\GetContactsWithPaginationQueryHandler.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAACIAAABBAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T13:24:42.223Z",
+              "WhenOpened": "2024-11-19T11:41:11.19Z",
               "EditorCaption": ""
             }
           ]

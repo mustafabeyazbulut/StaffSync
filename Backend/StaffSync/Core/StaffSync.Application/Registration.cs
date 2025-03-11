@@ -1,9 +1,9 @@
-﻿using FluentValidation;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using StaffSync.Application.Bases;
+﻿using StaffSync.Application.Bases;
 using StaffSync.Application.Beheviors;
 using StaffSync.Application.Exceptions;
+using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using System.Reflection;
 

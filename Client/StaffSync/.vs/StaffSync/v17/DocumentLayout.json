@@ -1,54 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{17A5E031-CA27-4EF1-B6A1-B30A920F82D8}|StaffSync\\StaffSync.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\client\\staffsync\\staffsync\\pages\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{17A5E031-CA27-4EF1-B6A1-B30A920F82D8}|StaffSync\\StaffSync.csproj|solutionrelative:staffsync\\pages\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{17A5E031-CA27-4EF1-B6A1-B30A920F82D8}|StaffSync\\StaffSync.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\client\\staffsync\\staffsync\\viewmodels\\personviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{17A5E031-CA27-4EF1-B6A1-B30A920F82D8}|StaffSync\\StaffSync.csproj|solutionrelative:staffsync\\viewmodels\\personviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MainPage.xaml",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\Pages\\MainPage.xaml",
-              "RelativeDocumentMoniker": "StaffSync\\Pages\\MainPage.xaml",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\Pages\\MainPage.xaml",
-              "RelativeToolTip": "StaffSync\\Pages\\MainPage.xaml",
-              "ViewState": "AQIAABgAAAAAAAAAAAAAADQAAACQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-08-19T13:49:18.812Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PersonViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\ViewModels\\PersonViewModel.cs",
-              "RelativeDocumentMoniker": "StaffSync\\ViewModels\\PersonViewModel.cs",
-              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Client\\StaffSync\\StaffSync\\ViewModels\\PersonViewModel.cs",
-              "RelativeToolTip": "StaffSync\\ViewModels\\PersonViewModel.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAB8AAAAXAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-19T13:47:51.753Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

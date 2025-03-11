@@ -1,0 +1,53 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net8.0-ios
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = StaffSync
+build_property.ProjectDir = C:\Users\MBEYAZBULUT\Documents\GitHub\StaffSync\Client\StaffSync\StaffSync\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/App.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.App.xaml
+build_metadata.AdditionalFiles.TargetPath = App.xaml
+build_metadata.AdditionalFiles.RelativePath = App.xaml
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/Pages/LoginPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.Pages.LoginPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\LoginPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\LoginPage.xaml
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/Pages/MainPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.Pages.MainPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\MainPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\MainPage.xaml
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/Pages/ProfilePage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.Pages.ProfilePage.xaml
+build_metadata.AdditionalFiles.TargetPath = Pages\ProfilePage.xaml
+build_metadata.AdditionalFiles.RelativePath = Pages\ProfilePage.xaml
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/Resources/Styles/Colors.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.Resources.Styles.Colors.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Colors.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Colors.xaml
+
+[C:/Users/MBEYAZBULUT/Documents/GitHub/StaffSync/Client/StaffSync/StaffSync/Resources/Styles/Styles.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = StaffSync.Resources.Styles.Styles.xaml
+build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
+build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml

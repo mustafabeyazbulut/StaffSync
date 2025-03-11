@@ -3,9 +3,9 @@
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugFramework>net8.0-android</ActiveDebugFramework>
-    <ActiveDebugProfile>Pixel 2 API 28 (Android 9.0 - API 28)</ActiveDebugProfile>
+    <ActiveDebugProfile>Pixel 2 Pie 9.0 - API 28 (Android 9.0 - API 28)</ActiveDebugProfile>
     <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
-    <DefaultDevice>Pixel_2_API_28</DefaultDevice>
+    <DefaultDevice>pixel_2_pie_9_0_-_api_28</DefaultDevice>
   </PropertyGroup>
   <ItemGroup>
     <MauiXaml Update="Pages\LoginPage.xaml">
