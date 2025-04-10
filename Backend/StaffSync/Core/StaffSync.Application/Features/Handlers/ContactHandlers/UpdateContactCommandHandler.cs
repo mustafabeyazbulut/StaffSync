@@ -18,7 +18,6 @@ namespace StaffSync.Application.Features.Handlers.ContactHandlers
         {
 
             var value = await unitOfWork.GetReadRepository<Contact>().GetAsync(x => x.Id == request.Id && !x.IsDeleted);
-
             var map = mapper.Map<Contact, UpdateContactCommand>(request);
 
             await unitOfWork.GetWriteRepository<Contact>().UpdateAsync(map);

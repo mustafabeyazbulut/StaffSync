@@ -1085,7 +1085,10 @@
           "System.IdentityModel.Tokens.Jwt": "8.0.2"
         },
         "runtime": {
-          "StaffSync.Application.dll": {}
+          "StaffSync.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "StaffSync.Domain/1.0.0": {
@@ -1093,7 +1096,10 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.8"
         },
         "runtime": {
-          "StaffSync.Domain.dll": {}
+          "StaffSync.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

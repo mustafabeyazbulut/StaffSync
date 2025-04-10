@@ -5,6 +5,18 @@
     {
       "AbsoluteMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\presentation\\staffsync.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|solutionrelative:presentation\\staffsync.webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\handlers\\contacthandlers\\updatecontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\handlers\\contacthandlers\\updatecontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\core\\staffsync.application\\features\\handlers\\contacthandlers\\removecontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0F5848AE-B753-4B34-B5E1-B0690CA775AD}|Core\\StaffSync.Application\\StaffSync.Application.csproj|solutionrelative:core\\staffsync.application\\features\\handlers\\contacthandlers\\removecontactcommandhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|c:\\users\\mbeyazbulut\\documents\\github\\staffsync\\backend\\staffsync\\presentation\\staffsync.webapi\\controllers\\contactscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C03105F9-EBF6-4212-8B59-C48F6B176E21}|Presentation\\StaffSync.WebApi\\StaffSync.WebApi.csproj|solutionrelative:presentation\\staffsync.webapi\\controllers\\contactscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +26,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -24,9 +40,48 @@
               "RelativeDocumentMoniker": "Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
               "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
               "RelativeToolTip": "Presentation\\StaffSync.WebApi\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AgIAABUAAAAAAAAAAAAowCYAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-19T11:41:11.19Z",
+              "WhenOpened": "2025-03-27T14:39:45.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UpdateContactCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\UpdateContactCommandHandler.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\UpdateContactCommandHandler.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\UpdateContactCommandHandler.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\UpdateContactCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T12:46:58.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RemoveContactCommandHandler.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\RemoveContactCommandHandler.cs",
+              "RelativeDocumentMoniker": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\RemoveContactCommandHandler.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\RemoveContactCommandHandler.cs",
+              "RelativeToolTip": "Core\\StaffSync.Application\\Features\\Handlers\\ContactHandlers\\RemoveContactCommandHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T12:35:14.166Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ContactsController.cs",
+              "DocumentMoniker": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
+              "RelativeDocumentMoniker": "Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
+              "ToolTip": "C:\\Users\\MBEYAZBULUT\\Documents\\GitHub\\StaffSync\\Backend\\StaffSync\\Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
+              "RelativeToolTip": "Presentation\\StaffSync.WebApi\\Controllers\\ContactsController.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAwwDYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T09:36:06.639Z",
               "EditorCaption": ""
             }
           ]
