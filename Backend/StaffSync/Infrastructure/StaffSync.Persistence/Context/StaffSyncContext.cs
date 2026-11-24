@@ -16,5 +16,25 @@ namespace StaffSync.Persistence.Context
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public DbSet<Contact> Contacts { get; set; }
+
+        public override int SaveChanges()
+        {
+            StampContacts();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            StampContacts();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void StampContacts()
+        {
+            DateTime now = DateTime.UtcNow;
+            foreach (var entry in ChangeTracker.Entries<Contact>())
+                if (entry.State is EntityState.Added or EntityState.Modified)
+                    entry.Entity.UpdatedDate = now;
+        }
     }
 }

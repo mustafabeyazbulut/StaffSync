@@ -15,5 +15,7 @@ namespace StaffSync.Domain.Entities
         public string Department { get; set; }
         public string Company { get; set; }
         public string ManagerName { get; set; }
+        // UTC. Her ekleme/güncelleme/silmede StaffSyncContext tarafından set edilir; mobil senkron buna bakar.
+        public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }
 }

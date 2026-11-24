@@ -14,6 +14,8 @@ namespace StaffSync.Persistence.Configurations
             builder.Property(x=>x.JobTitle).HasMaxLength(50);
             builder.Property(x=>x.Department).HasMaxLength(50);
             builder.Property(x=>x.Company).HasMaxLength(50);
+            builder.Property(x => x.UpdatedDate).HasDefaultValueSql("GETUTCDATE()");
+            builder.HasIndex(x => x.UpdatedDate);
             //builder.Property(x=>x.Email).HasColumnType("text");
             //builder.Property(x=>x.TelephoneNumber).HasColumnType("text");
             //builder.Property(x=>x.CoverImageUrl).HasColumnType("text");
