@@ -65,5 +65,10 @@ namespace StaffSync.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> FilterOptions()
             => Ok(await _mediator.Send(new GetContactFilterOptionsQuery()));
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Changes([FromQuery] DateTime? since)
+            => Ok(await _mediator.Send(new GetContactChangesQuery { Since = since }));
     }
 }
