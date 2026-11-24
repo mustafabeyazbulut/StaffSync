@@ -30,10 +30,15 @@ namespace StaffSync
 
             builder.Services.AddTransient<ContactsViewModel>();
             builder.Services.AddTransient<ContactsPage>();
+
+            builder.Services.AddTransient<FilterViewModel>();
+            builder.Services.AddTransient<FilterPage>();
+
+            builder.Services.AddTransient<DepartmentPickerViewModel>();
+            builder.Services.AddTransient<DepartmentPickerPage>();
+
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<ContactDetailPage>();
-            builder.Services.AddTransient<FilterPage>();
-            builder.Services.AddTransient<DepartmentPickerPage>();
             builder.Services.AddTransient<ReportCorrectionPage>();
 
 #if DEBUG

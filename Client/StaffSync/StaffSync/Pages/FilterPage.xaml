@@ -1,6 +1,141 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
              x:Class="StaffSync.Pages.FilterPage"
-             Title="Filtrele">
+             x:DataType="vm:FilterViewModel"
+             Title="Filtrele ve Sırala">
+
+    <Grid RowDefinitions="*,Auto" Padding="20">
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="24">
+
+                <!-- Sıralama Ölçütü -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="SIRALAMA"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16,8">
+                        <VerticalStackLayout Spacing="12">
+                            <RadioButton Content="İsme Göre (A - Z)"
+                                         Value="name"
+                                         IsChecked="{Binding SortBy, Converter={StaticResource InverseBoolConverter}, ConverterParameter=name, FallbackValue=True}">
+                                <RadioButton.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSortByNameTapped" />
+                                </RadioButton.GestureRecognizers>
+                            </RadioButton>
+
+                            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
+
+                            <RadioButton Content="Departmana Göre"
+                                         Value="department">
+                                <RadioButton.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSortByDeptTapped" />
+                                </RadioButton.GestureRecognizers>
+                            </RadioButton>
+
+                            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
+
+                            <RadioButton Content="Unvana Göre"
+                                         Value="title">
+                                <RadioButton.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnSortByTitleTapped" />
+                                </RadioButton.GestureRecognizers>
+                            </RadioButton>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Departman Seçimi Satırı -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="DEPARTMAN"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16,14">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenDepartmentPickerCommand}" />
+                        </Border.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <Label Text="Departmanlar"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
+                                   VerticalOptions="Center" />
+
+                            <Label Grid.Column="1"
+                                   Text="{Binding SelectedDepartmentsSummary}"
+                                   FontSize="14"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center"
+                                   Margin="0,0,8,0" />
+
+                            <Label Grid.Column="2"
+                                   Text="›"
+                                   FontSize="22"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Şirket Seçici -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="ŞİRKET"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16,0"
+                            HeightRequest="48">
+                        <Picker ItemsSource="{Binding Companies}"
+                                SelectedItem="{Binding SelectedCompany}"
+                                Title="Şirket Seçiniz"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
+                                VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Alt Butonlar -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,2*" ColumnSpacing="12" Padding="0,16,0,0">
+            <Button Grid.Column="0"
+                    Text="Temizle"
+                    Command="{Binding ClearFiltersCommand}"
+                    BackgroundColor="Transparent"
+                    BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                    BorderWidth="1"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray200}}"
+                    HeightRequest="48"
+                    CornerRadius="8" />
+
+            <Button Grid.Column="1"
+                    Text="Filtreleri Uygula"
+                    Command="{Binding ApplyFiltersCommand}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                    FontAttributes="Bold"
+                    FontSize="15"
+                    HeightRequest="48"
+                    CornerRadius="8" />
+        </Grid>
+
+    </Grid>
+
 </ContentPage>

@@ -1,6 +1,111 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
+             xmlns:models="clr-namespace:StaffSync.Models"
              x:Class="StaffSync.Pages.DepartmentPickerPage"
-             Title="Departman Seç">
+             x:DataType="vm:DepartmentPickerViewModel"
+             Title="Departman Seçimi">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+
+        <!-- Arama Çubuğu -->
+        <Border Grid.Row="0"
+                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+                StrokeShape="RoundRectangle 10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                Padding="12,0"
+                HeightRequest="46"
+                Margin="0,0,0,10">
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="🔍" FontSize="14" VerticalOptions="Center" Margin="0,0,8,0" />
+                <Entry Grid.Column="1"
+                       Text="{Binding SearchText}"
+                       Placeholder="Departman ara..."
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                       FontSize="14"
+                       ClearButtonVisibility="WhileEditing"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Seçim Araç Çubuğu -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+            <HorizontalStackLayout Spacing="16">
+                <Button Text="Tümünü Seç"
+                        Command="{Binding SelectAllCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontSize="13"
+                        Padding="0"
+                        HeightRequest="36" />
+                <Button Text="Temizle"
+                        Command="{Binding ClearAllCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                        FontSize="13"
+                        Padding="0"
+                        HeightRequest="36" />
+            </HorizontalStackLayout>
+
+            <ActivityIndicator Grid.Column="1"
+                               IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               WidthRequest="24"
+                               HeightRequest="24" />
+        </Grid>
+
+        <!-- Departman Listesi -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Departments}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:FilterOptionItem">
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
+                            StrokeThickness="1"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                            StrokeShape="RoundRectangle 8"
+                            Margin="0,4"
+                            Padding="12,8">
+                        <Grid ColumnDefinitions="*,Auto,Auto" HeightRequest="36">
+                            <Label Text="{Binding Name}"
+                                   FontSize="15"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                   VerticalOptions="Center" />
+
+                            <Label Grid.Column="1"
+                                   Text="{Binding Count, StringFormat='({0})'}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                                   VerticalOptions="Center"
+                                   Margin="0,0,12,0" />
+
+                            <CheckBox Grid.Column="2"
+                                      IsChecked="{Binding IsSelected}"
+                                      Color="{StaticResource Primary}"
+                                      VerticalOptions="Center"
+                                      MinimumHeightRequest="44"
+                                      MinimumWidthRequest="44" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Alt Onay Butonu -->
+        <Button Grid.Row="3"
+                Text="Seçimi Onayla"
+                Command="{Binding ApplyCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                FontAttributes="Bold"
+                FontSize="15"
+                HeightRequest="48"
+                CornerRadius="8"
+                Margin="0,12,0,0" />
+
+    </Grid>
+
 </ContentPage>
