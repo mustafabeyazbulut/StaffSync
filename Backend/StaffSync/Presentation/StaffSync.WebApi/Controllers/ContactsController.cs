@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StaffSync.Application.Features.Commands.ContactCommands;
+using StaffSync.Application.Features.Commands.CorrectionCommands;
 using StaffSync.Application.Features.Queries.ContactQueries;
 
 namespace StaffSync.WebApi.Controllers
@@ -70,5 +71,14 @@ namespace StaffSync.WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> Changes([FromQuery] DateTime? since)
             => Ok(await _mediator.Send(new GetContactChangesQuery { Since = since }));
+
+        [HttpPost("{id}")]
+        [Authorize]
+        public async Task<IActionResult> ReportCorrection(int id, CreateContactCorrectionCommand command)
+        {
+            command.ContactId = id;
+            await _mediator.Send(command);
+            return StatusCode(StatusCodes.Status201Created);
+        }
     }
 }

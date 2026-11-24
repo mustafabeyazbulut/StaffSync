@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StaffSync.Application.Features.Corrections;
+using StaffSync.Application.Interfaces.Email;
 using StaffSync.Application.Interfaces.Tokens;
+using StaffSync.Infrastructure.Email;
 using StaffSync.Infrastructure.Tokens;
 using System.Text;
 
@@ -14,6 +17,10 @@ namespace StaffSync.Infrastructure
         {
             services.Configure<TokenSettings>(configuration.GetSection("JWT"));
             services.AddTransient<ITokenService, TokenService>();
+
+            services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
+            services.Configure<CorrectionSettings>(configuration.GetSection("Corrections"));
+            services.AddTransient<IEmailSender, SmtpEmailSender>();
 
             services.AddAuthentication(opt =>
             {
