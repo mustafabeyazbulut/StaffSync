@@ -60,5 +60,10 @@ namespace StaffSync.WebApi.Controllers
             await _mediator.Send(command);
             return Ok("Contact updated");
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> FilterOptions()
+            => Ok(await _mediator.Send(new GetContactFilterOptionsQuery()));
     }
 }
