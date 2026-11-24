@@ -1,6 +1,229 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
              x:Class="StaffSync.Pages.ContactDetailPage"
+             x:DataType="vm:ContactDetailViewModel"
              Title="Kişi Detayı">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="20,24,20,32">
+
+            <!-- Profil Başlık Kartı -->
+            <VerticalStackLayout Spacing="12" HorizontalOptions="Center">
+                <Border WidthRequest="84"
+                        HeightRequest="84"
+                        StrokeShape="RoundRectangle 42"
+                        Stroke="Transparent"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                        HorizontalOptions="Center">
+                    <Label Text="{Binding Contact.Initials}"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="{Binding Contact.DisplayName}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                    <Label Text="{Binding Contact.JobTitle}"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource Primary}" />
+
+                    <Label Text="{Binding Contact.Department}"
+                           FontSize="13"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Hızlı İletişim Butonları -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="12" Margin="0,8">
+                <!-- Ara -->
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Button Text="📞"
+                            Command="{Binding CallPhoneCommand}"
+                            IsEnabled="{Binding Contact.HasPhone}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                            CornerRadius="24"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            FontSize="18"
+                            Padding="0" />
+                    <Label Text="Ara" FontSize="11" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+
+                <!-- SMS -->
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Button Text="💬"
+                            Command="{Binding SendSmsCommand}"
+                            IsEnabled="{Binding Contact.HasPhone}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                            CornerRadius="24"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            FontSize="18"
+                            Padding="0" />
+                    <Label Text="Mesaj" FontSize="11" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+
+                <!-- WhatsApp -->
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Button Text="🟢"
+                            Command="{Binding OpenWhatsAppCommand}"
+                            IsEnabled="{Binding Contact.HasPhone}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                            CornerRadius="24"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            FontSize="18"
+                            Padding="0" />
+                    <Label Text="WhatsApp" FontSize="11" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+
+                <!-- E-posta -->
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Button Text="✉️"
+                            Command="{Binding SendEmailCommand}"
+                            IsEnabled="{Binding Contact.HasEmail}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                            CornerRadius="24"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            FontSize="18"
+                            Padding="0" />
+                    <Label Text="E-posta" FontSize="11" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Detaylı Bilgi Listesi -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="16">
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Telefon -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="📱" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Cep Telefonu" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.TelephoneNumber, FallbackValue='Belirtilmemiş'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+
+                    <!-- Kısa Kod / Dahili -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="☎️" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Kısa Kod / Dahili" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.Home, FallbackValue='Belirtilmemiş'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+
+                    <!-- E-posta -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="📧" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="E-posta Adresi" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.Email, FallbackValue='Belirtilmemiş'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+
+                    <!-- Departman & Şirket -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="🏢" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Şirket &amp; Departman" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.Company, FallbackValue='AUNDE'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                            <Label Text="{Binding Contact.Department}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+
+                    <!-- Ofis -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="📍" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Ofis / Lokasyon" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.Office, FallbackValue='Belirtilmemiş'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Yönetici (Varsa) -->
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Label Text="👤" FontSize="18" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Yönetici" FontSize="11"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            <Label Text="{Binding Contact.ManagerName, FallbackValue='Belirtilmemiş'}"
+                                   FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Hatalı Bilgi Bildir & Rehbere Kaydet Butonları -->
+            <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
+                <Button Text="Telefon Rehberime Kaydet"
+                        Command="{Binding SaveToContactsCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HeightRequest="46"
+                        CornerRadius="8" />
+
+                <Button Text="⚠️ Hatalı Bilgi Bildir"
+                        Command="{Binding ReportCorrectionCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Danger}"
+                        FontSize="14"
+                        HeightRequest="44" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>
