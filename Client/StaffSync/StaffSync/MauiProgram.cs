@@ -28,6 +28,7 @@ namespace StaffSync
             builder.Services.AddTransient<PermissionViewModel>();
             builder.Services.AddTransient<PermissionPage>();
 
+            builder.Services.AddTransient<ContactsViewModel>();
             builder.Services.AddTransient<ContactsPage>();
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<ContactDetailPage>();
