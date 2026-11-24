@@ -19,7 +19,14 @@ namespace StaffSync
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<IApiClient, ApiClient>();
             builder.Services.AddSingleton<IContactsService, ContactsService>();
+
+#if ANDROID
+            builder.Services.AddSingleton<IContactSyncService, Platforms.Android.Services.AndroidContactSyncService>();
+#elif IOS
+            builder.Services.AddSingleton<IContactSyncService, Platforms.iOS.Services.IosContactSyncService>();
+#else
             builder.Services.AddSingleton<IContactSyncService, DefaultContactSyncService>();
+#endif
 
             // ViewModel ve Sayfa Kayıtları
             builder.Services.AddTransient<LoginViewModel>();

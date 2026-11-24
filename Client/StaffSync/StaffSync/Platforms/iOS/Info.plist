@@ -28,5 +28,7 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Şirket içi çalışan rehberini telefonunuza senkronize etmek için rehber erişim izni gereklidir.</string>
 </dict>
 </plist>
