@@ -23,11 +23,11 @@ namespace StaffSync.Persistence
 
             services.AddIdentityCore<User>(opt=>
             {
+                opt.Password.RequiredLength = 8;
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireUppercase = true;
                 opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequiredLength = 2;
-                opt.Password.RequireLowercase = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequireDigit = false;
                 opt.SignIn.RequireConfirmedEmail = false;
             }
                 

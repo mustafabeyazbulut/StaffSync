@@ -27,12 +27,14 @@ namespace StaffSync.Application.Features.Validators.AuthValidators
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .MinimumLength(6)
+                .MinimumLength(8)
+                .Matches("[0-9]").WithMessage("Parola en az bir rakam içermelidir.")
+                .Matches("[a-z]").WithMessage("Parola en az bir küçük harf içermelidir.")
+                .Matches("[A-Z]").WithMessage("Parola en az bir büyük harf içermelidir.")
                 .WithName("Parola");
 
             RuleFor(x => x.ConfirmPassword)
                 .NotEmpty()
-                .MinimumLength(6)
                 .Equal(x => x.Password)
                 .WithName("Parola Tekrarı");
         }

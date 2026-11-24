@@ -40,7 +40,7 @@ namespace StaffSync.Infrastructure.Tokens
             var token = new JwtSecurityToken(
                 issuer: tokenSettings.Issuer,
                 audience: tokenSettings.Audience,
-                expires: DateTime.Now.AddMinutes(tokenSettings.TokenValidityInMunitues),
+                expires: DateTime.UtcNow.AddMinutes(tokenSettings.TokenValidityInMinutes),
                 claims: claims,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
@@ -63,11 +63,13 @@ namespace StaffSync.Infrastructure.Tokens
           // principal: bir kullanıcıya ait bilgileri içeren bir nesnedir. Kullanıcıya ait bilgileri içerir.
             TokenValidationParameters tokenValidationParamaters = new()
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = tokenSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = tokenSettings.Audience,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Secret)),
-                ValidateLifetime = false
+                ValidateLifetime = false // bilerek kapalı: refresh akışı süresi dolmuş token'ı okur
             };
 
             JwtSecurityTokenHandler tokenHandler = new();
