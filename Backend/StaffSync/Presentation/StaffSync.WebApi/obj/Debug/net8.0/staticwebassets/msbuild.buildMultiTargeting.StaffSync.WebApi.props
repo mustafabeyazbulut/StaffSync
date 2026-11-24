@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\StaffSync.WebApi.props" />
-</Project>
