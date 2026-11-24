@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="StaffSync.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:StaffSync.Pages"
+    Title="StaffSync">
+
+    <TabBar Route="main">
+        <Tab Title="Rehber" Route="contacts">
+            <ShellContent
+                Title="Rehber"
+                ContentTemplate="{DataTemplate pages:ContactsPage}"
+                Route="contactsPage" />
+        </Tab>
+        <Tab Title="Profil" Route="profile">
+            <ShellContent
+                Title="Profil"
+                ContentTemplate="{DataTemplate pages:ProfilePage}"
+                Route="profilePage" />
+        </Tab>
+    </TabBar>
+
+</Shell>

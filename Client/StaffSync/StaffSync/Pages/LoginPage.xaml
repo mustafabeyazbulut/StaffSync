@@ -1,90 +1,112 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="StaffSync.Pages.LoginPage" BackgroundColor="#DDDDDD">
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
+             x:Class="StaffSync.Pages.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False">
 
-    <StackLayout Padding="15" Margin="10" BackgroundColor="#DDDDDD">
-        <ContentView Padding="0" Margin="0">
-            <ContentView.BackgroundColor>
-                <OnPlatform x:TypeArguments="Color">
-                    <On Platform="Android" Value="Transparent" />
-                    <On Platform="iOS" Value="Transparent" />
-                </OnPlatform>
-            </ContentView.BackgroundColor>
-            <ContentView.Content>
-                <Grid
-                HeightRequest="340"
-                WidthRequest="330"
-                VerticalOptions="Center"
-                HorizontalOptions="Center">
-                    <BoxView
-                    BackgroundColor="#164194"
-                    CornerRadius="0,0,200,60" Margin="20,0,20,0"/>
-                    <Label
-                        Text="STAFFSYNC"
-                        Padding="0,50,0,0"
-                        HorizontalOptions="Center"
-                        TextColor="White"
-                        FontSize="32"
-                        FontAttributes="Bold" />
-                    <Label
-                        Text="Hoş Geldiniz"
-                        Padding="0,90,0,0"
-                        HorizontalOptions="Center"
-                        TextColor="White"
-                        FontSize="16"
-                        FontAttributes="Italic" />
-                    <Image
-                        Source="Resources/Images/loginlogo.png"   
-                        HeightRequest="100"
-                        Margin="0,0,30,0"
-                        WidthRequest="150"
-                        VerticalOptions="EndAndExpand"
-                        HorizontalOptions="EndAndExpand" />
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="32,60,32,32" VerticalOptions="Center">
 
+            <!-- AUNDE Logo -->
+            <Image HeightRequest="64" HorizontalOptions="Center" Margin="0,0,0,16">
+                <Image.Source>
+                    <AppThemeBinding Light="aunde_logo_positive.svg" Dark="aunde_logo_negative.svg" />
+                </Image.Source>
+            </Image>
 
-                </Grid>
-            </ContentView.Content>
-        </ContentView>
-        <ContentView Padding="15,40,15,0" Margin="0">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Entry Placeholder="Mail"
-                       TextColor="Black"
-                       PlaceholderColor="Black"
-                       VerticalOptions="Center"
-                       HorizontalOptions="FillAndExpand" 
-                       Grid.Column="0"/>
-                <Button Text="Kod Gönder"
-                        BackgroundColor="#164194"
-                        HeightRequest="30"
-                        Padding="4"
-                        Margin="0"
-                        VerticalOptions="Center"
-                        HorizontalOptions="End"
-                        Grid.Column="1"/>
-            </Grid>
-        </ContentView>
+            <Label Text="Personel Rehberi"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
 
-        <ContentView Padding="15" Margin="0">
-            <Grid Margin="10">
-                <Entry Placeholder="Kodu Giriniz"
-                TextColor="White"
-                PlaceholderColor="Black"
-                VerticalOptions="Center"
-                HorizontalOptions="FillAndExpand" 
-                       IsPassword="True"/>
-            </Grid>
-        </ContentView>
-        <ContentView Padding="10" Margin="0">
-            <Grid Margin="10">
-                <Button x:Name="LoginButton" Clicked="LoginButton_Clicked" Text="Giriş Yapınız" BackgroundColor="#164194" TextColor="White"/>
-            </Grid>
-        </ContentView>
-    </StackLayout>
+            <Label Text="Şirket içi iletişim rehberine erişmek için giriş yapınız."
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}"
+                   Margin="0,-12,0,8" />
 
+            <!-- Hata Mesajı -->
+            <Border BackgroundColor="#FEE2E2"
+                    Stroke="#EF4444"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12"
+                    IsVisible="{Binding HasError}">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#B91C1C"
+                       FontSize="13"
+                       HorizontalOptions="Center" />
+            </Border>
+
+            <!-- Giriş Formu -->
+            <VerticalStackLayout Spacing="16">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="E-posta"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray200}}" />
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,0"
+                            HeightRequest="48">
+                        <Entry Text="{Binding Email}"
+                               Placeholder="ad.soyad@aunde.com"
+                               Keyboard="Email"
+                               ReturnType="Next"
+                               VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Şifre"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray200}}" />
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                            StrokeShape="RoundRectangle 8"
+                            Padding="12,0"
+                            HeightRequest="48">
+                        <Entry Text="{Binding Password}"
+                               Placeholder="••••••••"
+                               IsPassword="True"
+                               ReturnType="Done"
+                               ReturnCommand="{Binding LoginCommand}"
+                               VerticalOptions="Center" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Giriş Butonu -->
+                <Button Text="Giriş Yap"
+                        Command="{Binding LoginCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        HeightRequest="48"
+                        CornerRadius="8"
+                        Margin="0,8,0,0" />
+
+                <!-- Yükleniyor Göstergesi -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                   HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Sunucu Ayarları -->
+            <Button Text="Sunucu Adresini Değiştir"
+                    Command="{Binding ChangeServerUrlCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

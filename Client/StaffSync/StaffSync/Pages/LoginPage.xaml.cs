@@ -1,15 +1,13 @@
-﻿namespace StaffSync.Pages
+﻿using StaffSync.ViewModels;
+
+namespace StaffSync.Pages
 {
     public partial class LoginPage : ContentPage
     {
-        public LoginPage()
+        public LoginPage(LoginViewModel viewModel)
         {
             InitializeComponent();
-        }
-
-        private void LoginButton_Clicked(object sender, EventArgs e)
-        {
-            App.Current.MainPage= new MainPage();
+            BindingContext = viewModel;
         }
     }
 }

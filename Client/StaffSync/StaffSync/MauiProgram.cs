@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using StaffSync.Pages;
 using StaffSync.Services;
+using StaffSync.ViewModels;
 
 namespace StaffSync
 {
@@ -18,6 +20,20 @@ namespace StaffSync
             builder.Services.AddSingleton<IApiClient, ApiClient>();
             builder.Services.AddSingleton<IContactsService, ContactsService>();
             builder.Services.AddSingleton<IContactSyncService, DefaultContactSyncService>();
+
+            // ViewModel ve Sayfa Kayıtları
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<LoginPage>();
+
+            builder.Services.AddTransient<PermissionViewModel>();
+            builder.Services.AddTransient<PermissionPage>();
+
+            builder.Services.AddTransient<ContactsPage>();
+            builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<ContactDetailPage>();
+            builder.Services.AddTransient<FilterPage>();
+            builder.Services.AddTransient<DepartmentPickerPage>();
+            builder.Services.AddTransient<ReportCorrectionPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
+             x:Class="StaffSync.Pages.PermissionPage"
+             x:DataType="vm:PermissionViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="28" Padding="32,60,32,32" VerticalOptions="Center">
+
+            <!-- AUNDE Globe Logo -->
+            <Image HeightRequest="80" HorizontalOptions="Center">
+                <Image.Source>
+                    <AppThemeBinding Light="aunde_globe_positive.svg" Dark="aunde_globe_negative.svg" />
+                </Image.Source>
+            </Image>
+
+            <VerticalStackLayout Spacing="8">
+                <Label Text="AUNDE Rehber Senkronizasyonu"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                <Label Text="İş arkadaşlarınız sizi aradığında ekranda isim ve unvanlarını görün."
+                       FontSize="15"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+            </VerticalStackLayout>
+
+            <!-- Avantaj Kartları -->
+            <VerticalStackLayout Spacing="16" Margin="0,8">
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="16">
+                    <HorizontalStackLayout Spacing="12">
+                        <Label Text="📞" FontSize="20" VerticalOptions="Center" />
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="Arayanları Tanıyın" FontAttributes="Bold" FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                            <Label Text="Gelen şirket içi aramalarda kişi kartı otomatik görünür." FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="16">
+                    <HorizontalStackLayout Spacing="12">
+                        <Label Text="🔒" FontSize="20" VerticalOptions="Center" />
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="Kişisel Rehberiniz Korunur" FontAttributes="Bold" FontSize="14"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                            <Label Text="Yalnızca şirket kişileri eklenir; kapatıldığında temizlenir." FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Aksiyon Butonları -->
+            <VerticalStackLayout Spacing="12" Margin="0,12,0,0">
+                <Button Text="Rehbere İzin Ver ve Senkronize Et"
+                        Command="{Binding AllowSyncCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        HeightRequest="48"
+                        CornerRadius="8" />
+
+                <Button Text="Şimdi Değil"
+                        Command="{Binding SkipCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
+                        FontSize="14"
+                        HeightRequest="44" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
