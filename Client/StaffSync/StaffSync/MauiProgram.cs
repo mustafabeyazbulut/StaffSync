@@ -40,6 +40,7 @@ namespace StaffSync
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<ContactDetailViewModel>();
             builder.Services.AddTransient<ContactDetailPage>();
+            builder.Services.AddTransient<ReportCorrectionViewModel>();
             builder.Services.AddTransient<ReportCorrectionPage>();
 
 #if DEBUG
