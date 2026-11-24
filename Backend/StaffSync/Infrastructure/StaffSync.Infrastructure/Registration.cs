@@ -3,8 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StaffSync.Application.Features.Corrections;
+using StaffSync.Application.Interfaces.Directory;
 using StaffSync.Application.Interfaces.Email;
 using StaffSync.Application.Interfaces.Tokens;
+using StaffSync.Infrastructure.DirectoryExport;
 using StaffSync.Infrastructure.Email;
 using StaffSync.Infrastructure.Tokens;
 using System.Text;
@@ -21,6 +23,10 @@ namespace StaffSync.Infrastructure
             services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
             services.Configure<CorrectionSettings>(configuration.GetSection("Corrections"));
             services.AddTransient<IEmailSender, SmtpEmailSender>();
+
+            services.Configure<DirectoryExportSettings>(configuration.GetSection("DirectoryExport"));
+            services.AddSingleton<IDirectoryChangeNotifier, DirectoryChangeNotifier>();
+            services.AddHostedService<DirectoryExportBackgroundService>();
 
             services.AddAuthentication(opt =>
             {
