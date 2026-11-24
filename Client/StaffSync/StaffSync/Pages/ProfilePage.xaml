@@ -1,9 +1,203 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StaffSync.ViewModels"
              x:Class="StaffSync.Pages.ProfilePage"
-             Title="Profil">
-    <VerticalStackLayout Padding="16">
-        <Label Text="Profil" FontSize="20" FontAttributes="Bold" />
-    </VerticalStackLayout>
+             x:DataType="vm:ProfileViewModel"
+             Title="Profil ve Ayarlar">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="24" Padding="20,24,20,36">
+
+            <!-- Kullanıcı Kartı -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="16">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                    <Border WidthRequest="60"
+                            HeightRequest="60"
+                            StrokeShape="RoundRectangle 30"
+                            Stroke="Transparent"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                        <Label Text="👤"
+                               FontSize="28"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                        <Label Text="{Binding CurrentUser.Name, FallbackValue='AUNDE Kullanıcısı'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                        <Label Text="{Binding CurrentUser.Email}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                        <!-- Rol Rozeti -->
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 6"
+                                Padding="8,2"
+                                HorizontalOptions="Start">
+                            <Label Text="{Binding CurrentUser.Role, FallbackValue='Kullanıcı'}"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Rehber Senkronizasyon Ayarları Kartı -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="REHBER ENTEGRASYONU"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="16">
+
+                        <!-- Toggle Satırı -->
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                <Label Text="Telefon Rehberine Senkronize Et"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+                                <Label Text="İş arkadaşlarınız sizi aradığında ekranda isim ve unvanları görünür."
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                            </VerticalStackLayout>
+
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding IsSyncEnabled}"
+                                    Toggled="OnSyncSwitchToggled"
+                                    OnColor="{StaticResource Primary}"
+                                    ThumbColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray200}}"
+                                    VerticalOptions="Center" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}" />
+
+                        <!-- Son Senkron Durumu -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding LastSyncText}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
+
+                                <Label Text="{Binding LastSyncError}"
+                                       FontSize="12"
+                                       TextColor="{StaticResource Danger}"
+                                       IsVisible="{Binding HasSyncError}" />
+                            </VerticalStackLayout>
+
+                            <!-- Şimdi Senkronize Et Butonu -->
+                            <Button Grid.Column="1"
+                                    Text="Şimdi Senkronize Et"
+                                    Command="{Binding SyncNowCommand}"
+                                    IsEnabled="{Binding IsSyncing, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    Padding="12,0"
+                                    HeightRequest="36"
+                                    CornerRadius="6" />
+                        </Grid>
+
+                        <ActivityIndicator IsRunning="{Binding IsSyncing}"
+                                           IsVisible="{Binding IsSyncing}"
+                                           Color="{StaticResource Primary}"
+                                           HorizontalOptions="Center" />
+
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Görünüm / Tema Ayarları Kartı -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="GÖRÜNÜM TEMA SEÇİMİ"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="16">
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                        <Button Text="⚙️ Sistem"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
+                                FontSize="12"
+                                HeightRequest="40"
+                                CornerRadius="8"
+                                Padding="0" />
+
+                        <Button Grid.Column="1"
+                                Text="☀️ Açık"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="1"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
+                                FontSize="12"
+                                HeightRequest="40"
+                                CornerRadius="8"
+                                Padding="0" />
+
+                        <Button Grid.Column="2"
+                                Text="🌙 Koyu"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="2"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
+                                FontSize="12"
+                                HeightRequest="40"
+                                CornerRadius="8"
+                                Padding="0" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Uygulama Bilgisi -->
+            <VerticalStackLayout Spacing="4" HorizontalOptions="Center" Margin="0,8,0,0">
+                <Label Text="AUNDE Teknik Tekstil A.Ş."
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray700}, Dark={StaticResource Gray300}}" />
+                <Label Text="{Binding AppVersion, StringFormat='StaffSync Sürüm {0}'}"
+                       FontSize="12"
+                       HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray500}}" />
+            </VerticalStackLayout>
+
+            <!-- Çıkış Butonu -->
+            <Button Text="Oturumu Kapat"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource Danger}"
+                    BorderWidth="1"
+                    TextColor="{StaticResource Danger}"
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    HeightRequest="46"
+                    CornerRadius="8"
+                    Margin="0,8,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
 </ContentPage>

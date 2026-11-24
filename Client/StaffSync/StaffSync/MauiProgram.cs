@@ -37,6 +37,7 @@ namespace StaffSync
             builder.Services.AddTransient<DepartmentPickerViewModel>();
             builder.Services.AddTransient<DepartmentPickerPage>();
 
+            builder.Services.AddTransient<ProfileViewModel>();
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<ContactDetailViewModel>();
             builder.Services.AddTransient<ContactDetailPage>();
