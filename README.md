@@ -5,11 +5,11 @@ StaffSync is an application developed to manage and track the company’s intern
 2. Generic Repository
 3. Unit Of Work
 4. CQRS
-5. Madiatr
-6. AutoMapper
-7. Global Exception
-8. Fluent Validation Pipeline Behaviour
-9. BaseRules
-10. JWT
-11. Redis
+5. MediatR
+6. Global Exception
+7. Fluent Validation Pipeline Behaviour
+8. BaseRules
+9. JWT
+10. Contact change tracking (mobile sync)
+11. Feature-phone directory export (vCard 2.1 / CSV)
 
