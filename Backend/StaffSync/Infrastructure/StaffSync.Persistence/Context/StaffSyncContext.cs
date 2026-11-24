@@ -16,6 +16,8 @@ namespace StaffSync.Persistence.Context
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ContactCorrection> ContactCorrections { get; set; }
+        public DbSet<ContactCorrectionItem> ContactCorrectionItems { get; set; }
 
         public override int SaveChanges()
         {

@@ -195,6 +195,83 @@ namespace StaffSync.Persistence.Migrations
                     b.ToTable("Contacts");
                 });
 
+            modelBuilder.Entity("StaffSync.Domain.Entities.ContactCorrection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContactId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("ReportedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("ReportedByUserId", "CreatedDate");
+
+                    b.ToTable("ContactCorrections");
+                });
+
+            modelBuilder.Entity("StaffSync.Domain.Entities.ContactCorrectionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContactCorrectionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NewValue")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("OldValue")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactCorrectionId");
+
+                    b.ToTable("ContactCorrectionItems");
+                });
+
             modelBuilder.Entity("StaffSync.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -348,6 +425,31 @@ namespace StaffSync.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("StaffSync.Domain.Entities.ContactCorrection", b =>
+                {
+                    b.HasOne("StaffSync.Domain.Entities.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("StaffSync.Domain.Entities.ContactCorrectionItem", b =>
+                {
+                    b.HasOne("StaffSync.Domain.Entities.ContactCorrection", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ContactCorrectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StaffSync.Domain.Entities.ContactCorrection", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
