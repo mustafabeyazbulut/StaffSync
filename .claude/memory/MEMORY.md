@@ -1,0 +1,8 @@
+- [Proje genel bakış](project-overview.md) — StaffSync yapısı, teknoloji yığını, backend/MAUI client durumu
+- [Backend özellik düzeni](backend-feature-conventions.md) — CQRS klasör yapısı, BaseHandler/BaseRules, controller kalıbı
+- [Backend dikkat noktaları](backend-gotchas.md) — JWT/şifre düzeltildi (refresh istisnası), DB bağlantısı
+- [Paket lisans kararları](package-license-pins.md) — MediatR 12.x sabit; AutoMapper kaldırılacak, elle eşleme
+- [Mobil kapsam](mobile-scope.md) — mobil sadece rehber görüntüleme + senkron; kişi ekle/düzenle mobilde yok, mockup linki
+- [Rehber senkron kuralları](contact-sync-rules.md) — eklenen kişiler StaffSync'ten geldiği belli olur, senkron kapanınca hepsi silinir (Android hesap tipi / iOS grup)
+- [AUNDE marka kuralları](aunde-brand.md) — logo SVG'leri docs/brand/aunde-logo, renk kodları, logo kullanım kuralları, font
+- [Tasarım kararları ve DURUM (Kasım 2026)](design-decisions-2026-11.md) — spec + backend plan yolu, nerede kalındı, tuşlu telefon vCard/CSV, hata bildirimi, repo korunur
