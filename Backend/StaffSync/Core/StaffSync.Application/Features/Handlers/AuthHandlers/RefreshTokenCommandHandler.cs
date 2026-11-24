@@ -5,7 +5,6 @@ using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Results.AuthResults;
 using StaffSync.Application.Features.Rules.AuthRules;
-using StaffSync.Application.Interfaces.AutoMapper;
 using StaffSync.Application.Interfaces.Tokens;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
@@ -19,8 +18,8 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
         private readonly AuthRules authRules;
         private readonly UserManager<User> userManager;
         private readonly ITokenService tokenService;
-        public RefreshTokenCommandHandler( AuthRules authRules, UserManager<User> userManager, ITokenService tokenService,
-            IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitOfWork, httpContextAccessor)
+        public RefreshTokenCommandHandler(AuthRules authRules, UserManager<User> userManager, ITokenService tokenService,
+            IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, httpContextAccessor)
         {
             this.authRules = authRules;
             this.userManager = userManager;

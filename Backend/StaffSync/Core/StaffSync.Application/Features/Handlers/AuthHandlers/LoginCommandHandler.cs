@@ -6,7 +6,6 @@ using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Results.AuthResults;
 using StaffSync.Application.Features.Rules.AuthRules;
-using StaffSync.Application.Interfaces.AutoMapper;
 using StaffSync.Application.Interfaces.Tokens;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
@@ -26,8 +25,8 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
         private readonly ITokenService tokenService;
         private readonly AuthRules authRules;
         public LoginCommandHandler(UserManager<User> userManager, IConfiguration configuration, ITokenService tokenService, AuthRules authRules,
-            IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
-            : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+            : base(unitOfWork, httpContextAccessor)
         {
             this.userManager = userManager;
             this.configuration = configuration;

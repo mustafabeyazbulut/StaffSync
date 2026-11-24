@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.ContactCommands;
-using StaffSync.Application.Interfaces.AutoMapper;
+using StaffSync.Application.Features.Mappings;
+using StaffSync.Application.Features.Rules.ContactRules;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
 
@@ -10,17 +11,21 @@ namespace StaffSync.Application.Features.Handlers.ContactHandlers
 {
     public class UpdateContactCommandHandler : BaseHandler, IRequestHandler<UpdateContactCommand>
     {
-        public UpdateContactCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
-           : base(mapper, unitOfWork, httpContextAccessor)
+        private readonly ContactRules contactRules;
+
+        public UpdateContactCommandHandler(ContactRules contactRules, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+           : base(unitOfWork, httpContextAccessor)
         {
+            this.contactRules = contactRules;
         }
+
         public async Task Handle(UpdateContactCommand request, CancellationToken cancellationToken)
         {
+            Contact? contact = await unitOfWork.GetReadRepository<Contact>()
+                .GetAsync(x => x.Id == request.Id && !x.IsDeleted, enableTracking: true);
+            await contactRules.ContactMustExist(contact);
 
-            var value = await unitOfWork.GetReadRepository<Contact>().GetAsync(x => x.Id == request.Id && !x.IsDeleted);
-            var map = mapper.Map<Contact, UpdateContactCommand>(request);
-
-            await unitOfWork.GetWriteRepository<Contact>().UpdateAsync(map);
+            request.ApplyTo(contact!);
             await unitOfWork.SaveAsync();
         }
     }

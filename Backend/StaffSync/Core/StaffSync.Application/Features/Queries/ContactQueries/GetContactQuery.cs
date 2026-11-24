@@ -3,7 +3,5 @@ using StaffSync.Application.Features.Results.ContactResults;
 
 namespace StaffSync.Application.Features.Queries.ContactQueries
 {
-    public class GetContactQuery : IRequest<List<GetContactQueryResult>>
-    {
-    }
+    public class GetContactQuery : IRequest<List<ContactDto>> { }
 }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Rules.AuthRules;
-using StaffSync.Application.Interfaces.AutoMapper;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
 
@@ -17,7 +16,7 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
         private readonly UserManager<User> userManager;
         private readonly RoleManager<Role> roleManager;
         public RegisterCommandHandler(AuthRules authRules, UserManager<User> userManager, RoleManager<Role> roleManager,
-            IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, httpContextAccessor)
         {
             this.authRules = authRules;
             this.userManager = userManager;
@@ -29,7 +28,7 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
 
             await authRules.UserShouldNotBeExist(await userManager.FindByEmailAsync(request.Email));// kullanıcı var mı kontrol ediyoruz
 
-            User user = mapper.Map<User, RegisterCommand>(request); // kullanıcıyı map ediyoruz
+            User user = new() { FullName = request.FullName, Email = request.Email };
             user.UserName = request.Email;
             user.SecurityStamp = Guid.NewGuid().ToString(); // güvenlik damgası ekliyoruz
 

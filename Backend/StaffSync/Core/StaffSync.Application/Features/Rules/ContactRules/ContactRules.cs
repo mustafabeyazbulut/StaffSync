@@ -6,9 +6,15 @@ namespace StaffSync.Application.Features.Rules.ContactRules
 {
     public class ContactRules : BaseRules
     {
-        public Task ContactTelephoneNumberMustNotBeSame(IList<Contact> contacts,string requestTitle)
+        public Task ContactTelephoneNumberMustNotBeSame(IList<Contact> contacts, string requestTitle)
         {
-            if (contacts.Any(x => x.TelephoneNumber == requestTitle)) throw new ContactTelephoneNumberMustNotBeSameException(); 
+            if (contacts.Any(x => x.TelephoneNumber == requestTitle)) throw new ContactTelephoneNumberMustNotBeSameException();
+            return Task.CompletedTask;
+        }
+
+        public Task ContactMustExist(Contact? contact)
+        {
+            if (contact is null) throw new ContactNotFoundException();
             return Task.CompletedTask;
         }
     }

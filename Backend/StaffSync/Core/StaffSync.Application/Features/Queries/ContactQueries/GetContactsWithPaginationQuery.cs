@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace StaffSync.Application.Features.Queries.ContactQueries
 {
-    public class GetContactsWithPaginationQuery:IRequest<List<GetContactsWithPaginationQueryResult>>
+    public class GetContactsWithPaginationQuery:IRequest<List<ContactDto>>
     {
         public int PageNumber { get; set; }  // Varsayılan sayfa numarası
         public int PageSize { get; set; }    // Varsayılan sayfa boyutu

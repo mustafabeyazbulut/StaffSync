@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
-using StaffSync.Application.Interfaces.AutoMapper;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
 using System;
@@ -19,7 +18,7 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
     {
         private readonly UserManager<User> userManager;
         public RevokeAllCommandHandler(UserManager<User> userManager,
-            IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(mapper, unitOfWork, httpContextAccessor)
+            IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, httpContextAccessor)
         {
             this.userManager = userManager;
         }
