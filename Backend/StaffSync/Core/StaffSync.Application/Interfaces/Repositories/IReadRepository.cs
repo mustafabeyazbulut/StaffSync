@@ -19,11 +19,14 @@ namespace StaffSync.Application.Interfaces.Repositories
                    int currentPage = 1,
                    int pageSize = 3);
 
-        Task<T> GetAsync(Expression<Func<T, bool>> predicate,
+        Task<T?> GetAsync(Expression<Func<T, bool>> predicate,
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
             bool enableTracking = false);
 
         IQueryable<T> Find(Expression<Func<T, bool>> predicate, bool enableTracking = false);
+
+        // Gruplama, sayma, Select ile DTO'ya çevirme gibi sorgular için ham sorgu.
+        IQueryable<T> AsQueryable(bool enableTracking = false);
 
         Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null);
     }

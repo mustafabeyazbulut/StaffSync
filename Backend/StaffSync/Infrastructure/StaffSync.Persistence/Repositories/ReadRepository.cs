@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace StaffSync.Persistence.Repositories
 {
-    public class ReadRepository<T> : IReadRepository<T> where T : class,IEntityBase, new()
+    public class ReadRepository<T> : IReadRepository<T> where T : class, IEntityBase, new()
     {
         private readonly StaffSyncContext _context;
 
@@ -15,18 +15,22 @@ namespace StaffSync.Persistence.Repositories
         {
             _context = context;
         }
-        private DbSet<T> Table { get=>_context.Set<T>(); }
-       
+
+        private DbSet<T> Table => _context.Set<T>();
+
+        public IQueryable<T> AsQueryable(bool enableTracking = false)
+            => enableTracking ? Table : Table.AsNoTracking();
+
         public async Task<IList<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, Func<IQueryable<T>, IOrderedQueryable<T>>? orderby = null, bool enableTracking = false)
         {
-            IQueryable<T> queryable = Table;
-            if (!enableTracking) queryable = queryable.AsNoTracking(); // performans için sadece veriyi çekiyoruz
+            IQueryable<T> queryable = AsQueryable(enableTracking);
             if (include is not null) queryable = include(queryable);
-            if(predicate is not null) queryable=queryable.Where(predicate);
-            if(orderby is not null)  return await orderby(queryable).ToListAsync();
+            if (predicate is not null) queryable = queryable.Where(predicate);
+            if (orderby is not null) return await orderby(queryable).ToListAsync();
 
             return await queryable.ToListAsync();
         }
+
         public async Task<IList<T>> GetAllByPagingAsync(
                             Expression<Func<T, bool>>? predicate = null,
                             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
@@ -35,46 +39,38 @@ namespace StaffSync.Persistence.Repositories
                             int currentPage = 1,
                             int pageSize = 3)
         {
-            IQueryable<T> queryable = Table;
-
-            if (!enableTracking) queryable = queryable.AsNoTracking(); // Performans için takip edilmiyor
+            IQueryable<T> queryable = AsQueryable(enableTracking);
             if (include is not null) queryable = include(queryable);
             if (predicate is not null) queryable = queryable.Where(predicate);
 
-            // Eğer orderby sağlanmadıysa varsayılan bir sıralama uygulayın
-            if (orderby is null)
-            {
-                queryable = queryable.OrderBy(x=>x); // Örnek sıralama (ID'ye göre)
-            }
+            // Sıralamasız sayfalama sayfalar arasında kayıt tekrarlatır/kaybettirir.
+            // Sıralama verilmediyse Id'ye göre sırala (tüm entity'ler EntityBase.Id taşır).
+            IOrderedQueryable<T> ordered = orderby is not null
+                ? orderby(queryable)
+                : queryable.OrderBy(x => EF.Property<int>(x, "Id"));
 
-            return await queryable.Skip((currentPage - 1) * pageSize)
-                                   .Take(pageSize)
-                                   .ToListAsync();
+            return await ordered.Skip((currentPage - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool enableTracking = false)
+        public async Task<T?> GetAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool enableTracking = false)
         {
-            IQueryable<T> queryable = Table;
-            if (!enableTracking) queryable = queryable.AsNoTracking(); // performans için sadece veriyi çekiyoruz
+            IQueryable<T> queryable = AsQueryable(enableTracking);
             if (include is not null) queryable = include(queryable);
-            
-            //queryable.Where(predicate);
 
             return await queryable.FirstOrDefaultAsync(predicate);
         }
+
         public async Task<int> CountAsync(Expression<Func<T, bool>>? predicate = null)
         {
-            Table.AsNoTracking();
-            if(predicate is not null) Table.Where(predicate);
+            IQueryable<T> queryable = AsQueryable();
+            if (predicate is not null) queryable = queryable.Where(predicate);
 
-            return await Table.CountAsync();
+            return await queryable.CountAsync();
         }
 
         public IQueryable<T> Find(Expression<Func<T, bool>> predicate, bool enableTracking = false)
-        {
-            if(!enableTracking) Table.AsNoTracking();
-
-            return Table.Where(predicate);
-        }
+            => AsQueryable(enableTracking).Where(predicate);
     }
 }
