@@ -30,5 +30,11 @@ namespace StaffSync.Application.Features.Rules.CorrectionRules
             if (countInLastHour >= HourlyLimit) throw new TooManyCorrectionsException();
             return Task.CompletedTask;
         }
+
+        public Task CorrectionMustExist(ContactCorrection? correction)
+        {
+            if (correction is null) throw new CorrectionNotFoundException();
+            return Task.CompletedTask;
+        }
     }
 }
