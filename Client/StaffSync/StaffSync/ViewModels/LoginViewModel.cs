@@ -23,6 +23,18 @@ namespace StaffSync.ViewModels
         public partial string Password { get; set; } = "";
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(PasswordToggleIcon))]
+        public partial bool IsPasswordHidden { get; set; } = true;
+
+        public string PasswordToggleIcon => IsPasswordHidden ? Utils.LucideIcons.Eye : Utils.LucideIcons.EyeOff;
+
+        [RelayCommand]
+        private void TogglePasswordVisibility()
+        {
+            IsPasswordHidden = !IsPasswordHidden;
+        }
+
+        [ObservableProperty]
         public partial bool IsBusy { get; set; }
 
         [ObservableProperty]

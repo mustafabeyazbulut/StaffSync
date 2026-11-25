@@ -2,90 +2,155 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StaffSync.ViewModels"
+             xmlns:utils="clr-namespace:StaffSync.Utils"
              x:Class="StaffSync.Pages.PermissionPage"
              x:DataType="vm:PermissionViewModel"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PagePlainLight}, Dark={StaticResource PagePlainDark}}"
              Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="28" Padding="32,60,32,32" VerticalOptions="Center">
+    <Grid RowDefinitions="*, Auto" Padding="24,0,24,40">
 
-            <!-- AUNDE Globe Logo -->
-            <Image HeightRequest="80" HorizontalOptions="Center">
-                <Image.Source>
-                    <AppThemeBinding Light="aunde_globe_positive.svg" Dark="aunde_globe_negative.svg" />
-                </Image.Source>
-            </Image>
+        <!-- Bilgi Bloğu (Ortalanmış ve Kaydırılabilir) -->
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout VerticalOptions="Center" Spacing="24" Padding="0,20">
 
-            <VerticalStackLayout Spacing="8">
-                <Label Text="AUNDE Rehber Senkronizasyonu"
-                       FontSize="22"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-
-                <Label Text="İş arkadaşlarınız sizi aradığında ekranda isim ve unvanlarını görün."
-                       FontSize="15"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
-            </VerticalStackLayout>
-
-            <!-- Avantaj Kartları -->
-            <VerticalStackLayout Spacing="16" Margin="0,8">
-                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="16">
-                    <HorizontalStackLayout Spacing="12">
-                        <Label Text="📞" FontSize="20" VerticalOptions="Center" />
-                        <VerticalStackLayout VerticalOptions="Center">
-                            <Label Text="Arayanları Tanıyın" FontAttributes="Bold" FontSize="14"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                            <Label Text="Gelen şirket içi aramalarda kişi kartı otomatik görünür." FontSize="12"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
+                <!-- İkon Kutusu -->
+                <Border WidthRequest="88"
+                        HeightRequest="88"
+                        StrokeShape="RoundRectangle 26"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoftLight}, Dark={StaticResource BrandSoftDark}}"
+                        HorizontalOptions="Start">
+                    <Label Text="{x:Static utils:LucideIcons.RefreshCw}"
+                           FontFamily="Lucide"
+                           FontSize="44"
+                           TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
                 </Border>
 
-                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="16">
-                    <HorizontalStackLayout Spacing="12">
-                        <Label Text="🔒" FontSize="20" VerticalOptions="Center" />
-                        <VerticalStackLayout VerticalOptions="Center">
-                            <Label Text="Kişisel Rehberiniz Korunur" FontAttributes="Bold" FontSize="14"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                            <Label Text="Yalnızca şirket kişileri eklenir; kapatıldığında temizlenir." FontSize="12"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                <!-- Başlık ve Açıklama -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Gelen aramalarda kim olduğunu gör"
+                           FontSize="28"
+                           FontAttributes="Bold"
+                           LineHeight="1.2"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                    <Label Text="StaffSync, şirket rehberini telefonunun kişiler listesine ekler. Numarayı kaydetmemiş olsan da arayan çalışma arkadaşının adı ekranda görünür."
+                           FontSize="16"
+                           LineHeight="1.3"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                </VerticalStackLayout>
+
+                <!-- 3 Madde -->
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Madde 1 -->
+                    <Grid ColumnDefinitions="28,*" ColumnSpacing="14" VerticalOptions="Center">
+                        <Border Grid.Column="0"
+                                WidthRequest="28"
+                                HeightRequest="28"
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoftLight}, Dark={StaticResource BrandSoftDark}}"
+                                VerticalOptions="Start">
+                            <Label Text="{x:Static utils:LucideIcons.Check}"
+                                   FontFamily="Lucide"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Sadece şirket kişileri"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Text="Kendi kişilerine dokunulmaz; StaffSync yalnızca kendi eklediklerini günceller."
+                                   FontSize="14"
+                                   LineHeight="1.2"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
                         </VerticalStackLayout>
-                    </HorizontalStackLayout>
-                </Border>
+                    </Grid>
+
+                    <!-- Madde 2 -->
+                    <Grid ColumnDefinitions="28,*" ColumnSpacing="14" VerticalOptions="Center">
+                        <Border Grid.Column="0"
+                                WidthRequest="28"
+                                HeightRequest="28"
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoftLight}, Dark={StaticResource BrandSoftDark}}"
+                                VerticalOptions="Start">
+                            <Label Text="{x:Static utils:LucideIcons.Check}"
+                                   FontFamily="Lucide"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Kendiliğinden güncel"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Text="Biri işe girdiğinde, ayrıldığında ya da numarası değiştiğinde rehberin de güncellenir."
+                                   FontSize="14"
+                                   LineHeight="1.2"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Madde 3 -->
+                    <Grid ColumnDefinitions="28,*" ColumnSpacing="14" VerticalOptions="Center">
+                        <Border Grid.Column="0"
+                                WidthRequest="28"
+                                HeightRequest="28"
+                                StrokeShape="RoundRectangle 14"
+                                StrokeThickness="0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource BrandSoftLight}, Dark={StaticResource BrandSoftDark}}"
+                                VerticalOptions="Start">
+                            <Label Text="{x:Static utils:LucideIcons.Check}"
+                                   FontFamily="Lucide"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="İstediğin zaman kapat"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Text="Profil ekranından senkronu kapatıp eklenen kişileri kaldırabilirsin."
+                                   FontSize="14"
+                                   LineHeight="1.2"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                </VerticalStackLayout>
+
             </VerticalStackLayout>
+        </ScrollView>
 
-            <!-- Aksiyon Butonları -->
-            <VerticalStackLayout Spacing="12" Margin="0,12,0,0">
-                <Button Text="Rehbere İzin Ver ve Senkronize Et"
-                        Command="{Binding AllowSyncCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
-                        FontAttributes="Bold"
-                        FontSize="15"
-                        HeightRequest="48"
-                        CornerRadius="8" />
+        <!-- Aksiyon Butonları -->
+        <VerticalStackLayout Grid.Row="1" Spacing="8">
+            <Button Text="Rehbere erişime izin ver"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding AllowSyncCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}" />
 
-                <Button Text="Şimdi Değil"
-                        Command="{Binding SkipCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
-                        BackgroundColor="Transparent"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}"
-                        FontSize="14"
-                        HeightRequest="44" />
-            </VerticalStackLayout>
-
+            <Button Text="Şimdi değil"
+                    BackgroundColor="Transparent"
+                    HeightRequest="48"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                    Command="{Binding SkipCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}" />
         </VerticalStackLayout>
-    </ScrollView>
+
+    </Grid>
 
 </ContentPage>
