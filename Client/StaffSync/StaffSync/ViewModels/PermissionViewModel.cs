@@ -32,12 +32,21 @@ namespace StaffSync.ViewModels
                 // İzin isteği ana thread'de
                 var status = await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    var s = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
-                    if (s != PermissionStatus.Granted)
+                    var writeStatus = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
+                    if (writeStatus != PermissionStatus.Granted)
                     {
-                        s = await Permissions.RequestAsync<Permissions.ContactsWrite>();
+                        writeStatus = await Permissions.RequestAsync<Permissions.ContactsWrite>();
                     }
-                    return s;
+
+                    var readStatus = await Permissions.CheckStatusAsync<Permissions.ContactsRead>();
+                    if (readStatus != PermissionStatus.Granted)
+                    {
+                        readStatus = await Permissions.RequestAsync<Permissions.ContactsRead>();
+                    }
+
+                    return (writeStatus == PermissionStatus.Granted && readStatus == PermissionStatus.Granted)
+                        ? PermissionStatus.Granted
+                        : PermissionStatus.Denied;
                 });
 
                 if (status != PermissionStatus.Granted)

@@ -55,10 +55,11 @@ namespace StaffSync.Platforms.Android.Services
         {
             try
             {
-                var status = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
-                if (status != PermissionStatus.Granted)
+                var writeStatus = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
+                var readStatus = await Permissions.CheckStatusAsync<Permissions.ContactsRead>();
+                if (writeStatus != PermissionStatus.Granted || readStatus != PermissionStatus.Granted)
                 {
-                    _settingsService.LastSyncError = "Rehber yazma izni verilmedi.";
+                    _settingsService.LastSyncError = "Rehber okuma/yazma izni verilmedi.";
                     return 0;
                 }
 
@@ -252,21 +253,24 @@ namespace StaffSync.Platforms.Android.Services
             return map;
         }
 
-        public Task<int> GetSyncedContactsCountAsync(CancellationToken ct = default)
+        public async Task<int> GetSyncedContactsCountAsync(CancellationToken ct = default)
         {
             try
             {
+                var readStatus = await Permissions.CheckStatusAsync<Permissions.ContactsRead>();
+                if (readStatus != PermissionStatus.Granted) return 0;
+
                 var context = global::Android.App.Application.Context;
                 var resolver = context.ContentResolver;
-                if (resolver == null) return Task.FromResult(0);
+                if (resolver == null) return 0;
 
                 var deviceContacts = GetDeviceStaffSyncContacts(resolver);
-                return Task.FromResult(deviceContacts.Count);
+                return deviceContacts.Count;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"GetSyncedContactsCountAsync Android hatası: {ex}");
-                return Task.FromResult(0);
+                return 0;
             }
         }
 
