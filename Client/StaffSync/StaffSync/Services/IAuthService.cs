@@ -10,7 +10,7 @@ namespace StaffSync.Services
         Task<string?> GetAccessTokenAsync();
         Task<string?> GetRefreshTokenAsync();
         Task<bool> LoginAsync(string email, string password);
-        Task<bool> RefreshTokenAsync();
+        Task<bool> RefreshTokenAsync(string? currentAccessToken = null);
         Task LogoutAsync();
         Task<UserInfo?> GetCurrentUserAsync();
     }
@@ -22,6 +22,7 @@ namespace StaffSync.Services
         private const string ExpirationKey = "StaffSync_TokenExpiration";
 
         private readonly HttpClient _httpClient;
+        private readonly SemaphoreSlim _refreshLock = new(1, 1);
 
         public AuthService(HttpClient httpClient)
         {
@@ -31,20 +32,39 @@ namespace StaffSync.Services
         public async Task<bool> IsAuthenticatedAsync()
         {
             var token = await GetAccessTokenAsync();
-            if (string.IsNullOrEmpty(token))
+            var refreshToken = await GetRefreshTokenAsync();
+            if (string.IsNullOrEmpty(token) && string.IsNullOrEmpty(refreshToken))
                 return false;
 
             var expStr = await SecureStorage.Default.GetAsync(ExpirationKey);
-            if (DateTime.TryParse(expStr, out var exp))
+            bool isExpired = false;
+            if (long.TryParse(expStr, out var expUnix))
             {
-                // Token süresi dolduysa ve refresh token varsa yenilemeyi dene
-                if (DateTime.UtcNow >= exp)
+                var nowUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                isExpired = nowUnix >= expUnix;
+            }
+
+            if (isExpired)
+            {
+                if (string.IsNullOrEmpty(refreshToken))
+                    return false;
+
+                try
                 {
-                    return await RefreshTokenAsync();
+                    return await RefreshTokenAsync(token);
+                }
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException || ex is ApiOfflineException)
+                {
+                    // Token süresi dolmuş + refresh ağ hatası -> refresh token varsa true dön (çevrimdışı açılış çalışsın)
+                    return !string.IsNullOrEmpty(refreshToken);
+                }
+                catch
+                {
+                    return false;
                 }
             }
 
-            return true;
+            return !string.IsNullOrEmpty(token);
         }
 
         public async Task<string?> GetAccessTokenAsync()
@@ -75,9 +95,23 @@ namespace StaffSync.Services
                 if (!string.IsNullOrEmpty(result.RefreshToken))
                     await SecureStorage.Default.SetAsync(RefreshTokenKey, result.RefreshToken);
 
-                await SecureStorage.Default.SetAsync(ExpirationKey, result.Expiration.ToString("O"));
+                // Token bitiş zamanını cevaptaki expiration yerine JWT'nin exp claim'inden al
+                var expUnix = ExtractJwtExpirationUnixSeconds(result.Token);
+                if (expUnix.HasValue)
+                {
+                    await SecureStorage.Default.SetAsync(ExpirationKey, expUnix.Value.ToString());
+                }
+                else
+                {
+                    var fallbackExp = new DateTimeOffset(result.Expiration).ToUnixTimeSeconds();
+                    await SecureStorage.Default.SetAsync(ExpirationKey, fallbackExp.ToString());
+                }
 
                 return true;
+            }
+            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
+            {
+                throw new ApiOfflineException("Giriş yapılırken sunucuya ulaşılamadı.", ex);
             }
             catch
             {
@@ -85,11 +119,18 @@ namespace StaffSync.Services
             }
         }
 
-        public async Task<bool> RefreshTokenAsync()
+        public async Task<bool> RefreshTokenAsync(string? currentAccessToken = null)
         {
+            await _refreshLock.WaitAsync();
             try
             {
-                var accessToken = await SecureStorage.Default.GetAsync(AccessTokenKey);
+                var latestToken = await GetAccessTokenAsync();
+                if (!string.IsNullOrEmpty(currentAccessToken) && !string.IsNullOrEmpty(latestToken) && latestToken != currentAccessToken)
+                {
+                    return true;
+                }
+
+                var accessToken = latestToken;
                 var refreshToken = await SecureStorage.Default.GetAsync(RefreshTokenKey);
 
                 if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
@@ -101,30 +142,53 @@ namespace StaffSync.Services
                     RefreshToken = refreshToken
                 };
 
-                var response = await _httpClient.PostAsJsonAsync($"{ApiConfig.BaseUrl.TrimEnd('/')}/api/Auth/RefreshToken", request);
+                HttpResponseMessage response;
+                try
+                {
+                    response = await _httpClient.PostAsJsonAsync($"{ApiConfig.BaseUrl.TrimEnd('/')}/api/Auth/RefreshToken", request);
+                }
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
+                {
+                    // Refresh ağ hatasıyla başarısız olursa çıkış yapma, oturumu düşürme
+                    throw new ApiOfflineException("Token yenilenirken sunucuya ulaşılamadı.", ex);
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest || 
+                    response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    // Sadece refresh ucu 400/401 dönerse LogoutAsync
+                    await LogoutAsync();
+                    return false;
+                }
+
                 if (!response.IsSuccessStatusCode)
                 {
-                    await LogoutAsync();
                     return false;
                 }
 
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                if (result == null || string.IsNullOrEmpty(result.Token))
+                var result = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
+                if (result == null || string.IsNullOrEmpty(result.AccessToken))
                 {
                     await LogoutAsync();
                     return false;
                 }
 
-                await SecureStorage.Default.SetAsync(AccessTokenKey, result.Token);
+                await SecureStorage.Default.SetAsync(AccessTokenKey, result.AccessToken);
                 if (!string.IsNullOrEmpty(result.RefreshToken))
                     await SecureStorage.Default.SetAsync(RefreshTokenKey, result.RefreshToken);
 
-                await SecureStorage.Default.SetAsync(ExpirationKey, result.Expiration.ToString("O"));
+                // Token bitiş zamanını JWT'nin exp claim'inden al
+                var expUnix = ExtractJwtExpirationUnixSeconds(result.AccessToken);
+                if (expUnix.HasValue)
+                {
+                    await SecureStorage.Default.SetAsync(ExpirationKey, expUnix.Value.ToString());
+                }
+
                 return true;
             }
-            catch
+            finally
             {
-                return false;
+                _refreshLock.Release();
             }
         }
 
@@ -193,6 +257,36 @@ namespace StaffSync.Services
             {
                 return null;
             }
+        }
+
+        private static long? ExtractJwtExpirationUnixSeconds(string jwt)
+        {
+            try
+            {
+                var parts = jwt.Split('.');
+                if (parts.Length < 2)
+                    return null;
+
+                var payload = parts[1].Replace('-', '+').Replace('_', '/');
+                switch (payload.Length % 4)
+                {
+                    case 2: payload += "=="; break;
+                    case 3: payload += "="; break;
+                }
+
+                var jsonBytes = Convert.FromBase64String(payload);
+                using var doc = JsonDocument.Parse(jsonBytes);
+                if (doc.RootElement.TryGetProperty("exp", out var expProp))
+                {
+                    if (expProp.TryGetInt64(out var expUnix))
+                        return expUnix;
+                }
+            }
+            catch
+            {
+                // Parse edilemezse null
+            }
+            return null;
         }
     }
 }

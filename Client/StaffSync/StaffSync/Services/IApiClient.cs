@@ -71,9 +71,11 @@ namespace StaffSync.Services
         private async Task<HttpResponseMessage> SendWithRetryAsync(Func<Task<HttpRequestMessage>> requestFactory)
         {
             HttpResponseMessage response;
+            string? tokenUsed = null;
             try
             {
                 var request = await requestFactory();
+                tokenUsed = request.Headers.Authorization?.Parameter;
                 response = await _httpClient.SendAsync(request);
             }
             catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
@@ -86,7 +88,7 @@ namespace StaffSync.Services
                 bool refreshed = false;
                 try
                 {
-                    refreshed = await _authService.RefreshTokenAsync();
+                    refreshed = await _authService.RefreshTokenAsync(tokenUsed);
                 }
                 catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException || ex is ApiOfflineException)
                 {

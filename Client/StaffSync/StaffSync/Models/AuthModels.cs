@@ -19,6 +19,12 @@ namespace StaffSync.Models
         public string RefreshToken { get; set; } = "";
     }
 
+    public class RefreshTokenResponse
+    {
+        public string AccessToken { get; set; } = "";
+        public string RefreshToken { get; set; } = "";
+    }
+
     public class UserInfo
     {
         public string Email { get; set; } = "";
