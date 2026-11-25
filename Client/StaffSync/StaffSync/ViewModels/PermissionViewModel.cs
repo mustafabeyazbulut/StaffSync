@@ -28,20 +28,46 @@ namespace StaffSync.ViewModels
             {
                 IsBusy = true;
                 _settingsService.HasCompletedPermissionIntro = true;
-                _settingsService.IsSyncEnabled = true;
 
-                // Arka planda ilk senkronizasyonu başlat
-                _ = Task.Run(async () =>
+                // İzin isteği ana thread'de
+                var status = await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    try
+                    var s = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
+                    if (s != PermissionStatus.Granted)
                     {
-                        await _syncService.SyncContactsAsync();
+                        s = await Permissions.RequestAsync<Permissions.ContactsWrite>();
                     }
-                    catch
-                    {
-                        // Hata ayarlar servisinde güncellenir
-                    }
+                    return s;
                 });
+
+                if (status != PermissionStatus.Granted)
+                {
+                    _settingsService.IsSyncEnabled = false;
+                    if (Application.Current?.Windows[0].Page is Page page)
+                    {
+                        await page.DisplayAlertAsync(
+                            "İzin Verilmedi",
+                            "Rehber erişim izni verilmediği için şirket kişileri telefonunuza eklenemez. İstediğiniz zaman Profil sekmesinden senkronizasyonu açabilirsiniz.",
+                            "Tamam");
+                    }
+                }
+                else
+                {
+                    _settingsService.IsSyncEnabled = true;
+
+                    // Arka planda ilk senkronizasyonu başlat
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            await _syncService.SyncContactsAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"İlk senkronizasyon hatası: {ex}");
+                        }
+                    });
+                }
 
                 await Shell.Current.GoToAsync("//main/contacts");
             }

@@ -80,9 +80,10 @@ namespace StaffSync.ViewModels
                 // Kapatırken onay modalı sor (Spec kuralı)
                 if (Application.Current?.Windows[0].Page is Page page)
                 {
+                    var count = await _syncService.GetSyncedContactsCountAsync();
                     var confirmed = await page.DisplayAlertAsync(
                         "Rehber Senkronizasyonunu Kapat",
-                        "StaffSync tarafından telefonunuza eklenen şirket kişileri rehberinizden temizlenecektir. Kişisel rehberinizdeki kişilere dokunulmaz.\n\nOnaylıyor musunuz?",
+                        $"StaffSync tarafından telefonunuza eklenen {count} şirket kişisi rehberinizden kaldırılacaktır. Kişisel rehberinizdeki kişilere dokunulmaz.\n\nOnaylıyor musunuz?",
                         "Evet, Temizle ve Kapat",
                         "İptal");
 
@@ -109,7 +110,31 @@ namespace StaffSync.ViewModels
             }
             else
             {
-                // Açarken senkron başlat
+                // Açarken izin kontrolü / isteği ana thread'de
+                var status = await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    var s = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
+                    if (s != PermissionStatus.Granted)
+                    {
+                        s = await Permissions.RequestAsync<Permissions.ContactsWrite>();
+                    }
+                    return s;
+                });
+
+                if (status != PermissionStatus.Granted)
+                {
+                    _settingsService.IsSyncEnabled = false;
+                    IsSyncEnabled = false;
+                    if (Application.Current?.Windows[0].Page is Page page)
+                    {
+                        await page.DisplayAlertAsync(
+                            "İzin Verilmedi",
+                            "Rehber yazma izni verilmediği için senkronizasyon açılamadı. Lütfen cihaz ayarlarından StaffSync uygulamasına rehber izni veriniz.",
+                            "Tamam");
+                    }
+                    return;
+                }
+
                 _settingsService.IsSyncEnabled = true;
                 IsSyncEnabled = true;
                 await SyncNowAsync();
@@ -130,13 +155,24 @@ namespace StaffSync.ViewModels
 
                 if (Application.Current?.Windows[0].Page is Page page)
                 {
-                    await page.DisplayAlertAsync("Senkronizasyon", $"{count} kişi başarıyla senkronize edildi.", "Tamam");
+                    if (!string.IsNullOrEmpty(_settingsService.LastSyncError))
+                    {
+                        await page.DisplayAlertAsync("Senkronizasyon Hatası", _settingsService.LastSyncError, "Tamam");
+                    }
+                    else
+                    {
+                        await page.DisplayAlertAsync("Senkronizasyon", $"{count} kişi başarıyla senkronize edildi.", "Tamam");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _settingsService.LastSyncError = ex.Message;
                 UpdateSyncStatusText();
+                if (Application.Current?.Windows[0].Page is Page page)
+                {
+                    await page.DisplayAlertAsync("Senkronizasyon Hatası", ex.Message, "Tamam");
+                }
             }
             finally
             {

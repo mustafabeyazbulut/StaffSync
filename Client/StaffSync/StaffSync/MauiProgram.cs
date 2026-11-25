@@ -19,6 +19,7 @@ namespace StaffSync
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<IApiClient, ApiClient>();
             builder.Services.AddSingleton<IContactsService, ContactsService>();
+            builder.Services.AddSingleton<IContactCacheService, ContactCacheService>();
 
 #if ANDROID
             builder.Services.AddSingleton<IContactSyncService, Platforms.Android.Services.AndroidContactSyncService>();

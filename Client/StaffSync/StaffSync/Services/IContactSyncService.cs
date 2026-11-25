@@ -5,5 +5,6 @@ namespace StaffSync.Services
         bool IsSupported { get; }
         Task<int> SyncContactsAsync(CancellationToken ct = default);
         Task ClearSyncedContactsAsync(CancellationToken ct = default);
+        Task<int> GetSyncedContactsCountAsync(CancellationToken ct = default);
     }
 }

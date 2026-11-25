@@ -34,11 +34,17 @@ namespace StaffSync
                 }
                 else
                 {
-                    // Oturum varsa arka planda: senkron açıksa telefon senkronu
+                    // Oturum varsa arka planda: önbellek tazeleme + senkron açıksa telefon senkronu
                     _ = Task.Run(async () =>
                     {
                         try
                         {
+                            var cacheService = _serviceProvider.GetService<IContactCacheService>();
+                            if (cacheService != null)
+                            {
+                                await cacheService.RefreshCacheAsync();
+                            }
+
                             if (_settingsService.IsSyncEnabled)
                             {
                                 var syncService = _serviceProvider.GetService<IContactSyncService>();

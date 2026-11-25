@@ -150,6 +150,12 @@ namespace StaffSync.Platforms.iOS.Services
                     return 0;
                 }
 
+                var cacheService = IPlatformApplication.Current?.Services.GetService<IContactCacheService>();
+                if (cacheService != null)
+                {
+                    await cacheService.UpdateCacheWithChangesAsync(changes);
+                }
+
                 using var store = new CNContactStore();
                 var groupId = EnsureGroup(store);
                 CNGroup? groupObj = null;
@@ -341,6 +347,19 @@ namespace StaffSync.Platforms.iOS.Services
                 _settingsService.LastSyncError = $"iOS senkron hatası: {ex.Message}";
                 System.Diagnostics.Debug.WriteLine($"IosContactSyncService hatası: {ex}");
                 return 0;
+            }
+        }
+
+        public Task<int> GetSyncedContactsCountAsync(CancellationToken ct = default)
+        {
+            try
+            {
+                var map = LoadContactMap();
+                return Task.FromResult(map.Count);
+            }
+            catch
+            {
+                return Task.FromResult(0);
             }
         }
 

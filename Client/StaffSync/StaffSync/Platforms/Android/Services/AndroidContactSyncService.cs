@@ -80,6 +80,12 @@ namespace StaffSync.Platforms.Android.Services
                     return 0;
                 }
 
+                var cacheService = IPlatformApplication.Current?.Services.GetService<IContactCacheService>();
+                if (cacheService != null)
+                {
+                    await cacheService.UpdateCacheWithChangesAsync(changes);
+                }
+
                 var deviceContacts = GetDeviceStaffSyncContacts(resolver);
 
                 // 1. Silme uzlaştırması
@@ -244,6 +250,24 @@ namespace StaffSync.Platforms.Android.Services
                 }
             }
             return map;
+        }
+
+        public Task<int> GetSyncedContactsCountAsync(CancellationToken ct = default)
+        {
+            try
+            {
+                var context = global::Android.App.Application.Context;
+                var resolver = context.ContentResolver;
+                if (resolver == null) return Task.FromResult(0);
+
+                var deviceContacts = GetDeviceStaffSyncContacts(resolver);
+                return Task.FromResult(deviceContacts.Count);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetSyncedContactsCountAsync Android hatası: {ex}");
+                return Task.FromResult(0);
+            }
         }
 
         public Task ClearSyncedContactsAsync(CancellationToken ct = default)

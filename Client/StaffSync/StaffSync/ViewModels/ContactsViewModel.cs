@@ -12,16 +12,23 @@ namespace StaffSync.ViewModels
     {
         private readonly IContactsService _contactsService;
         private readonly ISettingsService _settingsService;
+        private readonly IContactCacheService _contactCacheService;
         private CancellationTokenSource? _searchCts;
+        private CancellationTokenSource? _reloadCts;
+        private int _reloadVersion = 0;
 
         private int _currentPage = 1;
         private const int PageSize = 25;
         private bool _hasMore = true;
 
-        public ContactsViewModel(IContactsService contactsService, ISettingsService settingsService)
+        public ContactsViewModel(
+            IContactsService contactsService,
+            ISettingsService settingsService,
+            IContactCacheService contactCacheService)
         {
             _contactsService = contactsService;
             _settingsService = settingsService;
+            _contactCacheService = contactCacheService;
 
             Contacts = new ObservableCollection<ContactDto>();
             ActiveDepartmentFilters = new ObservableCollection<string>();
@@ -120,6 +127,7 @@ namespace StaffSync.ViewModels
         public async Task RefreshAsync()
         {
             IsRefreshing = true;
+            _ = _contactCacheService.RefreshCacheAsync();
             await ReloadContactsAsync();
             IsRefreshing = false;
         }
@@ -127,8 +135,10 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         public async Task ReloadContactsAsync()
         {
-            if (IsBusy)
-                return;
+            _reloadCts?.Cancel();
+            _reloadCts = new CancellationTokenSource();
+            var cts = _reloadCts;
+            var currentVersion = Interlocked.Increment(ref _reloadVersion);
 
             try
             {
@@ -144,6 +154,9 @@ namespace StaffSync.ViewModels
                     company: string.IsNullOrEmpty(SelectedCompany) ? null : SelectedCompany,
                     sortBy: SortBy);
 
+                if (cts.IsCancellationRequested || currentVersion != _reloadVersion)
+                    return;
+
                 if (result != null)
                 {
                     IsOffline = false;
@@ -153,47 +166,51 @@ namespace StaffSync.ViewModels
                     Contacts.Clear();
                     foreach (var c in result.Items)
                         Contacts.Add(c);
-
-                    // Başarılı sorguda arama/filtre boşsa ana önbelleği tazele
-                    if (string.IsNullOrWhiteSpace(SearchText) && ActiveFilterCount == 0)
-                    {
-                        _ = _settingsService.SaveCachedContactsAsync(result.Items.ToList());
-                    }
                 }
             }
             catch (ApiOfflineException)
             {
-                // Sadece ağ hatasında "Çevrimdışı" bandı + önbellek
-                await LoadFromOfflineCacheAsync();
+                if (currentVersion == _reloadVersion)
+                {
+                    await LoadFromOfflineCacheAsync();
+                }
             }
             catch (ApiException ex)
             {
-                // 400/404/500'de hata mesajı göster
-                IsOffline = false;
-                if (Application.Current?.Windows[0].Page is Page page)
+                if (currentVersion == _reloadVersion)
                 {
-                    await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
+                    IsOffline = false;
+                    if (Application.Current?.Windows[0].Page is Page page)
+                    {
+                        await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                IsOffline = false;
-                System.Diagnostics.Debug.WriteLine($"Rehber yükleme hatası: {ex}");
-                if (Application.Current?.Windows[0].Page is Page page)
+                if (currentVersion == _reloadVersion)
                 {
-                    await page.DisplayAlertAsync("Hata", "Beklenmeyen bir hata oluştu: " + ex.Message, "Tamam");
+                    IsOffline = false;
+                    System.Diagnostics.Debug.WriteLine($"Rehber yükleme hatası: {ex}");
+                    if (Application.Current?.Windows[0].Page is Page page)
+                    {
+                        await page.DisplayAlertAsync("Hata", "Beklenmeyen bir hata oluştu: " + ex.Message, "Tamam");
+                    }
                 }
             }
             finally
             {
-                IsBusy = false;
+                if (currentVersion == _reloadVersion)
+                {
+                    IsBusy = false;
+                }
             }
         }
 
         private async Task LoadFromOfflineCacheAsync()
         {
             IsOffline = true;
-            var cached = await _settingsService.GetCachedContactsAsync();
+            var cached = await _contactCacheService.GetCachedContactsAsync();
             if (cached.Count > 0)
             {
                 var query = cached.AsEnumerable();
@@ -220,6 +237,11 @@ namespace StaffSync.ViewModels
                 Contacts.Clear();
                 foreach (var c in list)
                     Contacts.Add(c);
+            }
+            else
+            {
+                TotalCount = 0;
+                Contacts.Clear();
             }
         }
 
