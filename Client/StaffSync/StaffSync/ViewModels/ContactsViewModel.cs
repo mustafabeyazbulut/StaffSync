@@ -126,7 +126,10 @@ namespace StaffSync.ViewModels
                         });
                     }
                 }
-                catch (TaskCanceledException) { }
+                catch (TaskCanceledException)
+                {
+                    // Yeni tuşa basıldığı için eski arama gecikmesi iptal edildi
+                }
             }, token);
         }
 
@@ -462,9 +465,9 @@ namespace StaffSync.ViewModels
                 if (PhoneDialer.Default.IsSupported)
                     PhoneDialer.Default.Open(contact.TelephoneNumber);
             }
-            catch
+            catch (Exception ex)
             {
-                // Arama açılamadı
+                System.Diagnostics.Debug.WriteLine($"Arama açılamadı: {ex.Message}");
             }
         }
     }

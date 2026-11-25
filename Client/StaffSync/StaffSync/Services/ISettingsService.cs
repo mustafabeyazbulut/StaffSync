@@ -109,9 +109,9 @@ namespace StaffSync.Services
                 await File.WriteAllTextAsync(_cacheFilePath, json);
                 Preferences.Default.Set(CacheTimestampKey, DateTime.UtcNow.ToString("O"));
             }
-            catch
+            catch (Exception ex)
             {
-                // Önbellek yazma hatası sessizce tolere edilir
+                System.Diagnostics.Debug.WriteLine($"Önbellek kaydetme hatası: {ex.Message}");
             }
         }
 
@@ -125,8 +125,9 @@ namespace StaffSync.Services
                 var json = await File.ReadAllTextAsync(_cacheFilePath);
                 return JsonSerializer.Deserialize<List<ContactDto>>(json) ?? new List<ContactDto>();
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Önbellek okuma hatası: {ex.Message}");
                 return new List<ContactDto>();
             }
         }

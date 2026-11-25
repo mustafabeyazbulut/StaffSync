@@ -28,7 +28,10 @@ namespace StaffSync.ViewModels
                 if (PhoneDialer.Default.IsSupported)
                     PhoneDialer.Default.Open(Contact.TelephoneNumber);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Telefon araması başlatılamadı: {ex.Message}");
+            }
         }
 
         [RelayCommand]
@@ -42,7 +45,10 @@ namespace StaffSync.ViewModels
                 if (Sms.Default.IsComposeSupported)
                     await Sms.Default.ComposeAsync(new SmsMessage("", Contact.TelephoneNumber));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SMS başlatılamadı: {ex.Message}");
+            }
         }
 
         [RelayCommand]
@@ -59,7 +65,10 @@ namespace StaffSync.ViewModels
                         To = new List<string> { Contact.Email }
                     });
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"E-posta başlatılamadı: {ex.Message}");
+            }
         }
 
         [RelayCommand]
@@ -80,7 +89,10 @@ namespace StaffSync.ViewModels
                 var waUrl = $"https://wa.me/{cleanPhone}";
                 await Launcher.Default.OpenAsync(new Uri(waUrl));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"WhatsApp açılamadı: {ex.Message}");
+            }
         }
 
         [RelayCommand]

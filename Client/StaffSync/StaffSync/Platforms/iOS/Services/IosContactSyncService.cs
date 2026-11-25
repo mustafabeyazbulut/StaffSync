@@ -188,9 +188,9 @@ namespace StaffSync.Platforms.iOS.Services
                                         saveReq.DeleteContact(mutable);
                                     }
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-                                    // Bulunamayan sessizce atlanır (spec)
+                                    System.Diagnostics.Debug.WriteLine($"Silme için kişi bulunamadı (atlandı): {ex.Message}");
                                 }
                                 contactMap.Remove(staleId);
                             }
@@ -213,9 +213,9 @@ namespace StaffSync.Platforms.iOS.Services
                                     saveReq.DeleteContact(mutable);
                                 }
                             }
-                            catch
+                            catch (Exception ex)
                             {
-                                // Bulunamayan sessizce atlanır
+                                System.Diagnostics.Debug.WriteLine($"Silme için kişi bulunamadı (atlandı): {ex.Message}");
                             }
                             contactMap.Remove(deletedId);
                         }
@@ -237,8 +237,9 @@ namespace StaffSync.Platforms.iOS.Services
                             {
                                 existingContact = store.GetUnifiedContact(existingId, KeysToFetch, out _);
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                System.Diagnostics.Debug.WriteLine($"Güncelleme için kişi bulunamadı (yeni eklenecek): {ex.Message}");
                                 existingContact = null;
                             }
                         }
@@ -357,8 +358,9 @@ namespace StaffSync.Platforms.iOS.Services
                 var map = LoadContactMap();
                 return Task.FromResult(map.Count);
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"GetSyncedContactsCountAsync hatası: {ex.Message}");
                 return Task.FromResult(0);
             }
         }
@@ -383,9 +385,9 @@ namespace StaffSync.Platforms.iOS.Services
                                 saveReq.DeleteContact(mutable);
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            // Bulunamayan sessizce atlanır (spec)
+                            System.Diagnostics.Debug.WriteLine($"Silme için kişi bulunamadı (atlandı): {ex.Message}");
                         }
                     }
                     store.ExecuteSaveRequest(saveReq, out _);
