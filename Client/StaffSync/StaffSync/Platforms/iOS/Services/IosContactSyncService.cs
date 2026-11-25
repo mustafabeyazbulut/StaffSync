@@ -174,6 +174,7 @@ namespace StaffSync.Platforms.iOS.Services
                 }
 
                 var contactMap = LoadContactMap();
+                bool hasError = false;
 
                 // 1. Silme uzlaştırması
                 if (!lastSync.HasValue)
@@ -203,7 +204,13 @@ namespace StaffSync.Platforms.iOS.Services
                                 contactMap.Remove(staleId);
                             }
                         }
-                        store.ExecuteSaveRequest(saveReq, out _);
+                        if (!store.ExecuteSaveRequest(saveReq, out var delErr) || delErr != null)
+                        {
+                            var msg = delErr?.LocalizedDescription ?? "Reconciliation silme işlemi başarısız oldu.";
+                            System.Diagnostics.Debug.WriteLine($"Reconciliation silme hatası: {msg}");
+                            _settingsService.LastSyncError = $"Kişiler silinirken hata: {msg}";
+                            hasError = true;
+                        }
                     }
                 }
                 else if (changes.DeletedIds != null && changes.DeletedIds.Count > 0)
@@ -228,7 +235,13 @@ namespace StaffSync.Platforms.iOS.Services
                             contactMap.Remove(deletedId);
                         }
                     }
-                    store.ExecuteSaveRequest(saveReq, out _);
+                    if (!store.ExecuteSaveRequest(saveReq, out var delErr) || delErr != null)
+                    {
+                        var msg = delErr?.LocalizedDescription ?? "Silme işlemi başarısız oldu.";
+                        System.Diagnostics.Debug.WriteLine($"Silme isteği hatası: {msg}");
+                        _settingsService.LastSyncError = $"Kişiler silinirken hata: {msg}";
+                        hasError = true;
+                    }
                 }
 
                 // 2. Toplu Upsert (100'lük parçalar)
@@ -337,17 +350,22 @@ namespace StaffSync.Platforms.iOS.Services
                         totalCount++;
                     }
 
-                    store.ExecuteSaveRequest(saveRequest, out var saveErr);
-                    if (saveErr != null)
+                    if (!store.ExecuteSaveRequest(saveRequest, out var saveErr) || saveErr != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"CNSaveRequest hatası: {saveErr.LocalizedDescription}");
+                        var msg = saveErr?.LocalizedDescription ?? "Kişiler kaydedilemedi.";
+                        System.Diagnostics.Debug.WriteLine($"CNSaveRequest hatası: {msg}");
+                        _settingsService.LastSyncError = $"Kişiler kaydedilirken hata: {msg}";
+                        hasError = true;
                     }
                 }
 
                 SaveContactMap(contactMap);
 
-                _settingsService.LastSyncTime = changes.ServerTimeUtc;
-                _settingsService.LastSyncError = null;
+                if (!hasError)
+                {
+                    _settingsService.LastSyncTime = changes.ServerTimeUtc;
+                    _settingsService.LastSyncError = null;
+                }
 
                 return totalCount;
             }
@@ -402,7 +420,12 @@ namespace StaffSync.Platforms.iOS.Services
                             System.Diagnostics.Debug.WriteLine($"Silme için kişi bulunamadı (atlandı): {ex.Message}");
                         }
                     }
-                    store.ExecuteSaveRequest(saveReq, out _);
+                    if (!store.ExecuteSaveRequest(saveReq, out var clearErr) || clearErr != null)
+                    {
+                        var msg = clearErr?.LocalizedDescription ?? "Kişiler silinemedi.";
+                        _settingsService.LastSyncError = $"Kişiler temizlenirken hata: {msg}";
+                        System.Diagnostics.Debug.WriteLine($"Rehber temizleme hatası: {msg}");
+                    }
                 }
 
                 // Grup silme
@@ -417,7 +440,10 @@ namespace StaffSync.Platforms.iOS.Services
                         {
                             var groupDeleteReq = new CNSaveRequest();
                             groupDeleteReq.DeleteGroup(mutableGroup);
-                            store.ExecuteSaveRequest(groupDeleteReq, out _);
+                            if (!store.ExecuteSaveRequest(groupDeleteReq, out var groupErr) || groupErr != null)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Grup silme hatası: {groupErr?.LocalizedDescription}");
+                            }
                         }
                     }
                     catch (Exception ex)
