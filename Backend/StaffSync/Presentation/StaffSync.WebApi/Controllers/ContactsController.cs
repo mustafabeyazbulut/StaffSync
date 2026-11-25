@@ -72,6 +72,35 @@ namespace StaffSync.WebApi.Controllers
         public async Task<IActionResult> Changes([FromQuery] DateTime? since)
             => Ok(await _mediator.Send(new GetContactChangesQuery { Since = since }));
 
+        /// <summary>Kişinin fotoğrafı (mobil uygulama indirip önbelleğe alır).</summary>
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Photo(int id)
+        {
+            var photo = await _mediator.Send(new GetContactPhotoQuery(id));
+            return File(photo.Content, photo.ContentType);
+        }
+
+        /// <summary>Kişiye fotoğraf yükler (JPEG/PNG, en fazla 2 MB); varsa eskisinin yerine geçer.</summary>
+        [HttpPost("{id}")]
+        [Authorize(Roles = "admin")]
+        [RequestSizeLimit(3 * 1024 * 1024)]
+        public async Task<IActionResult> UploadPhoto(int id, IFormFile file)
+        {
+            using var buffer = new MemoryStream();
+            await file.CopyToAsync(buffer);
+            await _mediator.Send(new UploadContactPhotoCommand { ContactId = id, Content = buffer.ToArray() });
+            return Ok("Photo uploaded");
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> RemovePhoto(int id)
+        {
+            await _mediator.Send(new RemoveContactPhotoCommand(id));
+            return Ok("Photo removed");
+        }
+
         [HttpPost("{id}")]
         [Authorize]
         public async Task<IActionResult> ReportCorrection(int id, CreateContactCorrectionCommand command)

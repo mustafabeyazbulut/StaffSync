@@ -5,9 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using StaffSync.Application.Features.Corrections;
 using StaffSync.Application.Interfaces.Directory;
 using StaffSync.Application.Interfaces.Email;
+using StaffSync.Application.Interfaces.Photos;
 using StaffSync.Application.Interfaces.Tokens;
 using StaffSync.Infrastructure.DirectoryExport;
 using StaffSync.Infrastructure.Email;
+using StaffSync.Infrastructure.Photos;
 using StaffSync.Infrastructure.Tokens;
 using System.Text;
 
@@ -27,6 +29,9 @@ namespace StaffSync.Infrastructure
             services.Configure<DirectoryExportSettings>(configuration.GetSection("DirectoryExport"));
             services.AddSingleton<IDirectoryChangeNotifier, DirectoryChangeNotifier>();
             services.AddHostedService<DirectoryExportBackgroundService>();
+
+            services.Configure<ContactPhotoSettings>(configuration.GetSection("ContactPhotos"));
+            services.AddSingleton<IContactPhotoStore, FileContactPhotoStore>();
 
             services.AddAuthentication(opt =>
             {
