@@ -6,6 +6,10 @@ namespace StaffSync.Pages
     {
         private readonly ProfileViewModel _viewModel;
 
+        public ProfilePage() : this(IPlatformApplication.Current?.Services.GetRequiredService<ProfileViewModel>()!)
+        {
+        }
+
         public ProfilePage(ProfileViewModel viewModel)
         {
             InitializeComponent();

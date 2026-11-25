@@ -6,12 +6,14 @@ namespace StaffSync
     {
         private readonly IAuthService _authService;
         private readonly ISettingsService _settingsService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public App(IAuthService authService, ISettingsService settingsService)
+        public App(IAuthService authService, ISettingsService settingsService, IServiceProvider serviceProvider)
         {
             InitializeComponent();
             _authService = authService;
             _settingsService = settingsService;
+            _serviceProvider = serviceProvider;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
@@ -29,6 +31,28 @@ namespace StaffSync
                 else if (!_settingsService.HasCompletedPermissionIntro)
                 {
                     await Shell.Current.GoToAsync("//permission-intro");
+                }
+                else
+                {
+                    // Oturum varsa arka planda: senkron açıksa telefon senkronu
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            if (_settingsService.IsSyncEnabled)
+                            {
+                                var syncService = _serviceProvider.GetService<IContactSyncService>();
+                                if (syncService != null && syncService.IsSupported)
+                                {
+                                    await syncService.SyncContactsAsync();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Açılış senkron hatası: {ex}");
+                        }
+                    });
                 }
             };
 

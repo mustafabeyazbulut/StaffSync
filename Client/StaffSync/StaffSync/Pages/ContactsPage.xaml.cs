@@ -6,6 +6,10 @@ namespace StaffSync.Pages
     {
         private readonly ContactsViewModel _viewModel;
 
+        public ContactsPage() : this(IPlatformApplication.Current?.Services.GetRequiredService<ContactsViewModel>()!)
+        {
+        }
+
         public ContactsPage(ContactsViewModel viewModel)
         {
             InitializeComponent();

@@ -1,9 +1,5 @@
 {
   "profiles": {
-    "StaffSync (Unpackaged)": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    },
     "Windows Machine": {
       "commandName": "MsixPackage",
       "nativeDebugging": false
