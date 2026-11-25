@@ -236,6 +236,10 @@ namespace StaffSync.ViewModels
                     await LoadFromOfflineCacheAsync();
                 }
             }
+            catch (SessionExpiredException)
+            {
+                // Zaten login'e yönlendiriliyor, uyarı gösterme
+            }
             catch (ApiException ex)
             {
                 if (currentVersion == _reloadVersion)
@@ -383,6 +387,10 @@ namespace StaffSync.ViewModels
             catch (ApiOfflineException)
             {
                 IsOffline = true;
+            }
+            catch (SessionExpiredException)
+            {
+                // Zaten login'e yönlendiriliyor, uyarı gösterme
             }
             catch (ApiException ex)
             {

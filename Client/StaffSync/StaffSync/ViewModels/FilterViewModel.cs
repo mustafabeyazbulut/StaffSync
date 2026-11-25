@@ -101,6 +101,14 @@ namespace StaffSync.ViewModels
                     }
                 }
             }
+            catch (SessionExpiredException)
+            {
+                // Zaten login'e yönlendiriliyor, uyarı gösterme
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Filtre seçenekleri yükleme hatası: {ex}");
+            }
             finally
             {
                 IsBusy = false;

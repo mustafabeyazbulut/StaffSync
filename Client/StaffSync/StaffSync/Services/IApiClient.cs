@@ -24,6 +24,14 @@ namespace StaffSync.Services
         }
     }
 
+    public class SessionExpiredException : Exception
+    {
+        public SessionExpiredException(string message = "Oturum süresi doldu. Lütfen tekrar giriş yapın.")
+            : base(message)
+        {
+        }
+    }
+
     public interface IApiClient
     {
         Task<T?> GetAsync<T>(string endpoint);
@@ -111,8 +119,12 @@ namespace StaffSync.Services
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        await Shell.Current.GoToAsync("//login");
+                        if (Shell.Current != null)
+                        {
+                            await Shell.Current.GoToAsync("//login");
+                        }
                     });
+                    throw new SessionExpiredException();
                 }
             }
 

@@ -117,6 +117,10 @@ namespace StaffSync.ViewModels
                     ErrorMessage = "Bildirim gönderilemedi. Lütfen bağlantınızı kontrol edip tekrar deneyiniz.";
                 }
             }
+            catch (SessionExpiredException)
+            {
+                // Zaten login'e gidiliyor, hata mesajı gösterme
+            }
             catch (Exception ex)
             {
                 ErrorMessage = $"Bir hata oluştu: {ex.Message}";

@@ -61,6 +61,14 @@ namespace StaffSync.ViewModels
                     FilterVisibleDepartments();
                 }
             }
+            catch (SessionExpiredException)
+            {
+                // Zaten login'e yönlendiriliyor, uyarı gösterme
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Departmanlar yükleme hatası: {ex}");
+            }
             finally
             {
                 IsBusy = false;
