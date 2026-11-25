@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace StaffSync.Models
 {
@@ -7,8 +8,23 @@ namespace StaffSync.Models
         public string Name { get; set; } = "";
         public int Count { get; set; }
 
+        public string CountFormatted => $"{Count} kişi";
+
         [ObservableProperty]
         public partial bool IsSelected { get; set; }
+
+        public Action? OnSelectionChanged { get; set; }
+
+        partial void OnIsSelectedChanged(bool value)
+        {
+            OnSelectionChanged?.Invoke();
+        }
+
+        [RelayCommand]
+        private void Toggle()
+        {
+            IsSelected = !IsSelected;
+        }
     }
 
     public class ContactFilterOptionsResult

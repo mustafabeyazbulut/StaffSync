@@ -3,108 +3,240 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StaffSync.ViewModels"
              xmlns:models="clr-namespace:StaffSync.Models"
+             xmlns:utils="clr-namespace:StaffSync.Utils"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              x:Class="StaffSync.Pages.DepartmentPickerPage"
              x:DataType="vm:DepartmentPickerViewModel"
-             Title="Departman Seçimi">
+             Shell.PresentationMode="ModalAnimated"
+             ios:Page.ModalPresentationStyle="PageSheet"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageGroupedLight}, Dark={StaticResource PageGroupedDark}}"
+             Title="Departman Seç">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto">
 
-        <!-- Arama Çubuğu -->
-        <Border Grid.Row="0"
-                Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
+        <!-- Tutamak (Grabber Çizgisi) -->
+        <BoxView Grid.Row="0"
+                 WidthRequest="36"
+                 HeightRequest="5"
+                 CornerRadius="3"
+                 Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}"
+                 HorizontalOptions="Center"
+                 Margin="0,8,0,0" />
+
+        <!-- Üst Bar: ‹ Filtrele | Departman | Temizle -->
+        <Grid Grid.Row="1"
+              HeightRequest="44"
+              Padding="8,0"
+              ColumnDefinitions="Auto, *, Auto">
+            <Button Grid.Column="0"
+                    Text="‹ Filtrele"
+                    Command="{Binding GoBackCommand}"
+                    FontSize="17"
+                    TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                    BackgroundColor="Transparent"
+                    Padding="4,0"
+                    HeightRequest="44" />
+
+            <Label Grid.Column="1"
+                   Text="Departman"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+
+            <Button Grid.Column="2"
+                    Text="Temizle"
+                    Command="{Binding ClearAllCommand}"
+                    FontSize="17"
+                    TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                    BackgroundColor="Transparent"
+                    Padding="8,0"
+                    HeightRequest="44" />
+        </Grid>
+
+        <!-- Arama Kutusu (40px, radius 10, SegTrack) -->
+        <Border Grid.Row="2"
+                HeightRequest="40"
                 StrokeShape="RoundRectangle 10"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
-                Padding="12,0"
-                HeightRequest="46"
-                Margin="0,0,0,10">
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Text="🔍" FontSize="14" VerticalOptions="Center" Margin="0,0,8,0" />
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SegTrackLight}, Dark={StaticResource SegTrackDark}}"
+                Margin="16,4,16,8"
+                Padding="12,0">
+            <Grid ColumnDefinitions="Auto, *">
+                <Label Grid.Column="0"
+                       Text="{x:Static utils:LucideIcons.Search}"
+                       FontFamily="Lucide"
+                       FontSize="17"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                       VerticalOptions="Center"
+                       Margin="0,0,8,0" />
                 <Entry Grid.Column="1"
                        Text="{Binding SearchText}"
-                       Placeholder="Departman ara..."
-                       PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                       FontSize="14"
+                       Placeholder="Departman ara"
+                       PlaceholderColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                       FontSize="16"
                        ClearButtonVisibility="WhileEditing"
                        VerticalOptions="Center" />
             </Grid>
         </Border>
 
-        <!-- Seçim Araç Çubuğu -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
-            <HorizontalStackLayout Spacing="16">
-                <Button Text="Tümünü Seç"
-                        Command="{Binding SelectAllCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="{StaticResource Primary}"
-                        FontSize="13"
-                        Padding="0"
-                        HeightRequest="36" />
-                <Button Text="Temizle"
-                        Command="{Binding ClearAllCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
-                        FontSize="13"
-                        Padding="0"
-                        HeightRequest="36" />
-            </HorizontalStackLayout>
+        <!-- Listeler -->
+        <ScrollView Grid.Row="3"
+                    Padding="16,4,16,16"
+                    VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="20">
 
-            <ActivityIndicator Grid.Column="1"
-                               IsRunning="{Binding IsBusy}"
-                               IsVisible="{Binding IsBusy}"
-                               Color="{StaticResource Primary}"
-                               WidthRequest="24"
-                               HeightRequest="24" />
-        </Grid>
+                <!-- SEÇİLENLER Bölümü -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasSelected}">
+                    <Label Text="SEÇİLENLER"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                           Margin="4,0" />
 
-        <!-- Departman Listesi -->
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Departments}"
-                        SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:FilterOptionItem">
-                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
-                            StrokeThickness="1"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
-                            StrokeShape="RoundRectangle 8"
-                            Margin="0,4"
-                            Padding="12,8">
-                        <Grid ColumnDefinitions="*,Auto,Auto" HeightRequest="36">
-                            <Label Text="{Binding Name}"
-                                   FontSize="15"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                                   VerticalOptions="Center" />
+                    <Border StrokeShape="RoundRectangle 14"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                            Padding="0">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding SelectedItems}" Spacing="0">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:FilterOptionItem">
+                                    <VerticalStackLayout Spacing="0">
+                                        <Grid HeightRequest="48"
+                                              Padding="16,0"
+                                              ColumnDefinitions="*, Auto">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DepartmentPickerViewModel}}, Path=ToggleItemCommand}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
 
-                            <Label Grid.Column="1"
-                                   Text="{Binding Count, StringFormat='({0})'}"
-                                   FontSize="13"
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
-                                   VerticalOptions="Center"
-                                   Margin="0,0,12,0" />
+                                            <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                                <Label Text="{Binding Name}"
+                                                       FontSize="16"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding CountFormatted}"
+                                                       FontSize="13"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
 
-                            <CheckBox Grid.Column="2"
-                                      IsChecked="{Binding IsSelected}"
-                                      Color="{StaticResource Primary}"
-                                      VerticalOptions="Center"
-                                      MinimumHeightRequest="44"
-                                      MinimumWidthRequest="44" />
-                        </Grid>
+                                            <!-- Seçili Mavi Daire + Beyaz Check -->
+                                            <Border Grid.Column="1"
+                                                    WidthRequest="22"
+                                                    HeightRequest="22"
+                                                    StrokeShape="RoundRectangle 11"
+                                                    StrokeThickness="0"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource BrandLight}, Dark={StaticResource BrandDark}}"
+                                                    VerticalOptions="Center">
+                                                <Label Text="{x:Static utils:LucideIcons.Check}"
+                                                       FontFamily="Lucide"
+                                                       FontSize="13"
+                                                       FontAttributes="Bold"
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- 1px Ayırıcı -->
+                                        <BoxView HeightRequest="1"
+                                                 Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
                     </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                </VerticalStackLayout>
 
-        <!-- Alt Onay Butonu -->
-        <Button Grid.Row="3"
-                Text="Seçimi Onayla"
-                Command="{Binding ApplyCommand}"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
-                FontAttributes="Bold"
-                FontSize="15"
-                HeightRequest="48"
-                CornerRadius="8"
-                Margin="0,12,0,0" />
+                <!-- TÜM DEPARTMANLAR / SONUÇLAR Bölümü -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{Binding RestTitle}"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                           Margin="4,0" />
+
+                    <Border StrokeShape="RoundRectangle 14"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                            Padding="0">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RemainingItems}" Spacing="0">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:FilterOptionItem">
+                                    <VerticalStackLayout Spacing="0">
+                                        <Grid HeightRequest="48"
+                                              Padding="16,0"
+                                              ColumnDefinitions="*, Auto">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DepartmentPickerViewModel}}, Path=ToggleItemCommand}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+
+                                            <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                                <Label Text="{Binding Name}"
+                                                       FontSize="16"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding CountFormatted}"
+                                                       FontSize="13"
+                                                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                                                       VerticalOptions="Center" />
+                                            </HorizontalStackLayout>
+
+                                            <!-- Seçili Olmayan Gri Halka (2px Ring) -->
+                                            <Border Grid.Column="1"
+                                                    WidthRequest="22"
+                                                    HeightRequest="22"
+                                                    StrokeShape="RoundRectangle 11"
+                                                    StrokeThickness="2"
+                                                    Stroke="{AppThemeBinding Light={StaticResource RingLight}, Dark={StaticResource RingDark}}"
+                                                    BackgroundColor="Transparent"
+                                                    VerticalOptions="Center" />
+                                        </Grid>
+
+                                        <!-- 1px Ayırıcı -->
+                                        <BoxView HeightRequest="1"
+                                                 Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Eşleşme Yok Uyarısı -->
+                    <Label Text="Bu adla bir departman yok."
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                           Margin="16,4"
+                           IsVisible="{Binding NoMatch}" />
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ALT ÇUBUK: Tamam / N departman seçildi -->
+        <Border Grid.Row="4"
+                StrokeThickness="0"
+                Padding="16,12,16,28">
+            <VerticalStackLayout Spacing="8">
+                <!-- Üst 1px Çizgi -->
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}"
+                         Margin="-16,-12,-16,0" />
+
+                <Button Text="{Binding DoneLabel}"
+                        Command="{Binding ApplyCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        HeightRequest="52"
+                        CornerRadius="14"
+                        FontSize="17"
+                        FontAttributes="Bold" />
+            </VerticalStackLayout>
+        </Border>
 
     </Grid>
 

@@ -7,6 +7,14 @@ using System.Collections.ObjectModel;
 
 namespace StaffSync.ViewModels
 {
+    public partial class CompanyFilterItem : ObservableObject
+    {
+        public string Name { get; set; } = "";
+
+        [ObservableProperty]
+        public partial bool IsSelected { get; set; }
+    }
+
     public partial class FilterViewModel : ObservableObject, IQueryAttributable
     {
         private readonly IContactsService _contactsService;
@@ -14,7 +22,7 @@ namespace StaffSync.ViewModels
         public FilterViewModel(IContactsService contactsService)
         {
             _contactsService = contactsService;
-            Companies = new ObservableCollection<string>();
+            Companies = new ObservableCollection<CompanyFilterItem>();
             SelectedDepartments = new List<string>();
 
             // Departman seçim ekranından dönen mesajı dinle
@@ -22,10 +30,11 @@ namespace StaffSync.ViewModels
             {
                 SelectedDepartments = m.Value;
                 UpdateDepartmentsSummary();
+                UpdateApplyButtonText();
             });
         }
 
-        public ObservableCollection<string> Companies { get; }
+        public ObservableCollection<CompanyFilterItem> Companies { get; }
 
         [ObservableProperty]
         public partial List<string> SelectedDepartments { get; set; }
@@ -34,29 +43,53 @@ namespace StaffSync.ViewModels
         public partial string SelectedDepartmentsSummary { get; set; } = "Tümü";
 
         [ObservableProperty]
-        public partial string? SelectedCompany { get; set; }
+        public partial string DepartmentCountText { get; set; } = "Tümü";
+
+        [ObservableProperty]
+        public partial string? SelectedCompany { get; set; } = "Tümü";
 
         [ObservableProperty]
         public partial string SortBy { get; set; } = "Name";
 
         [ObservableProperty]
-        public partial bool IsSortByName { get; set; } = true;
+        public partial int SelectedSortIndex { get; set; } = 0;
 
         [ObservableProperty]
-        public partial bool IsSortByDepartment { get; set; }
-
-        [ObservableProperty]
-        public partial bool IsSortByJobTitle { get; set; }
-
-        partial void OnSortByChanged(string value)
-        {
-            IsSortByName = string.Equals(value, "Name", StringComparison.OrdinalIgnoreCase);
-            IsSortByDepartment = string.Equals(value, "Department", StringComparison.OrdinalIgnoreCase);
-            IsSortByJobTitle = string.Equals(value, "JobTitle", StringComparison.OrdinalIgnoreCase);
-        }
+        public partial string ApplyButtonText { get; set; } = "Sonuçları göster";
 
         [ObservableProperty]
         public partial bool IsBusy { get; set; }
+
+        partial void OnSelectedSortIndexChanged(int value)
+        {
+            SortBy = value switch
+            {
+                1 => "Department",
+                2 => "JobTitle",
+                _ => "Name"
+            };
+            UpdateApplyButtonText();
+        }
+
+        partial void OnSortByChanged(string value)
+        {
+            SelectedSortIndex = value?.ToLowerInvariant() switch
+            {
+                "department" => 1,
+                "jobtitle" => 2,
+                _ => 0
+            };
+            UpdateApplyButtonText();
+        }
+
+        partial void OnSelectedCompanyChanged(string? value)
+        {
+            foreach (var c in Companies)
+            {
+                c.IsSelected = string.Equals(c.Name, value, StringComparison.OrdinalIgnoreCase);
+            }
+            UpdateApplyButtonText();
+        }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
@@ -68,12 +101,18 @@ namespace StaffSync.ViewModels
 
             if (query.TryGetValue("SelectedCompany", out var compObj) && compObj is string comp)
             {
-                SelectedCompany = string.IsNullOrEmpty(comp) ? "Tüm Şirketler" : comp;
+                SelectedCompany = string.IsNullOrEmpty(comp) ? "Tümü" : comp;
             }
 
             if (query.TryGetValue("SortBy", out var sortObj) && sortObj is string sort)
             {
                 SortBy = string.IsNullOrEmpty(sort) ? "Name" : sort;
+                SelectedSortIndex = SortBy.ToLowerInvariant() switch
+                {
+                    "department" => 1,
+                    "jobtitle" => 2,
+                    _ => 0
+                };
             }
 
             _ = LoadFilterOptionsAsync();
@@ -88,22 +127,33 @@ namespace StaffSync.ViewModels
                 if (options != null)
                 {
                     Companies.Clear();
-                    Companies.Add("Tüm Şirketler");
+                    Companies.Add(new CompanyFilterItem
+                    {
+                        Name = "Tümü",
+                        IsSelected = string.IsNullOrEmpty(SelectedCompany) || SelectedCompany == "Tümü" || SelectedCompany == "Tüm Şirketler"
+                    });
+
                     foreach (var c in options.Companies)
                     {
                         if (!string.IsNullOrWhiteSpace(c.Name))
-                            Companies.Add(c.Name);
+                        {
+                            Companies.Add(new CompanyFilterItem
+                            {
+                                Name = c.Name,
+                                IsSelected = string.Equals(SelectedCompany, c.Name, StringComparison.OrdinalIgnoreCase)
+                            });
+                        }
                     }
 
-                    if (string.IsNullOrEmpty(SelectedCompany) || !Companies.Contains(SelectedCompany))
+                    if (string.IsNullOrEmpty(SelectedCompany) || SelectedCompany == "Tüm Şirketler")
                     {
-                        SelectedCompany = "Tüm Şirketler";
+                        SelectedCompany = "Tümü";
                     }
                 }
             }
             catch (SessionExpiredException)
             {
-                // Zaten login'e yönlendiriliyor, uyarı gösterme
+                // Zaten login'e yönlendiriliyor
             }
             catch (Exception ex)
             {
@@ -112,6 +162,7 @@ namespace StaffSync.ViewModels
             finally
             {
                 IsBusy = false;
+                UpdateApplyButtonText();
             }
         }
 
@@ -121,8 +172,35 @@ namespace StaffSync.ViewModels
             {
                 0 => "Tümü",
                 1 => SelectedDepartments[0],
-                _ => $"{SelectedDepartments.Count} Departman Seçildi"
+                _ => $"{SelectedDepartments.Count} departman seçildi"
             };
+
+            DepartmentCountText = SelectedDepartments.Count == 0 ? "Tümü" : SelectedDepartments.Count.ToString();
+        }
+
+        private void UpdateApplyButtonText()
+        {
+            int filterCount = 0;
+            if (SelectedDepartments.Count > 0)
+                filterCount += SelectedDepartments.Count;
+            if (!string.IsNullOrEmpty(SelectedCompany) && SelectedCompany != "Tümü" && SelectedCompany != "Tüm Şirketler")
+                filterCount += 1;
+            if (SortBy != "Name")
+                filterCount += 1;
+
+            ApplyButtonText = filterCount switch
+            {
+                0 => "Sonuçları göster",
+                1 => "Sonuçları göster · 1 filtre",
+                _ => $"Sonuçları göster · {filterCount} filtre"
+            };
+        }
+
+        [RelayCommand]
+        public void SelectCompany(CompanyFilterItem? item)
+        {
+            if (item == null) return;
+            SelectedCompany = item.Name;
         }
 
         [RelayCommand]
@@ -139,14 +217,16 @@ namespace StaffSync.ViewModels
         {
             SelectedDepartments.Clear();
             UpdateDepartmentsSummary();
-            SelectedCompany = "Tüm Şirketler";
+            SelectedCompany = "Tümü";
             SortBy = "Name";
+            SelectedSortIndex = 0;
+            UpdateApplyButtonText();
         }
 
         [RelayCommand]
         private async Task ApplyFiltersAsync()
         {
-            var company = (SelectedCompany == "Tüm Şirketler" || string.IsNullOrEmpty(SelectedCompany))
+            var company = (SelectedCompany == "Tümü" || SelectedCompany == "Tüm Şirketler" || string.IsNullOrEmpty(SelectedCompany))
                 ? null
                 : SelectedCompany;
 
@@ -158,7 +238,10 @@ namespace StaffSync.ViewModels
             };
 
             WeakReferenceMessenger.Default.Send(new FilterChangedMessage(criteria));
-            await Shell.Current.GoToAsync("..");
+            if (Shell.Current.Navigation.ModalStack.Count > 0)
+                await Shell.Current.Navigation.PopModalAsync();
+            else
+                await Shell.Current.GoToAsync("..");
         }
     }
 }

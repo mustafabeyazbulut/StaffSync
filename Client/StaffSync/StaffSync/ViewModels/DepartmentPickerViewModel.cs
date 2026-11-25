@@ -16,16 +16,30 @@ namespace StaffSync.ViewModels
         public DepartmentPickerViewModel(IContactsService contactsService)
         {
             _contactsService = contactsService;
-            Departments = new ObservableCollection<FilterOptionItem>();
+            SelectedItems = new ObservableCollection<FilterOptionItem>();
+            RemainingItems = new ObservableCollection<FilterOptionItem>();
         }
 
-        public ObservableCollection<FilterOptionItem> Departments { get; }
+        public ObservableCollection<FilterOptionItem> SelectedItems { get; }
+        public ObservableCollection<FilterOptionItem> RemainingItems { get; }
 
         [ObservableProperty]
         public partial string SearchText { get; set; } = "";
 
         [ObservableProperty]
         public partial bool IsBusy { get; set; }
+
+        [ObservableProperty]
+        public partial bool HasSelected { get; set; }
+
+        [ObservableProperty]
+        public partial bool NoMatch { get; set; }
+
+        [ObservableProperty]
+        public partial string RestTitle { get; set; } = "TÜM DEPARTMANLAR";
+
+        [ObservableProperty]
+        public partial string DoneLabel { get; set; } = "Tümünü göster";
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
@@ -40,7 +54,7 @@ namespace StaffSync.ViewModels
 
         partial void OnSearchTextChanged(string value)
         {
-            FilterVisibleDepartments();
+            FilterLists();
         }
 
         public async Task LoadDepartmentsAsync(List<string> initiallySelected)
@@ -51,19 +65,24 @@ namespace StaffSync.ViewModels
                 var options = await _contactsService.GetFilterOptionsAsync();
                 if (options != null)
                 {
-                    _allDepartments = options.Departments.Select(d => new FilterOptionItem
+                    _allDepartments = options.Departments.Select(d =>
                     {
-                        Name = d.Name,
-                        Count = d.Count,
-                        IsSelected = initiallySelected.Contains(d.Name)
-                    }).OrderByDescending(d => d.IsSelected).ThenBy(d => d.Name).ToList();
+                        var item = new FilterOptionItem
+                        {
+                            Name = d.Name,
+                            Count = d.Count,
+                            IsSelected = initiallySelected.Contains(d.Name)
+                        };
+                        item.OnSelectionChanged = OnItemSelectionChanged;
+                        return item;
+                    }).ToList();
 
-                    FilterVisibleDepartments();
+                    FilterLists();
                 }
             }
             catch (SessionExpiredException)
             {
-                // Zaten login'e yönlendiriliyor, uyarı gösterme
+                // Zaten login'e yönlendiriliyor
             }
             catch (Exception ex)
             {
@@ -75,27 +94,54 @@ namespace StaffSync.ViewModels
             }
         }
 
-        private void FilterVisibleDepartments()
+        private void OnItemSelectionChanged()
         {
-            Departments.Clear();
-            var query = _allDepartments.AsEnumerable();
-            if (!string.IsNullOrWhiteSpace(SearchText))
+            FilterLists();
+        }
+
+        private void FilterLists()
+        {
+            SelectedItems.Clear();
+            RemainingItems.Clear();
+
+            var search = SearchText?.Trim().ToLowerInvariant() ?? "";
+            bool isSearching = !string.IsNullOrWhiteSpace(search);
+
+            RestTitle = isSearching ? "SONUÇLAR" : "TÜM DEPARTMANLAR";
+
+            var filtered = isSearching
+                ? _allDepartments.Where(d => d.Name.ToLowerInvariant().Contains(search)).ToList()
+                : _allDepartments;
+
+            foreach (var d in filtered)
             {
-                var s = SearchText.Trim().ToLowerInvariant();
-                query = query.Where(d => d.Name.ToLowerInvariant().Contains(s));
+                if (d.IsSelected)
+                {
+                    SelectedItems.Add(d);
+                }
+                else
+                {
+                    RemainingItems.Add(d);
+                }
             }
 
-            foreach (var item in query)
+            HasSelected = SelectedItems.Count > 0;
+            NoMatch = isSearching && filtered.Count == 0;
+
+            int count = _allDepartments.Count(d => d.IsSelected);
+            DoneLabel = count switch
             {
-                Departments.Add(item);
-            }
+                0 => "Tümünü göster",
+                1 => "1 departman seçildi",
+                _ => $"{count} departman seçildi"
+            };
         }
 
         [RelayCommand]
-        private void SelectAll()
+        public void ToggleItem(FilterOptionItem? item)
         {
-            foreach (var d in _allDepartments)
-                d.IsSelected = true;
+            if (item == null) return;
+            item.IsSelected = !item.IsSelected;
         }
 
         [RelayCommand]
@@ -103,6 +149,16 @@ namespace StaffSync.ViewModels
         {
             foreach (var d in _allDepartments)
                 d.IsSelected = false;
+            FilterLists();
+        }
+
+        [RelayCommand]
+        private async Task GoBackAsync()
+        {
+            if (Shell.Current.Navigation.ModalStack.Count > 0)
+                await Shell.Current.Navigation.PopModalAsync();
+            else
+                await Shell.Current.GoToAsync("..");
         }
 
         [RelayCommand]
@@ -114,7 +170,7 @@ namespace StaffSync.ViewModels
                 .ToList();
 
             WeakReferenceMessenger.Default.Send(new DepartmentsSelectedMessage(selectedNames));
-            await Shell.Current.GoToAsync("..");
+            await GoBackAsync();
         }
     }
 }
