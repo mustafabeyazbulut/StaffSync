@@ -101,13 +101,14 @@ namespace StaffSync.Platforms.Android.Services
 
                     if (staleRawIds.Count > 0)
                     {
-                        foreach (var chunk in staleRawIds.Chunk(100))
+                        foreach (var chunk in staleRawIds.Chunk(50))
                         {
                             var deleteOps = new List<ContentProviderOperation>();
                             foreach (var rawId in chunk)
                             {
                                 deleteOps.Add(ContentProviderOperation.NewDelete(BuildSyncAdapterUri(ContactsContract.RawContacts.ContentUri!))
                                     .WithSelection($"{ContactsContract.RawContacts.InterfaceConsts.Id} = ?", new[] { rawId.ToString() })
+                                    .WithYieldAllowed(true)
                                     .Build());
                             }
                             resolver.ApplyBatch(ContactsContract.Authority, deleteOps);
@@ -117,7 +118,7 @@ namespace StaffSync.Platforms.Android.Services
                 else if (changes.DeletedIds != null && changes.DeletedIds.Count > 0)
                 {
                     // Artımlı senkronda gelen silinenler
-                    foreach (var chunk in changes.DeletedIds.Chunk(100))
+                    foreach (var chunk in changes.DeletedIds.Chunk(50))
                     {
                         var deleteOps = new List<ContentProviderOperation>();
                         foreach (var id in chunk)
@@ -125,33 +126,42 @@ namespace StaffSync.Platforms.Android.Services
                             deleteOps.Add(ContentProviderOperation.NewDelete(BuildSyncAdapterUri(ContactsContract.RawContacts.ContentUri!))
                                 .WithSelection($"{ContactsContract.RawContacts.InterfaceConsts.AccountType} = ? AND {ContactsContract.RawContacts.InterfaceConsts.SourceId} = ?",
                                                new[] { AccountType, id.ToString() })
+                                .WithYieldAllowed(true)
                                 .Build());
                         }
                         resolver.ApplyBatch(ContactsContract.Authority, deleteOps);
                     }
                 }
 
-                // 2. Toplu Upsert (100 kişilik parçalar halinde)
+                // 2. Toplu Upsert (50 kişilik parçalar halinde)
                 int totalCount = 0;
-                foreach (var batch in changes.Upserted.Chunk(100))
+                foreach (var batch in changes.Upserted.Chunk(50))
                 {
                     var ops = new List<ContentProviderOperation>();
                     foreach (var contact in batch)
                     {
-                        if (deviceContacts.TryGetValue(contact.Id, out var existingRawId))
+                        bool hasDelete = deviceContacts.TryGetValue(contact.Id, out var existingRawId);
+                        if (hasDelete)
                         {
                             ops.Add(ContentProviderOperation.NewDelete(BuildSyncAdapterUri(ContactsContract.RawContacts.ContentUri!))
                                 .WithSelection($"{ContactsContract.RawContacts.InterfaceConsts.Id} = ?", new[] { existingRawId.ToString() })
+                                .WithYieldAllowed(true)
                                 .Build());
                         }
 
                         int rawIndex = ops.Count;
-                        ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.RawContacts.ContentUri!))
+                        var rawInsert = ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.RawContacts.ContentUri!))
                             .WithValue(ContactsContract.RawContacts.InterfaceConsts.AccountName, AccountName)
                             .WithValue(ContactsContract.RawContacts.InterfaceConsts.AccountType, AccountType)
                             .WithValue(ContactsContract.RawContacts.InterfaceConsts.SourceId, contact.Id.ToString())
-                            .WithValue(ContactsContract.RawContacts.InterfaceConsts.Sync1, contact.Id.ToString())
-                            .Build());
+                            .WithValue(ContactsContract.RawContacts.InterfaceConsts.Sync1, contact.Id.ToString());
+
+                        if (!hasDelete)
+                        {
+                            rawInsert.WithYieldAllowed(true);
+                        }
+
+                        ops.Add(rawInsert.Build());
 
                         // İsim
                         ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.Data.ContentUri!))
