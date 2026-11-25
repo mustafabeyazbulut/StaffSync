@@ -92,7 +92,7 @@ namespace StaffSync.Platforms.Android.Services
                 var cacheService = IPlatformApplication.Current?.Services.GetService<IContactCacheService>();
                 if (cacheService != null)
                 {
-                    await cacheService.UpdateCacheWithChangesAsync(changes);
+                    await cacheService.RefreshCacheAsync(ct);
                 }
 
                 var deviceContacts = GetDeviceStaffSyncContacts(resolver);
