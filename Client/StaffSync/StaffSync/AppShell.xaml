@@ -4,19 +4,37 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:StaffSync.Pages"
+    xmlns:utils="clr-namespace:StaffSync.Utils"
+    Shell.NavBarIsVisible="False"
     Title="StaffSync">
 
     <!-- Ana Sekmeler (TabBar - İlk öğe: giriş yapmış kullanıcı doğrudan burayı görür) -->
     <TabBar Route="main">
         <Tab Title="Rehber" Route="contacts">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="Lucide"
+                    Glyph="{x:Static utils:LucideIcons.Users}"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+            </Tab.Icon>
             <ShellContent
                 Title="Rehber"
+                Shell.NavBarIsVisible="False"
                 ContentTemplate="{DataTemplate pages:ContactsPage}"
                 Route="contactsPage" />
         </Tab>
         <Tab Title="Profil" Route="profile">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="Lucide"
+                    Glyph="{x:Static utils:LucideIcons.User}"
+                    Size="24"
+                    Color="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+            </Tab.Icon>
             <ShellContent
                 Title="Profil"
+                Shell.NavBarIsVisible="False"
                 ContentTemplate="{DataTemplate pages:ProfilePage}"
                 Route="profilePage" />
         </Tab>

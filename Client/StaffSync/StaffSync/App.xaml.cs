@@ -21,6 +21,13 @@ namespace StaffSync
             var window = new Window(new AppShell());
             _settingsService.ApplyTheme();
 
+            Application.Current!.RequestedThemeChanged += (s, e) =>
+            {
+#if ANDROID
+                (Microsoft.Maui.ApplicationModel.Platform.CurrentActivity as MainActivity)?.UpdateStatusBar();
+#endif
+            };
+
             window.Created += async (s, e) =>
             {
                 var isAuthenticated = await _authService.IsAuthenticatedAsync();

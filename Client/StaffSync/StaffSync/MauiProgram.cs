@@ -11,7 +11,24 @@ namespace StaffSync
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>();
+                .UseMauiApp<App>()
+                .ConfigureFonts(fonts =>
+                {
+                    fonts.AddFont("lucide.ttf", "Lucide");
+                });
+
+#if ANDROID
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+                handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+            });
+            Microsoft.Maui.Handlers.EditorHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+                handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+            });
+#endif
 
             // Servis Kayıtları
             builder.Services.AddSingleton(sp => new HttpClient { Timeout = TimeSpan.FromSeconds(30) });

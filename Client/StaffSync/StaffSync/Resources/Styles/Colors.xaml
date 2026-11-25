@@ -4,35 +4,115 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- AUNDE Brand Colors -->
+    <!-- Design Token Colors (Light / Dark) -->
+    <!-- PageGrouped (detay, profil, sheet'ler) -->
+    <Color x:Key="PageGroupedLight">#F2F4F8</Color>
+    <Color x:Key="PageGroupedDark">#0B1220</Color>
+    <Color x:Key="SheetGroupedDark">#0F1729</Color>
+
+    <!-- PagePlain (rehber, giriş, izin) -->
+    <Color x:Key="PagePlainLight">#FFFFFF</Color>
+    <Color x:Key="PagePlainDark">#0B1220</Color>
+
+    <!-- Card -->
+    <Color x:Key="CardLight">#FFFFFF</Color>
+    <Color x:Key="CardDark">#172033</Color>
+
+    <!-- Surface (arama kutusu, filtre butonu) -->
+    <Color x:Key="SurfaceLight">#F1F3F7</Color>
+    <Color x:Key="SurfaceDark">#172033</Color>
+
+    <!-- InputBg (giriş alanları) -->
+    <Color x:Key="InputBgLight">#F7F8FB</Color>
+    <Color x:Key="InputBgDark">#172033</Color>
+
+    <!-- SegTrack / SegOn -->
+    <Color x:Key="SegTrackLight">#E4E7EE</Color>
+    <Color x:Key="SegTrackDark">#0B1220</Color>
+    <Color x:Key="SegOnLight">#FFFFFF</Color>
+    <Color x:Key="SegOnDark">#2A3650</Color>
+
+    <!-- TextPrimary -->
+    <Color x:Key="TextPrimaryLight">#1E2D48</Color>
+    <Color x:Key="TextPrimaryDark">#EEF2F8</Color>
+
+    <!-- TextMuted -->
+    <Color x:Key="TextMutedLight">#5B667A</Color>
+    <Color x:Key="TextMutedDark">#9AA6BA</Color>
+
+    <!-- Line -->
+    <Color x:Key="LineLight">#E6E9EF</Color>
+    <Color x:Key="LineDark">#25304A</Color>
+
+    <!-- InputBorder -->
+    <Color x:Key="InputBorderLight">#DDE1E8</Color>
+    <Color x:Key="InputBorderDark">#25304A</Color>
+
+    <!-- Brand -->
+    <Color x:Key="Brand">#233C82</Color>
+    <Color x:Key="BrandLight">#233C82</Color>
+    <Color x:Key="BrandDark">#233C82</Color>
+
+    <!-- BrandSoft -->
+    <Color x:Key="BrandSoftLight">#E1EBFF</Color>
+    <Color x:Key="BrandSoftDark">#1A2A4D</Color>
+
+    <!-- BrandText (link, seçili ikon) -->
+    <Color x:Key="BrandTextLight">#233C82</Color>
+    <Color x:Key="BrandTextDark">#8FB0FF</Color>
+
+    <!-- TabBarBg -->
+    <Color x:Key="TabBarBgLight">#FAFBFD</Color>
+    <Color x:Key="TabBarBgDark">#0F1729</Color>
+
+    <!-- Danger -->
+    <Color x:Key="DangerLight">#C62828</Color>
+    <Color x:Key="DangerDark">#FF8A80</Color>
+    <Color x:Key="Danger">#C62828</Color>
+
+    <!-- Ok / OkSoft -->
+    <Color x:Key="OkLight">#1B7F4B</Color>
+    <Color x:Key="OkDark">#5FD39A</Color>
+    <Color x:Key="OkSoftLight">#E3F4EA</Color>
+    <Color x:Key="OkSoftDark">#123526</Color>
+
+    <!-- Ring (boş seçim halkası) -->
+    <Color x:Key="RingLight">#B4BBC8</Color>
+    <Color x:Key="RingDark">#4A5570</Color>
+
+    <!-- SelectedTint (seçili satır zemini) -->
+    <Color x:Key="SelectedTintLight">#F3F6FC</Color>
+    <Color x:Key="SelectedTintDark">#16223D</Color>
+
+    <!-- Disabled / DisabledText -->
+    <Color x:Key="DisabledLight">#D5DAE3</Color>
+    <Color x:Key="DisabledDark">#2A3650</Color>
+    <Color x:Key="DisabledTextLight">#5B667A</Color>
+    <Color x:Key="DisabledTextDark">#7C879C</Color>
+
+    <!-- Utility Colors -->
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+    <Color x:Key="Transparent">#00000000</Color>
+
+    <!-- Compatibility aliases -->
     <Color x:Key="AundeBlue">#233C82</Color>
     <Color x:Key="AundeDarkBlue">#1E325A</Color>
     <Color x:Key="AundeDeepBlue">#1E2D48</Color>
     <Color x:Key="AundeMidBlue">#A0B9EB</Color>
     <Color x:Key="AundeLightBlue">#E1EBFF</Color>
-
-    <!-- Dark Mode Palette -->
     <Color x:Key="DarkBg">#0B1220</Color>
     <Color x:Key="DarkCard">#172033</Color>
     <Color x:Key="DarkAccent">#8FB0FF</Color>
     <Color x:Key="OffBlack">#0B1220</Color>
-
-    <!-- Compatibility aliases -->
     <Color x:Key="MidnightBlue">#1E2D48</Color>
     <Color x:Key="Gray950">#0B0F19</Color>
-
-    <!-- Semantic Theme Colors -->
     <Color x:Key="Primary">#233C82</Color>
     <Color x:Key="PrimaryDark">#8FB0FF</Color>
     <Color x:Key="PrimaryDarkText">#0B1220</Color>
     <Color x:Key="Secondary">#E1EBFF</Color>
     <Color x:Key="SecondaryDarkText">#A0B9EB</Color>
-    <Color x:Key="Danger">#E12341</Color>
-    <Color x:Key="Success">#10B981</Color>
-
-    <Color x:Key="White">#FFFFFF</Color>
-    <Color x:Key="Black">#000000</Color>
-
+    <Color x:Key="Success">#1B7F4B</Color>
     <Color x:Key="Gray100">#F3F4F6</Color>
     <Color x:Key="Gray200">#E8E8EA</Color>
     <Color x:Key="Gray300">#B4B9C3</Color>
@@ -43,13 +123,7 @@
     <Color x:Key="Gray800">#1F2937</Color>
     <Color x:Key="Gray900">#111827</Color>
 
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Brand}"/>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
-    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
-    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
-    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
-    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
-    <SolidColorBrush x:Key="Gray700Brush" Color="{StaticResource Gray700}"/>
 </ResourceDictionary>
