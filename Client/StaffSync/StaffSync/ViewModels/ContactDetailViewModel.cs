@@ -9,11 +9,43 @@ namespace StaffSync.ViewModels
         [ObservableProperty]
         public partial ContactDto? Contact { get; set; }
 
+        public bool HasOffice => !string.IsNullOrWhiteSpace(Contact?.Office);
+        public bool HasCompany => !string.IsNullOrWhiteSpace(Contact?.Company);
+        public bool HasManager => !string.IsNullOrWhiteSpace(Contact?.ManagerName);
+        public bool HasDepartment => !string.IsNullOrWhiteSpace(Contact?.Department);
+
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("Contact", out var cObj) && cObj is ContactDto c)
             {
                 Contact = c;
+                OnPropertyChanged(nameof(HasOffice));
+                OnPropertyChanged(nameof(HasCompany));
+                OnPropertyChanged(nameof(HasManager));
+                OnPropertyChanged(nameof(HasDepartment));
+            }
+        }
+
+        [RelayCommand]
+        private async Task GoBackAsync()
+        {
+            await Shell.Current.GoToAsync("..");
+        }
+
+        [RelayCommand]
+        private void CallShortCode()
+        {
+            if (Contact == null || string.IsNullOrWhiteSpace(Contact.Home))
+                return;
+
+            try
+            {
+                if (PhoneDialer.Default.IsSupported)
+                    PhoneDialer.Default.Open(Contact.Home);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Dahili arama başlatılamadı: {ex.Message}");
             }
         }
 
