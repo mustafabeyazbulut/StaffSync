@@ -37,7 +37,7 @@ namespace StaffSync.ViewModels
         public partial string? SelectedCompany { get; set; }
 
         [ObservableProperty]
-        public partial string SortBy { get; set; } = "name";
+        public partial string SortBy { get; set; } = "Name";
 
         [ObservableProperty]
         public partial bool IsBusy { get; set; }
@@ -57,7 +57,7 @@ namespace StaffSync.ViewModels
 
             if (query.TryGetValue("SortBy", out var sortObj) && sortObj is string sort)
             {
-                SortBy = string.IsNullOrEmpty(sort) ? "name" : sort;
+                SortBy = string.IsNullOrEmpty(sort) ? "Name" : sort;
             }
 
             _ = LoadFilterOptionsAsync();
@@ -116,7 +116,7 @@ namespace StaffSync.ViewModels
             SelectedDepartments.Clear();
             UpdateDepartmentsSummary();
             SelectedCompany = "Tüm Şirketler";
-            SortBy = "name";
+            SortBy = "Name";
         }
 
         [RelayCommand]

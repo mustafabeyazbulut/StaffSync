@@ -7,10 +7,10 @@ namespace StaffSync.Services
     {
         Task<PagedResult<ContactDto>?> GetContactsAsync(
             int pageNumber = 1,
-            int pageSize = 20,
+            int pageSize = 25,
             string? search = null,
             List<string>? departments = null,
-            List<string>? companies = null,
+            string? company = null,
             string? sortBy = null);
 
         Task<ContactFilterOptionsResult?> GetFilterOptionsAsync();
@@ -31,40 +31,25 @@ namespace StaffSync.Services
 
         public async Task<PagedResult<ContactDto>?> GetContactsAsync(
             int pageNumber = 1,
-            int pageSize = 20,
+            int pageSize = 25,
             string? search = null,
             List<string>? departments = null,
-            List<string>? companies = null,
+            string? company = null,
             string? sortBy = null)
         {
-            var queryParams = new List<string>
+            var request = new ContactsPageRequest
             {
-                $"pageNumber={pageNumber}",
-                $"pageSize={pageSize}"
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Search = string.IsNullOrWhiteSpace(search) ? null : search,
+                Departments = (departments != null && departments.Count > 0) ? departments : null,
+                Company = string.IsNullOrWhiteSpace(company) ? null : company,
+                SortBy = string.IsNullOrWhiteSpace(sortBy) ? "Name" : sortBy
             };
 
-            if (!string.IsNullOrWhiteSpace(search))
-                queryParams.Add($"search={HttpUtility.UrlEncode(search)}");
-
-            if (departments != null && departments.Count > 0)
-            {
-                foreach (var dept in departments)
-                    queryParams.Add($"departments={HttpUtility.UrlEncode(dept)}");
-            }
-
-            if (companies != null && companies.Count > 0)
-            {
-                foreach (var comp in companies)
-                    queryParams.Add($"companies={HttpUtility.UrlEncode(comp)}");
-            }
-
-            if (!string.IsNullOrWhiteSpace(sortBy))
-                queryParams.Add($"sortBy={HttpUtility.UrlEncode(sortBy)}");
-
-            var queryString = string.Join("&", queryParams);
-            var endpoint = $"Contacts?{queryString}";
-
-            return await _apiClient.GetAsync<PagedResult<ContactDto>>(endpoint);
+            return await _apiClient.PostAsync<ContactsPageRequest, PagedResult<ContactDto>>(
+                "Contacts/GetContactsWithPagination",
+                request);
         }
 
         public async Task<ContactFilterOptionsResult?> GetFilterOptionsAsync()

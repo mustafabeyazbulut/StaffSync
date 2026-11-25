@@ -65,7 +65,7 @@ namespace StaffSync.ViewModels
         }
 
         [ObservableProperty]
-        public partial string? SortBy { get; set; }
+        public partial string? SortBy { get; set; } = "Name";
 
         public int ActiveFilterCount => ActiveDepartmentFilters.Count + (string.IsNullOrEmpty(SelectedCompany) ? 0 : 1);
         public bool HasActiveFilters => ActiveFilterCount > 0;
@@ -141,7 +141,7 @@ namespace StaffSync.ViewModels
                     pageSize: PageSize,
                     search: SearchText,
                     departments: ActiveDepartmentFilters.ToList(),
-                    companies: string.IsNullOrEmpty(SelectedCompany) ? null : new List<string> { SelectedCompany },
+                    company: string.IsNullOrEmpty(SelectedCompany) ? null : SelectedCompany,
                     sortBy: SortBy);
 
                 if (result != null)
@@ -160,15 +160,29 @@ namespace StaffSync.ViewModels
                         _ = _settingsService.SaveCachedContactsAsync(result.Items.ToList());
                     }
                 }
-                else
+            }
+            catch (ApiOfflineException)
+            {
+                // Sadece ağ hatasında "Çevrimdışı" bandı + önbellek
+                await LoadFromOfflineCacheAsync();
+            }
+            catch (ApiException ex)
+            {
+                // 400/404/500'de hata mesajı göster
+                IsOffline = false;
+                if (Application.Current?.Windows[0].Page is Page page)
                 {
-                    // Ağ hatası -> Çevrimdışı önbellekten göster
-                    await LoadFromOfflineCacheAsync();
+                    await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                await LoadFromOfflineCacheAsync();
+                IsOffline = false;
+                System.Diagnostics.Debug.WriteLine($"Rehber yükleme hatası: {ex}");
+                if (Application.Current?.Windows[0].Page is Page page)
+                {
+                    await page.DisplayAlertAsync("Hata", "Beklenmeyen bir hata oluştu: " + ex.Message, "Tamam");
+                }
             }
             finally
             {
@@ -225,7 +239,7 @@ namespace StaffSync.ViewModels
                     pageSize: PageSize,
                     search: SearchText,
                     departments: ActiveDepartmentFilters.ToList(),
-                    companies: string.IsNullOrEmpty(SelectedCompany) ? null : new List<string> { SelectedCompany },
+                    company: string.IsNullOrEmpty(SelectedCompany) ? null : SelectedCompany,
                     sortBy: SortBy);
 
                 if (result != null && result.Items.Count > 0)
@@ -242,9 +256,20 @@ namespace StaffSync.ViewModels
                     _hasMore = false;
                 }
             }
-            catch
+            catch (ApiOfflineException)
             {
-                // Sessizce başarısız ol
+                IsOffline = true;
+            }
+            catch (ApiException ex)
+            {
+                if (Application.Current?.Windows[0].Page is Page page)
+                {
+                    await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Daha fazla yükleme hatası: {ex}");
             }
             finally
             {
@@ -271,7 +296,7 @@ namespace StaffSync.ViewModels
             {
                 ["SelectedDepartments"] = ActiveDepartmentFilters.ToList(),
                 ["SelectedCompany"] = SelectedCompany ?? "",
-                ["SortBy"] = SortBy ?? "name"
+                ["SortBy"] = SortBy ?? "Name"
             });
         }
 

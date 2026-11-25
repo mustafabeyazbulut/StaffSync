@@ -6,6 +6,10 @@ namespace StaffSync.Pages
     {
         private readonly FilterViewModel _viewModel;
 
+        public FilterPage() : this(IPlatformApplication.Current?.Services.GetRequiredService<FilterViewModel>()!)
+        {
+        }
+
         public FilterPage(FilterViewModel viewModel)
         {
             InitializeComponent();
@@ -15,17 +19,17 @@ namespace StaffSync.Pages
 
         private void OnSortByNameTapped(object? sender, EventArgs e)
         {
-            _viewModel.SortBy = "name";
+            _viewModel.SortBy = "Name";
         }
 
         private void OnSortByDeptTapped(object? sender, EventArgs e)
         {
-            _viewModel.SortBy = "department";
+            _viewModel.SortBy = "Department";
         }
 
         private void OnSortByTitleTapped(object? sender, EventArgs e)
         {
-            _viewModel.SortBy = "title";
+            _viewModel.SortBy = "JobTitle";
         }
     }
 }

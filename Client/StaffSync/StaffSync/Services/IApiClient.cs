@@ -5,6 +5,25 @@ using System.Text.Json;
 
 namespace StaffSync.Services
 {
+    public class ApiException : Exception
+    {
+        public System.Net.HttpStatusCode StatusCode { get; }
+
+        public ApiException(System.Net.HttpStatusCode statusCode, string message)
+            : base(message)
+        {
+            StatusCode = statusCode;
+        }
+    }
+
+    public class ApiOfflineException : Exception
+    {
+        public ApiOfflineException(string message, Exception? innerException = null)
+            : base(message, innerException)
+        {
+        }
+    }
+
     public interface IApiClient
     {
         Task<T?> GetAsync<T>(string endpoint);
@@ -18,10 +37,10 @@ namespace StaffSync.Services
         private readonly IAuthService _authService;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public ApiClient(HttpClient httpClient, IAuthService _authService)
+        public ApiClient(HttpClient httpClient, IAuthService authService)
         {
             _httpClient = httpClient;
-            this._authService = _authService;
+            _authService = authService;
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -51,22 +70,43 @@ namespace StaffSync.Services
 
         private async Task<HttpResponseMessage> SendWithRetryAsync(Func<Task<HttpRequestMessage>> requestFactory)
         {
-            var request = await requestFactory();
-            var response = await _httpClient.SendAsync(request);
+            HttpResponseMessage response;
+            try
+            {
+                var request = await requestFactory();
+                response = await _httpClient.SendAsync(request);
+            }
+            catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
+            {
+                throw new ApiOfflineException("Ağ bağlantısı sağlanamadı.", ex);
+            }
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                // Token yenilemeyi dene
-                var refreshed = await _authService.RefreshTokenAsync();
+                bool refreshed = false;
+                try
+                {
+                    refreshed = await _authService.RefreshTokenAsync();
+                }
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException || ex is ApiOfflineException)
+                {
+                    throw new ApiOfflineException("Ağ bağlantısı sağlanamadığı için oturum yenilenemedi.", ex);
+                }
+
                 if (refreshed)
                 {
-                    // Yeni token ile bir kez daha dene
-                    var retryRequest = await requestFactory();
-                    response = await _httpClient.SendAsync(retryRequest);
+                    try
+                    {
+                        var retryRequest = await requestFactory();
+                        response = await _httpClient.SendAsync(retryRequest);
+                    }
+                    catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
+                    {
+                        throw new ApiOfflineException("Ağ bağlantısı sağlanamadı.", ex);
+                    }
                 }
                 else
                 {
-                    // Oturum açma ekranına yönlendir
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         await Shell.Current.GoToAsync("//login");
@@ -77,61 +117,78 @@ namespace StaffSync.Services
             return response;
         }
 
-        public async Task<T?> GetAsync<T>(string endpoint)
+        private static async Task EnsureSuccessAsync(HttpResponseMessage response)
         {
+            if (response.IsSuccessStatusCode)
+                return;
+
+            string errorMessage = $"HTTP {(int)response.StatusCode}: {response.ReasonPhrase}";
             try
             {
-                var response = await SendWithRetryAsync(() => CreateRequestAsync(HttpMethod.Get, endpoint));
-                if (!response.IsSuccessStatusCode)
-                    return default;
-
-                var stream = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<T>(stream, _jsonOptions);
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    using var doc = JsonDocument.Parse(content);
+                    if (doc.RootElement.TryGetProperty("errors", out var errorsProp) && errorsProp.ValueKind == JsonValueKind.Array)
+                    {
+                        var errors = errorsProp.EnumerateArray()
+                            .Select(e => e.GetString())
+                            .Where(e => !string.IsNullOrEmpty(e))
+                            .ToList();
+                        if (errors.Count > 0)
+                            errorMessage = string.Join("\n", errors);
+                    }
+                    else if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                    {
+                        errorMessage = msgProp.GetString() ?? errorMessage;
+                    }
+                    else
+                    {
+                        errorMessage = content;
+                    }
+                }
             }
             catch
             {
-                return default;
+                // JSON parse edilemezse varsayılan HTTP durum açıklaması kalır
             }
+
+            throw new ApiException(response.StatusCode, errorMessage);
+        }
+
+        public async Task<T?> GetAsync<T>(string endpoint)
+        {
+            var response = await SendWithRetryAsync(() => CreateRequestAsync(HttpMethod.Get, endpoint));
+            await EnsureSuccessAsync(response);
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<T>(stream, _jsonOptions);
         }
 
         public async Task<TResult?> PostAsync<TRequest, TResult>(string endpoint, TRequest data)
         {
-            try
+            var response = await SendWithRetryAsync(() =>
             {
-                var response = await SendWithRetryAsync(() =>
-                {
-                    var content = JsonContent.Create(data);
-                    return CreateRequestAsync(HttpMethod.Post, endpoint, content);
-                });
+                var content = JsonContent.Create(data);
+                return CreateRequestAsync(HttpMethod.Post, endpoint, content);
+            });
 
-                if (!response.IsSuccessStatusCode)
-                    return default;
+            await EnsureSuccessAsync(response);
 
-                var stream = await response.Content.ReadAsStreamAsync();
-                return await JsonSerializer.DeserializeAsync<TResult>(stream, _jsonOptions);
-            }
-            catch
-            {
-                return default;
-            }
+            var stream = await response.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<TResult>(stream, _jsonOptions);
         }
 
         public async Task<bool> PostAsync<TRequest>(string endpoint, TRequest data)
         {
-            try
+            var response = await SendWithRetryAsync(() =>
             {
-                var response = await SendWithRetryAsync(() =>
-                {
-                    var content = JsonContent.Create(data);
-                    return CreateRequestAsync(HttpMethod.Post, endpoint, content);
-                });
+                var content = JsonContent.Create(data);
+                return CreateRequestAsync(HttpMethod.Post, endpoint, content);
+            });
 
-                return response.IsSuccessStatusCode;
-            }
-            catch
-            {
-                return false;
-            }
+            await EnsureSuccessAsync(response);
+            return true;
         }
     }
 }

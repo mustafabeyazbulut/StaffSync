@@ -14,7 +14,7 @@ namespace StaffSync
                 .UseMauiApp<App>();
 
             // Servis Kayıtları
-            builder.Services.AddSingleton<HttpClient>();
+            builder.Services.AddSingleton(sp => new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<IApiClient, ApiClient>();
