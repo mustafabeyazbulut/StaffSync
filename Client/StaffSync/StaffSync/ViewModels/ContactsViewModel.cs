@@ -639,6 +639,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         public void CallContact(ContactDto? contact)
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (contact == null || string.IsNullOrWhiteSpace(contact.TelephoneNumber))
                 return;
 

@@ -35,6 +35,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private void CallShortCode()
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.Home))
                 return;
 
@@ -52,6 +53,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private void CallPhone()
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
                 return;
 
@@ -69,6 +71,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private async Task SendSmsAsync()
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
                 return;
 
@@ -86,6 +89,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private async Task SendEmailAsync()
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.Email))
                 return;
 
@@ -106,6 +110,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private async Task OpenWhatsAppAsync()
         {
+            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
                 return;
 

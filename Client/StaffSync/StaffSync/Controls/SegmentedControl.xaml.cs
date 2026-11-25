@@ -118,9 +118,19 @@ namespace StaffSync.Controls
             if (ItemsSource == null)
                 return;
 
-            foreach (var item in ItemsSource)
+            if (ItemsSource is string str)
             {
-                _items.Add(item);
+                foreach (var part in str.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+                {
+                    _items.Add(part);
+                }
+            }
+            else
+            {
+                foreach (var item in ItemsSource)
+                {
+                    _items.Add(item);
+                }
             }
 
             for (int i = 0; i < _items.Count; i++)

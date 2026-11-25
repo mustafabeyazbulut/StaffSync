@@ -12,8 +12,8 @@
 
     <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="0">
 
-        <!-- Üst Başlık ve Arama Bloğu (Padding: 56 üst, 20 yatay, 8 alt) -->
-        <VerticalStackLayout Grid.Row="0" Padding="20,56,20,8" Spacing="14">
+        <!-- Üst Başlık ve Arama Bloğu (Kompakt: 12 üst padding, 10 spacing) -->
+        <VerticalStackLayout Grid.Row="0" Padding="16,12,16,6" Spacing="10">
 
             <!-- Başlık Satırı -->
             <Grid ColumnDefinitions="*, 44">
@@ -77,22 +77,24 @@
 
                 <!-- Filtre Butonu ve Rozet -->
                 <Grid Grid.Column="1" WidthRequest="44" HeightRequest="44">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenFilterCommand}" />
+                    </Grid.GestureRecognizers>
                     <Border WidthRequest="44"
                             HeightRequest="44"
                             StrokeShape="RoundRectangle 12"
                             StrokeThickness="0"
                             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
                             HorizontalOptions="Center"
-                            VerticalOptions="Center">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding OpenFilterCommand}" />
-                        </Border.GestureRecognizers>
+                            VerticalOptions="Center"
+                            InputTransparent="True">
                         <Label Text="{x:Static utils:LucideIcons.SlidersHorizontal}"
                                FontFamily="Lucide"
                                FontSize="20"
                                TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                               VerticalOptions="Center"
+                               InputTransparent="True" />
                     </Border>
 
                     <!-- Aktif Filtre Rozeti -->
@@ -105,13 +107,15 @@
                             HorizontalOptions="End"
                             VerticalOptions="Start"
                             Margin="0,-4,-4,0"
+                            InputTransparent="True"
                             IsVisible="{Binding HasActiveFilters}">
                         <Label Text="{Binding ActiveFilterCount}"
                                TextColor="{StaticResource White}"
                                FontSize="11"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                               VerticalOptions="Center"
+                               InputTransparent="True" />
                     </Border>
                 </Grid>
             </Grid>
@@ -119,9 +123,9 @@
             <!-- Departman Çipleri (Yatay Kaydırılabilir) -->
             <ScrollView Orientation="Horizontal"
                         HorizontalScrollBarVisibility="Never"
-                        HeightRequest="38"
-                        Margin="-20,0"
-                        Padding="20,0,20,4">
+                        HeightRequest="36"
+                        Margin="-16,0"
+                        Padding="16,0,16,2">
                 <HorizontalStackLayout Spacing="8"
                                        BindableLayout.ItemsSource="{Binding DepartmentChips}">
                     <BindableLayout.ItemTemplate>
