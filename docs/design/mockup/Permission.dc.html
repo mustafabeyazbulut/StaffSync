@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Rehber izni</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 0 24px 40px; display: flex; flex-direction: column; font-family: Inter, system-ui, sans-serif; background: {{c.bg}}; color: {{c.text}}">
+
+  <section style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px">
+    <span aria-hidden="true" style="width: 88px; height: 88px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background: {{c.brandSoft}}; color: {{c.brandText}}">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+    </span>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em">Gelen aramalarda kim olduğunu gör</h1>
+      <p style="margin: 0; font-size: 16px; line-height: 24px; color: {{c.muted}}">StaffSync, şirket rehberini telefonunun kişiler listesine ekler. Numarayı kaydetmemiş olsan da arayan çalışma arkadaşının adı ekranda görünür.</p>
+    </div>
+
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px">
+      <sc-for list="{{points}}" as="p" hint-placeholder-count="3">
+        <li style="display: flex; gap: 14px; align-items: flex-start">
+          <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: {{c.brandSoft}}; color: {{c.brandText}}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 600">{{p.title}}</span>
+            <span style="font-size: 14px; line-height: 20px; color: {{c.muted}}">{{p.body}}</span>
+          </span>
+        </li>
+      </sc-for>
+    </ul>
+  </section>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <a href="Main.dc.html" style="height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; background: {{c.brand}}; color: #FFFFFF">Rehbere erişime izin ver</a>
+    <a href="Main.dc.html" style="height: 48px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; color: {{c.brandText}}">Şimdi değil</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"brand":{"editor":"color","default":"#233C82","options":["#233C82","#0B5CAD","#0F766E"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const brand = this.props.brand ?? '#233C82';
+    const c = dark
+      ? { bg: '#0B1220', text: '#EEF2F8', muted: '#9AA6BA', brand: brand, brandSoft: '#1A2A4D', brandText: '#8FB0FF' }
+      : { bg: '#FFFFFF', text: '#1E2D48', muted: '#5B667A', brand: brand, brandSoft: '#E1EBFF', brandText: brand };
+    return {
+      c: c,
+      points: [
+        { title: 'Sadece şirket kişileri', body: 'Kendi kişilerine dokunulmaz; StaffSync yalnızca kendi eklediklerini günceller.' },
+        { title: 'Kendiliğinden güncel', body: 'Biri işe girdiğinde, ayrıldığında ya da numarası değiştiğinde rehberin de güncellenir.' },
+        { title: 'İstediğin zaman kapat', body: 'Profil ekranından senkronu kapatıp eklenen kişileri kaldırabilirsin.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

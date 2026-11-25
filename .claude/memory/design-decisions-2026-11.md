@@ -8,7 +8,7 @@ metadata:
 Spec: `docs/superpowers/specs/2026-11-24-staffsync-mobil-ve-rehber-dagitimi-design.md`
 Backend planı: `docs/superpowers/plans/2026-11-24-backend-rehber-ve-dagitim.md` (17 görev, Task 0'dan başlanır). Mobil planı henüz yazılmadı — backend bittikten sonra yazılacak.
 
-**Durum (2026-11-24 oturum sonu):** Kod yazımına başlanmadı (kullanıcı "sonra yazalım" dedi). Hiçbir şey commit edilmedi: .NET 10 geçişi (csproj'lar, Program.cs), spec, plan, `docs/brand/`, `.claude/memory/` çalışma alanında bekliyor — plan Task 0 bunları commit ediyor. Sonraki adım: kullanıcıya uygulama yöntemini sor (alt ajanlarla / bu oturumda), sonra Task 0.
+**Durum (2026-11-25):** Backend planı bitti ve commit edildi. Mobil plan (`docs/superpowers/plans/2026-11-24-mobil-uygulama.md`, Task 1–10) kullanıcı tarafından **Antigravity**'ye yaptırıldı; derleniyor ama inceleme ciddi hatalar buldu (yanlış rehber ucu, refresh cevabı uyumsuz, Android hesabı/SyncAdapter yok, iOS not alanı yetkisi). Düzeltmeler `docs/superpowers/plans/2026-11-25-mobil-duzeltmeler.md` (Task 1–8) + ek 7 madde Antigravity'ye yaptırıldı ve incelemeden geçti (2026-11-25, son commit eee94f4; Android derlemesi temiz). Açık kalanlar: `usesCleartextTraffic` tüm uygulamaya açık (canlıda HTTPS'e kısıtlanmalı), gerçek cihaz/emülatör testi, iOS hiç cihazda denenmedi.
 
 Kullanıcının 2026-11-24'te verdiği kararlar:
 - **Eski cihazlar = tuşlu cep telefonları.** Bugün ekip rehber dosyasını elle hazırlayıp bir "publish" klasörüne koyuyor, oradan cihazlara elle aktarıyor. Çözüm: backend her gün + kişi değişikliğinden sonra otomatik `rehber.vcf` (vCard 2.1, Türkçe için QUOTED-PRINTABLE) ve `rehber.csv` üretip o klasöre yazar; ayrıca indirme ucu. Masa/IP telefonları ve santral kapsam dışı.

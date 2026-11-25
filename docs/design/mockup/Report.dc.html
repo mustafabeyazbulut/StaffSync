@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Hatalı bilgi bildir</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+.ss-scroll::-webkit-scrollbar{display:none}
+.ss-input::placeholder{color:#8A93A5}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; font-family: Inter, system-ui, sans-serif; background: #0A1222; color: {{c.text}}; overflow: hidden">
+
+  <a href="Detail.dc.html" aria-label="Kapat" style="height: 64px; flex-shrink: 0; display: block"></a>
+
+  <section aria-label="Hatalı bilgi bildir" style="flex: 1; min-height: 0; border-radius: 14px 14px 0 0; display: flex; flex-direction: column; background: {{c.page}}">
+    <span aria-hidden="true" style="align-self: center; margin-top: 8px; width: 36px; height: 5px; border-radius: 3px; background: {{c.grab}}"></span>
+
+    <sc-if value="{{form}}" hint-placeholder-val="{{ true }}">
+      <header style="padding: 4px 8px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center">
+        <a href="Detail.dc.html" style="justify-self: start; height: 44px; padding: 0 8px; display: flex; align-items: center; font-size: 17px; color: {{c.brandText}}">Vazgeç</a>
+        <h1 style="margin: 0; justify-self: center; font-size: 17px; font-weight: 600; white-space: nowrap">Düzeltme öner</h1>
+        <span></span>
+      </header>
+
+      <div class="ss-scroll" style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 20px">
+
+        <div style="display: flex; align-items: center; gap: 12px; padding: 0 4px">
+          <span aria-hidden="true" style="width: 48px; height: 48px; border-radius: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; background: {{c.brand}}; color: #FFFFFF">AY</span>
+          <span style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 17px; font-weight: 600">Ahmet Yılmaz</span>
+            <span style="font-size: 14px; color: {{c.muted}}">Yanlış olan bilgiye dokun, doğrusunu yaz.</span>
+          </span>
+        </div>
+
+        <div style="border-radius: 14px; overflow: hidden; background: {{c.card}}">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+            <div style="border-top: {{r.border}}; background: {{r.bg}}">
+              <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.pressed}}" style="width: 100%; min-height: 58px; padding: 10px 16px; border: 0; display: flex; align-items: center; gap: 12px; font: inherit; text-align: left; cursor: pointer; background: transparent; color: {{c.text}}">
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 13px; color: {{c.muted}}">{{r.label}}</span>
+                  <span style="font-size: 16px; text-decoration: {{r.strike}}; color: {{r.valueColor}}">{{r.value}}</span>
+                </span>
+                <span aria-hidden="true" style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: {{r.ring}}; background: {{r.fill}}; color: #FFFFFF">
+                  <sc-if value="{{r.on}}" hint-placeholder-val="{{ false }}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </sc-if>
+                </span>
+              </button>
+              <sc-if value="{{r.on}}" hint-placeholder-val="{{ false }}">
+                <label style="margin: 0 16px 12px; padding: 0 12px; height: 44px; border-radius: 10px; display: flex; align-items: center; gap: 10px; border: 1.5px solid {{c.brandText}}; background: {{c.card}}">
+                  <span style="font-size: 13px; font-weight: 600; flex-shrink: 0; color: {{c.brandText}}">Doğrusu</span>
+                  <input class="ss-input" type="{{r.type}}" value="{{r.fix}}" onInput="{{r.onInput}}" placeholder="{{r.placeholder}}" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: {{c.text}}">
+                </label>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <label style="display: flex; flex-direction: column; gap: 8px">
+          <span style="padding: 0 16px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: {{c.muted}}">Not (isteğe bağlı)</span>
+          <textarea class="ss-input" rows="2" placeholder="Örn. Ocak ayında departman değiştirdi" style="box-sizing: border-box; padding: 12px 16px; border-radius: 14px; border: 0; outline: 0; resize: none; font: inherit; font-size: 16px; line-height: 22px; background: {{c.card}}; color: {{c.text}}"></textarea>
+        </label>
+      </div>
+
+      <div style="padding: 12px 16px 36px; border-top: 1px solid {{c.line}}; display: flex; flex-direction: column; gap: 8px">
+        <button type="button" onClick="{{send}}" disabled="{{sendDisabled}}" style="width: 100%; height: 52px; border: 0; border-radius: 14px; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; background: {{sendBg}}; color: {{sendFg}}">{{sendLabel}}</button>
+        <p style="margin: 0; text-align: center; font-size: 12px; color: {{c.muted}}">Önerin, rehberi yöneten birime adınla iletilir.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+      <div style="flex: 1; padding: 40px 24px 36px; display: flex; flex-direction: column; gap: 24px">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <span aria-hidden="true" style="width: 72px; height: 72px; border-radius: 36px; display: flex; align-items: center; justify-content: center; background: {{c.okSoft}}; color: {{c.ok}}">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </span>
+          <h2 style="margin: 4px 0 0; font-size: 22px; font-weight: 700">Önerin iletildi</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 22px; color: {{c.muted}}">Onaylandığında rehber herkeste kendiliğinden güncellenecek.</p>
+        </div>
+
+        <div style="border-radius: 14px; overflow: hidden; background: {{c.card}}">
+          <sc-for list="{{sent}}" as="s" hint-placeholder-count="1">
+            <div style="padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; border-top: {{s.border}}">
+              <span style="font-size: 13px; color: {{c.muted}}">{{s.label}}</span>
+              <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 15px">
+                <span style="text-decoration: line-through; color: {{c.muted}}">{{s.value}}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: {{c.muted}}"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <span style="font-weight: 600">{{s.fix}}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+
+        <span style="flex: 1"></span>
+        <a href="Detail.dc.html" style="height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; background: {{c.brand}}; color: #FFFFFF">Tamam</a>
+      </div>
+    </sc-if>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"brand":{"editor":"color","default":"#233C82","options":["#233C82","#0B5CAD","#0F766E"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { picked: { 'Cep telefonu': '+90 532 000 00 00' }, sent: false };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const brand = this.props.brand ?? '#233C82';
+    const c = dark
+      ? { page: '#0F1729', card: '#172033', grab: '#3A4560', text: '#EEF2F8', muted: '#9AA6BA', line: '#25304A', brand: brand, brandText: '#8FB0FF', tint: '#16223D', ring: '#4A5570', ok: '#5FD39A', okSoft: '#123526', off: '#2A3650', offText: '#7C879C' }
+      : { page: '#F2F4F8', card: '#FFFFFF', grab: '#C9CED8', text: '#1E2D48', muted: '#5B667A', line: '#E6E9EF', brand: brand, brandText: brand, tint: '#F3F6FC', ring: '#B4BBC8', ok: '#1B7F4B', okSoft: '#E3F4EA', off: '#D5DAE3', offText: '#5B667A' };
+    const picked = this.state.picked;
+    const data = [
+      ['Cep telefonu', '+90 5XX XXX XX XX', 'tel', 'Yeni numara'],
+      ['Kısa kod', '2145', 'tel', 'Yeni dahili'],
+      ['E-posta', 'ad.soyad@sirket.com', 'email', 'Doğru e-posta'],
+      ['Unvan', 'Satış Müdürü', 'text', 'Doğru unvan'],
+      ['Departman', 'Satış', 'text', 'Doğru departman'],
+      ['Ofis', 'Genel Müdürlük · 3. kat', 'text', 'Doğru ofis'],
+      ['Yönetici', 'Mehmet Kurt', 'text', 'Doğru yönetici']
+    ];
+    const rows = data.map(([label, value, type, placeholder], i) => {
+      const on = Object.prototype.hasOwnProperty.call(picked, label);
+      return {
+        label: label, value: value, type: type, placeholder: placeholder, on: on,
+        pressed: on ? 'true' : 'false',
+        fix: on ? picked[label] : '',
+        border: i === 0 ? '0' : '1px solid ' + c.line,
+        bg: on ? c.tint : 'transparent',
+        strike: on ? 'line-through' : 'none',
+        valueColor: on ? c.muted : c.text,
+        ring: on ? '0' : '2px solid ' + c.ring,
+        fill: on ? brand : 'transparent',
+        pick: () => {
+          const next = Object.assign({}, picked);
+          if (on) { delete next[label]; } else { next[label] = ''; }
+          this.setState({ picked: next });
+        },
+        onInput: (e) => this.setState({ picked: Object.assign({}, picked, { [label]: e.target.value }) })
+      };
+    });
+    const ready = data.filter(([label]) => picked[label] && picked[label].trim());
+    const n = ready.length;
+    return {
+      c: c,
+      rows: rows,
+      form: !this.state.sent,
+      done: this.state.sent,
+      sendDisabled: n === 0,
+      sendLabel: n === 0 ? 'Düzeltme seç' : (n === 1 ? '1 düzeltmeyi gönder' : n + ' düzeltmeyi gönder'),
+      sendBg: n === 0 ? c.off : brand,
+      sendFg: n === 0 ? c.offText : '#FFFFFF',
+      sent: ready.map(([label, value], i) => ({ label: label, value: value, fix: picked[label], border: i === 0 ? '0' : '1px solid ' + c.line })),
+      send: () => this.setState({ sent: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

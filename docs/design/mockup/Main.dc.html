@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Rehber</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+.ss-scroll::-webkit-scrollbar{display:none}
+.ss-input::placeholder{color:#6B7488}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; font-family: Inter, system-ui, sans-serif; background: {{c.bg}}; color: {{c.text}}; overflow: hidden">
+
+  <header style="padding: 56px 20px 8px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h1 style="margin: 0; font-size: 34px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em">Rehber</h1>
+        <p style="margin: 0; font-size: 13px; color: {{c.muted}}">Son senkron: bugün 09:42</p>
+      </div>
+      <a href="Profile.dc.html" aria-label="Profil" style="width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; background: {{c.brand}}; color: #FFFFFF">AY</a>
+    </div>
+
+    <div style="display: flex; gap: 8px">
+    <label style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-radius: 12px; background: {{c.surface}}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: {{c.muted}}; flex-shrink: 0"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Kişi ara</span>
+      <input class="ss-input" type="search" placeholder="Ad, unvan veya departman ara" value="{{query}}" onInput="{{onQuery}}" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 16px; color: {{c.text}}">
+    </label>
+    <a href="Filter.dc.html" aria-label="Filtrele ve sırala, 2 filtre etkin" style="position: relative; width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: {{c.surface}}; color: {{c.brandText}}">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+      <span aria-hidden="true" style="position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: {{c.brand}}; color: #FFFFFF">2</span>
+    </a>
+    </div>
+
+    <div class="ss-scroll" style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px; scrollbar-width: none">
+      <sc-for list="{{chips}}" as="chip" hint-placeholder-count="5">
+        <button type="button" onClick="{{chip.pick}}" aria-pressed="{{chip.pressed}}" style="flex-shrink: 0; height: 34px; padding: 0 14px; border-radius: 17px; border: 0; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; background: {{chip.bg}}; color: {{chip.fg}}">{{chip.label}}</button>
+      </sc-for>
+    </div>
+  </header>
+
+  <main class="ss-scroll" style="flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; padding-bottom: 12px">
+    <p style="margin: 0; padding: 6px 20px 0; font-size: 13px; color: {{c.muted}}">{{countLabel}} · Ada göre sıralı</p>
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+      <section style="display: flex; flex-direction: column">
+        <h2 style="margin: 0; padding: 14px 20px 6px; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: {{c.muted}}">{{g.letter}}</h2>
+        <sc-for list="{{g.people}}" as="p" hint-placeholder-count="2">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px">
+            <a href="Detail.dc.html" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid {{c.line}}">
+              <span aria-hidden="true" style="width: 44px; height: 44px; border-radius: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; background: {{c.brandSoft}}; color: {{c.brandText}}">{{p.initials}}</span>
+              <span style="min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                <span style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{p.name}}</span>
+                <span style="font-size: 13px; color: {{c.muted}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{p.title}} · {{p.dept}}</span>
+              </span>
+            </a>
+            <button type="button" aria-label="{{p.callLabel}}" style="width: 44px; height: 44px; border-radius: 22px; border: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; background: {{c.brandSoft}}; color: {{c.brandText}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </button>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+    <sc-if value="{{hasMore}}" hint-placeholder-val="{{ true }}">
+      <div role="status" style="padding: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: {{c.muted}}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg>
+        Daha fazla kişi yükleniyor
+      </div>
+    </sc-if>
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 64px 32px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+        <p style="margin: 0; font-size: 17px; font-weight: 600">Sonuç bulunamadı</p>
+        <p style="margin: 0; font-size: 14px; color: {{c.muted}}">Farklı bir ad veya departman deneyin.</p>
+      </div>
+    </sc-if>
+  </main>
+
+  <nav style="height: 84px; box-sizing: border-box; padding: 8px 0 28px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid {{c.line}}; background: {{c.bar}}">
+    <a href="Main.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; font-weight: 600; color: {{c.brandText}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      Rehber
+    </a>
+    <a href="Profile.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; font-weight: 500; color: {{c.muted}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      Profil
+    </a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"brand":{"editor":"color","default":"#233C82","options":["#233C82","#0B5CAD","#0F766E"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { dept: 'Tümü', query: '' };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const brand = this.props.brand ?? '#233C82';
+    const c = dark
+      ? { bg: '#0B1220', surface: '#172033', bar: '#0F1729', text: '#EEF2F8', muted: '#9AA6BA', line: '#1F2A40', brand: brand, brandSoft: '#1A2A4D', brandText: '#8FB0FF' }
+      : { bg: '#FFFFFF', surface: '#F1F3F7', bar: '#FAFBFD', text: '#1E2D48', muted: '#5B667A', line: '#E6E9EF', brand: brand, brandSoft: '#E1EBFF', brandText: brand };
+    const people = [
+      ['Ahmet Yılmaz', 'Satış Müdürü', 'Satış'],
+      ['Ayşe Kaya', 'İK Uzmanı', 'İnsan Kaynakları'],
+      ['Burak Demir', 'Sistem Uzmanı', 'Bilgi Teknolojileri'],
+      ['Burcu Arslan', 'Muhasebe Uzmanı', 'Finans'],
+      ['Can Öztürk', 'Üretim Şefi', 'Üretim'],
+      ['Deniz Şahin', 'Yazılım Geliştirici', 'Bilgi Teknolojileri'],
+      ['Elif Çelik', 'Satın Alma Uzmanı', 'Satın Alma'],
+      ['Emre Aydın', 'Kalite Mühendisi', 'Üretim'],
+      ['Fatma Koç', 'Bordro Uzmanı', 'İnsan Kaynakları'],
+      ['Gökhan Yıldız', 'Bölge Satış Temsilcisi', 'Satış']
+    ];
+    const q = this.state.query.toLocaleLowerCase('tr');
+    const list = people
+      .filter(([n, t, d]) => this.state.dept === 'Tümü' || d === this.state.dept)
+      .filter(([n, t, d]) => !q || (n + ' ' + t + ' ' + d).toLocaleLowerCase('tr').includes(q));
+    const groups = [];
+    list.forEach(([name, title, dept]) => {
+      const letter = name.charAt(0).toLocaleUpperCase('tr');
+      let g = groups.find((x) => x.letter === letter);
+      if (!g) { g = { letter: letter, people: [] }; groups.push(g); }
+      const parts = name.split(' ');
+      g.people.push({ name: name, title: title, dept: dept, initials: parts[0][0] + parts[parts.length - 1][0], callLabel: name + ' kişisini ara' });
+    });
+    const depts = ['Tümü', 'Bilgi Teknolojileri', 'Satış', 'Üretim', 'İnsan Kaynakları', 'Finans', 'Satın Alma'];
+    const chips = depts.map((d) => {
+      const on = d === this.state.dept;
+      return { label: d, pressed: on ? 'true' : 'false', bg: on ? brand : c.surface, fg: on ? '#FFFFFF' : c.text, pick: () => this.setState({ dept: d }) };
+    });
+    return {
+      c: c,
+      chips: chips,
+      groups: groups,
+      empty: groups.length === 0,
+      hasMore: groups.length > 0,
+      countLabel: list.length + ' kişi gösteriliyor',
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

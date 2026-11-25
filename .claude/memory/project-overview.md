@@ -14,10 +14,10 @@ StaffSync: şirket içi personel rehberini (Contact) yönetip mobil cihazlara se
   - `Core/StaffSync` (Class1.cs) boş/kullanılmayan proje.
 - `Client/StaffSync/StaffSync.sln` — .NET MAUI (android/ios/maccatalyst/windows). Login/Main/Profile sayfaları var.
 
-Durum (2026-11-24):
-- Backend: Auth (Login/Register/RefreshToken/Revoke/RevokeAll) ve Contact CRUD + sayfalama/filtre tamam.
+Durum (2026-11-25):
+- Backend: Auth, Contact CRUD, sayfalı rehber, filtre seçenekleri, Changes (senkron), hatalı bilgi bildirimi, vCard/CSV dışa aktarım tamam.
 - README "Redis" diyor ama kodda Redis yok — planlanan, yapılmadı.
-- MAUI client henüz API'ye bağlı değil: `PersonViewModel` sabit örnek veri kullanıyor, HTTP/servis katmanı yok. Senkron ayarı `Utils/SyncSetting.cs` (Preferences key `AundeStaffSync_enabled`).
+- MAUI client MVVM + servis katmanıyla API'ye bağlandı (Antigravity yazdı), ama düzeltme bekliyor: `docs/superpowers/plans/2026-11-25-mobil-duzeltmeler.md`.
 
 **Why:** Yeni oturumda projenin nerede kaldığını hızlıca bilmek için.
-**How to apply:** Client tarafında iş istenirse API entegrasyonunun sıfırdan kurulacağını varsay. Bkz. [[backend-feature-conventions]], [[backend-gotchas]].
+**How to apply:** Client işinde önce düzeltme planının ne kadarının yapıldığına bak (git log). Bkz. [[backend-feature-conventions]], [[backend-gotchas]].
