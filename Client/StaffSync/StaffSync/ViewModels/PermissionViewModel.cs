@@ -9,8 +9,11 @@ namespace StaffSync.ViewModels
         private readonly ISettingsService _settingsService;
         private readonly IContactSyncService _syncService;
 
-        public PermissionViewModel(ISettingsService settingsService, IContactSyncService syncService)
+        private readonly IDialogService _dialogService;
+
+        public PermissionViewModel(ISettingsService settingsService, IContactSyncService syncService, IDialogService dialogService)
         {
+            _dialogService = dialogService;
             _settingsService = settingsService;
             _syncService = syncService;
         }
@@ -52,13 +55,9 @@ namespace StaffSync.ViewModels
                 if (status != PermissionStatus.Granted)
                 {
                     _settingsService.IsSyncEnabled = false;
-                    if (Application.Current?.Windows[0].Page is Page page)
-                    {
-                        await page.DisplayAlertAsync(
-                            "İzin Verilmedi",
-                            "Rehber erişim izni verilmediği için şirket kişileri telefonunuza eklenemez. İstediğiniz zaman Profil sekmesinden senkronizasyonu açabilirsiniz.",
-                            "Tamam");
-                    }
+                    await _dialogService.AlertAsync(
+                        "Sorun değil",
+                        "Şirket kişileri şimdilik telefonunuza eklenmeyecek. Dilediğiniz zaman Profil'deki \"Telefon rehberine aktar\" ile açabilirsiniz.");
                 }
                 else
                 {

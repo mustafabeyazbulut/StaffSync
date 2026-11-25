@@ -10,6 +10,7 @@ namespace StaffSync.Platforms.Android.Services
     [Service(Exported = true, Name = "com.aunde.staffsync.SyncService")]
     [IntentFilter(new[] { "android.content.SyncAdapter" })]
     [MetaData("android.content.SyncAdapter", Resource = "@xml/syncadapter")]
+    [MetaData("android.provider.CONTACTS_STRUCTURE", Resource = "@xml/contacts")]
     public class SyncService : Service
     {
         private static SyncAdapter? _syncAdapter;

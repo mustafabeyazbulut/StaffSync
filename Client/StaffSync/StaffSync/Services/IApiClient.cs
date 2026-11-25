@@ -37,6 +37,9 @@ namespace StaffSync.Services
         Task<T?> GetAsync<T>(string endpoint);
         Task<TResult?> PostAsync<TRequest, TResult>(string endpoint, TRequest data);
         Task<bool> PostAsync<TRequest>(string endpoint, TRequest data);
+
+        /// <summary>İkili içerik (ör. fotoğraf) indirir; 404'te null.</summary>
+        Task<byte[]?> GetBytesAsync(string endpoint, CancellationToken ct = default);
     }
 
     public class ApiClient : IApiClient
@@ -177,6 +180,15 @@ namespace StaffSync.Services
 
             var stream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(stream, _jsonOptions);
+        }
+
+        public async Task<byte[]?> GetBytesAsync(string endpoint, CancellationToken ct = default)
+        {
+            var response = await SendWithRetryAsync(() => CreateRequestAsync(HttpMethod.Get, endpoint));
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+            await EnsureSuccessAsync(response);
+            return await response.Content.ReadAsByteArrayAsync(ct);
         }
 
         public async Task<TResult?> PostAsync<TRequest, TResult>(string endpoint, TRequest data)

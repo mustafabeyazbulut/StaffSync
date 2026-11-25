@@ -20,6 +20,8 @@ namespace StaffSync.Services
 
         public virtual bool IsSupported => false;
 
+        public virtual bool IsSyncRunning => false;
+
         public virtual async Task<int> SyncContactsAsync(CancellationToken ct = default)
         {
             var changes = await _contactsService.GetChangesAsync(_settingsService.LastSyncTime);

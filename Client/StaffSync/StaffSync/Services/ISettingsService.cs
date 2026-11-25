@@ -1,6 +1,3 @@
-using StaffSync.Models;
-using System.Text.Json;
-
 namespace StaffSync.Services
 {
     public enum ThemeOption
@@ -18,10 +15,16 @@ namespace StaffSync.Services
         string? LastSyncError { get; set; }
         bool HasCompletedPermissionIntro { get; set; }
 
+        /// <summary>
+        /// Kullanıcı şirket hattı kullandığını bildirdi mi. Açıksa aramalar kısa kodla yapılır;
+        /// kapalıysa (varsayılan) cep numarasıyla — kısa kod şirket hattı dışında çalışmaz.
+        /// </summary>
+        bool UsesCompanyLine { get; set; }
+
+        /// <summary>Telefon rehberindeki kişilerin hangi biçimle yazıldığı (bkz. <see cref="ContactSyncFormat"/>).</summary>
+        string? ContactFormat { get; set; }
+
         void ApplyTheme();
-        Task SaveCachedContactsAsync(List<ContactDto> contacts);
-        Task<List<ContactDto>> GetCachedContactsAsync();
-        DateTime? GetCachedContactsTimestamp();
     }
 
     public class SettingsService : ISettingsService
@@ -31,10 +34,8 @@ namespace StaffSync.Services
         private const string LastSyncTimeKey = "StaffSync_LastSyncTime";
         private const string LastSyncErrorKey = "StaffSync_LastSyncError";
         private const string PermissionIntroKey = "StaffSync_PermissionIntro";
-        private const string CacheTimestampKey = "StaffSync_CacheTimestamp";
-        private const string CacheFileName = "contacts_cache.json";
-
-        private readonly string _cacheFilePath = Path.Combine(FileSystem.AppDataDirectory, CacheFileName);
+        private const string UsesCompanyLineKey = "StaffSync_UsesCompanyLine";
+        private const string ContactFormatKey = "StaffSync_ContactFormat";
 
         public ThemeOption SelectedTheme
         {
@@ -88,6 +89,18 @@ namespace StaffSync.Services
             set => Preferences.Default.Set(PermissionIntroKey, value);
         }
 
+        public bool UsesCompanyLine
+        {
+            get => Preferences.Default.Get(UsesCompanyLineKey, false);
+            set => Preferences.Default.Set(UsesCompanyLineKey, value);
+        }
+
+        public string? ContactFormat
+        {
+            get => Preferences.Default.Get(ContactFormatKey, (string?)null);
+            set => Preferences.Default.Set(ContactFormatKey, value);
+        }
+
         public void ApplyTheme()
         {
             if (Application.Current is null)
@@ -99,45 +112,6 @@ namespace StaffSync.Services
                 ThemeOption.Dark => AppTheme.Dark,
                 _ => AppTheme.Unspecified
             };
-        }
-
-        public async Task SaveCachedContactsAsync(List<ContactDto> contacts)
-        {
-            try
-            {
-                var json = JsonSerializer.Serialize(contacts);
-                await File.WriteAllTextAsync(_cacheFilePath, json);
-                Preferences.Default.Set(CacheTimestampKey, DateTime.UtcNow.ToString("O"));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Önbellek kaydetme hatası: {ex.Message}");
-            }
-        }
-
-        public async Task<List<ContactDto>> GetCachedContactsAsync()
-        {
-            try
-            {
-                if (!File.Exists(_cacheFilePath))
-                    return new List<ContactDto>();
-
-                var json = await File.ReadAllTextAsync(_cacheFilePath);
-                return JsonSerializer.Deserialize<List<ContactDto>>(json) ?? new List<ContactDto>();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Önbellek okuma hatası: {ex.Message}");
-                return new List<ContactDto>();
-            }
-        }
-
-        public DateTime? GetCachedContactsTimestamp()
-        {
-            var val = Preferences.Default.Get(CacheTimestampKey, string.Empty);
-            if (DateTime.TryParse(val, out var dt))
-                return dt;
-            return null;
         }
     }
 }

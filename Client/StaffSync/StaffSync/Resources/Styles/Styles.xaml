@@ -19,8 +19,10 @@
         <Setter Property="StrokeThickness" Value="1"/>
     </Style>
 
+    <!-- Şablondan kalan koyu arka plan, CornerRadius'lu BoxView'lerin (tutamak, iskelet) köşelerini bozuyordu -->
     <Style TargetType="BoxView">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
     </Style>
 
     <Style TargetType="Button">
@@ -311,7 +313,7 @@
     </Style>
 
     <Style TargetType="Switch">
-        <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Brand}, Dark={StaticResource BrandTextDark}}" />
         <Setter Property="ThumbColor" Value="{StaticResource White}" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -325,13 +327,13 @@
                     </VisualState>
                     <VisualState x:Name="On">
                         <VisualState.Setters>
-                            <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource Gray200}}" />
-                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+                            <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource Brand}, Dark={StaticResource BrandTextDark}}" />
+                            <Setter Property="ThumbColor" Value="{StaticResource White}" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="Off">
                         <VisualState.Setters>
-                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource TextMutedDark}}" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

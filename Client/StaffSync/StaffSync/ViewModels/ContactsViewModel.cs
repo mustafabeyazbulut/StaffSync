@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using StaffSync.Messages;
 using StaffSync.Models;
 using StaffSync.Services;
+using StaffSync.Utils;
 using System.Collections.ObjectModel;
 
 namespace StaffSync.ViewModels
@@ -18,20 +19,15 @@ namespace StaffSync.ViewModels
         }
     }
 
-    public partial class DepartmentChipItem : ObservableObject
-    {
-        public string Name { get; set; } = "";
-        public string DisplayLabel { get; set; } = "";
-
-        [ObservableProperty]
-        public partial bool IsSelected { get; set; }
-    }
-
     public partial class ContactsViewModel : ObservableObject
     {
         private readonly IContactsService _contactsService;
         private readonly ISettingsService _settingsService;
         private readonly IContactCacheService _contactCacheService;
+        private readonly IAuthService _authService;
+        private readonly ICallService _callService;
+        private readonly IContactPhotoService _photoService;
+        private readonly IDialogService _dialogService;
         private CancellationTokenSource? _searchCts;
         private CancellationTokenSource? _reloadCts;
         private int _reloadVersion = 0;
@@ -48,11 +44,19 @@ namespace StaffSync.ViewModels
         public ContactsViewModel(
             IContactsService contactsService,
             ISettingsService settingsService,
-            IContactCacheService contactCacheService)
+            IContactCacheService contactCacheService,
+            IAuthService authService,
+            ICallService callService,
+            IContactPhotoService photoService,
+            IDialogService dialogService)
         {
+            _photoService = photoService;
+            _dialogService = dialogService;
             _contactsService = contactsService;
             _settingsService = settingsService;
             _contactCacheService = contactCacheService;
+            _authService = authService;
+            _callService = callService;
 
             Contacts = new ObservableCollection<ContactDto>();
             GroupedContacts = new ObservableCollection<ContactGroup>();
@@ -64,32 +68,40 @@ namespace StaffSync.ViewModels
             {
                 ApplyFilterCriteria(m.Value);
             });
+
+            // Profil'de şirket hattı tercihi değişince ara düğmelerinin metni güncellensin
+            WeakReferenceMessenger.Default.Register<CompanyLineChangedMessage>(this, (r, m) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    foreach (var c in Contacts)
+                        c.CallLabel = _callService.GetCallLabel(c);
+                });
+            });
+
+            // Açılış/arka plan senkronu bitince başlıktaki "Son senkron" güncellensin
+            WeakReferenceMessenger.Default.Register<SyncStateChangedMessage>(this, (r, m) =>
+            {
+                if (!m.Value)
+                    MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(LastSyncTimeFormatted)));
+            });
         }
 
         public ObservableCollection<ContactDto> Contacts { get; }
         public ObservableCollection<ContactGroup> GroupedContacts { get; }
         public ObservableCollection<string> AlphabetLetters { get; }
         public ObservableCollection<string> ActiveDepartmentFilters { get; }
-        public ObservableCollection<DepartmentChipItem> DepartmentChips { get; } = new();
 
         [ObservableProperty]
-        public partial string UserInitials { get; set; } = "MB";
+        public partial string UserInitials { get; set; } = "";
 
         public string LastSyncTimeFormatted
         {
             get
             {
-                var time = _settingsService.LastSyncTime ?? _settingsService.GetCachedContactsTimestamp();
-                if (!time.HasValue)
-                    return "Son senkron: henüz yapılmadı";
-
-                var local = time.Value.ToLocalTime();
-                var today = DateTime.Today;
-                if (local.Date == today)
-                    return $"Son senkron: bugün {local:HH:mm}";
-                if (local.Date == today.AddDays(-1))
-                    return $"Son senkron: dün {local:HH:mm}";
-                return $"Son senkron: {local:dd.MM.yyyy HH:mm}";
+                // Telefon senkronu kapalıysa uygulama içi listenin son güncellenme zamanı gösterilir
+                var text = DisplayText.LastSync(_settingsService.LastSyncTime ?? _contactCacheService.GetCacheLastSyncTime());
+                return $"Son senkron: {text ?? "Henüz yapılmadı"}";
             }
         }
 
@@ -103,11 +115,23 @@ namespace StaffSync.ViewModels
                     "JobTitle" => "Unvana göre sıralı",
                     _ => "Ada göre sıralı"
                 };
+                if (ShowSkeleton)
+                    return "Kişiler yükleniyor…";
                 return $"{TotalCount} kişi gösteriliyor · {sortText}";
             }
         }
 
         public bool IsEmpty => !IsBusy && TotalCount == 0;
+
+        /// <summary>İlk yüklemede liste boşken "Sonuç bulunamadı" yerine iskelet satırlar gösterilir.</summary>
+        public bool ShowSkeleton => IsBusy && TotalCount == 0;
+
+        partial void OnIsBusyChanged(bool value)
+        {
+            OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(ShowSkeleton));
+            OnPropertyChanged(nameof(ListHeaderLabel));
+        }
         public bool HasMore => _hasMore;
 
         [ObservableProperty]
@@ -126,6 +150,7 @@ namespace StaffSync.ViewModels
         {
             OnPropertyChanged(nameof(ListHeaderLabel));
             OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(ShowSkeleton));
         }
 
         [ObservableProperty]
@@ -193,83 +218,9 @@ namespace StaffSync.ViewModels
             await UpdateUserInitialsAsync();
             OnPropertyChanged(nameof(LastSyncTimeFormatted));
 
-            if (DepartmentChips.Count == 0)
-            {
-                await LoadDepartmentChipsAsync();
-            }
-
             if (Contacts.Count == 0)
             {
                 await ReloadContactsAsync();
-            }
-        }
-
-        private async Task LoadDepartmentChipsAsync()
-        {
-            try
-            {
-                var options = await _contactsService.GetFilterOptionsAsync();
-                DepartmentChips.Clear();
-
-                var allChip = new DepartmentChipItem
-                {
-                    Name = "ALL",
-                    DisplayLabel = "Tümü",
-                    IsSelected = ActiveDepartmentFilters.Count == 0
-                };
-                DepartmentChips.Add(allChip);
-
-                if (options?.Departments != null)
-                {
-                    foreach (var d in options.Departments.OrderBy(x => x.Name))
-                    {
-                        if (string.IsNullOrWhiteSpace(d.Name)) continue;
-                        DepartmentChips.Add(new DepartmentChipItem
-                        {
-                            Name = d.Name,
-                            DisplayLabel = d.Name,
-                            IsSelected = ActiveDepartmentFilters.Contains(d.Name)
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Departman çipleri yüklenemedi: {ex.Message}");
-            }
-        }
-
-        [RelayCommand]
-        public void SelectDepartmentChip(DepartmentChipItem chip)
-        {
-            if (chip == null) return;
-
-            foreach (var c in DepartmentChips)
-                c.IsSelected = false;
-
-            chip.IsSelected = true;
-
-            ActiveDepartmentFilters.Clear();
-            if (chip.Name != "ALL")
-            {
-                ActiveDepartmentFilters.Add(chip.Name);
-            }
-
-            OnPropertyChanged(nameof(ActiveFilterCount));
-            OnPropertyChanged(nameof(HasActiveFilters));
-            _ = ReloadContactsAsync();
-        }
-
-        private void SyncChipsWithFilters()
-        {
-            if (DepartmentChips.Count == 0) return;
-
-            foreach (var chip in DepartmentChips)
-            {
-                if (chip.Name == "ALL")
-                    chip.IsSelected = (ActiveDepartmentFilters.Count == 0);
-                else
-                    chip.IsSelected = ActiveDepartmentFilters.Contains(chip.Name);
             }
         }
 
@@ -283,28 +234,17 @@ namespace StaffSync.ViewModels
         {
             try
             {
-                var email = Preferences.Default.Get("StaffSync_LastEmail", "");
-                if (string.IsNullOrWhiteSpace(email))
-                {
-                    email = _settingsService.SelectedTheme.ToString();
-                }
+                var user = await _authService.GetCurrentUserAsync();
+                if (user == null)
+                    return;
+
                 var cached = await _contactCacheService.GetCachedContactsAsync();
-                var me = cached.FirstOrDefault(c => string.Equals(c.Email, email, StringComparison.OrdinalIgnoreCase));
-                if (me != null && !string.IsNullOrWhiteSpace(me.Initials))
-                {
-                    UserInitials = me.Initials;
-                }
-                else if (!string.IsNullOrWhiteSpace(email) && email.Contains('@'))
-                {
-                    var prefix = email.Split('@')[0];
-                    var parts = prefix.Split('.', '_', '-');
-                    if (parts.Length >= 2 && parts[0].Length > 0 && parts[1].Length > 0)
-                        UserInitials = $"{parts[0][0]}{parts[1][0]}".ToUpperInvariant();
-                    else if (prefix.Length >= 2)
-                        UserInitials = prefix[..2].ToUpperInvariant();
-                }
+                UserInitials = DisplayText.Initials(DisplayText.UserDisplayName(user, cached));
             }
-            catch {}
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Kullanıcı baş harfleri hesaplanamadı: {ex}");
+            }
         }
 
         private void ApplyFilterCriteria(FilterCriteria criteria)
@@ -315,8 +255,6 @@ namespace StaffSync.ViewModels
 
             SelectedCompany = criteria.SelectedCompany;
             SortBy = criteria.SortBy;
-
-            SyncChipsWithFilters();
 
             OnPropertyChanged(nameof(ActiveFilterCount));
             OnPropertyChanged(nameof(HasActiveFilters));
@@ -384,6 +322,7 @@ namespace StaffSync.ViewModels
                     Contacts.Clear();
                     GroupedContacts.Clear();
 
+                    PrepareItems(result.Items);
                     foreach (var c in result.Items)
                         Contacts.Add(c);
 
@@ -417,10 +356,7 @@ namespace StaffSync.ViewModels
                 if (currentVersion == _reloadVersion)
                 {
                     IsOffline = false;
-                    if (Application.Current?.Windows[0].Page is Page page)
-                    {
-                        await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
-                    }
+                    await _dialogService.AlertAsync("Rehber yüklenemedi", ex.Message, DialogKind.Error);
                 }
             }
             catch (Exception ex)
@@ -429,10 +365,10 @@ namespace StaffSync.ViewModels
                 {
                     IsOffline = false;
                     System.Diagnostics.Debug.WriteLine($"Rehber yükleme hatası: {ex}");
-                    if (Application.Current?.Windows[0].Page is Page page)
-                    {
-                        await page.DisplayAlertAsync("Hata", "Beklenmeyen bir hata oluştu: " + ex.Message, "Tamam");
-                    }
+                    await _dialogService.AlertAsync(
+                        "Bir sorun oluştu",
+                        "Rehber yüklenirken beklenmedik bir sorun oluştu. Lütfen biraz sonra tekrar deneyin.",
+                        DialogKind.Error);
                 }
             }
             finally
@@ -473,6 +409,7 @@ namespace StaffSync.ViewModels
                 TotalCount = list.Count;
                 Contacts.Clear();
                 GroupedContacts.Clear();
+                PrepareItems(list);
 
                 foreach (var c in list)
                     Contacts.Add(c);
@@ -527,6 +464,7 @@ namespace StaffSync.ViewModels
 
                     var culture = new System.Globalization.CultureInfo("tr-TR");
 
+                    PrepareItems(result.Items);
                     foreach (var c in result.Items)
                     {
                         Contacts.Add(c);
@@ -568,10 +506,7 @@ namespace StaffSync.ViewModels
             }
             catch (ApiException ex)
             {
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    await page.DisplayAlertAsync("Hata", ex.Message, "Tamam");
-                }
+                await _dialogService.AlertAsync("Daha fazla kişi yüklenemedi", ex.Message, DialogKind.Error);
             }
             catch (Exception ex)
             {
@@ -636,22 +571,21 @@ namespace StaffSync.ViewModels
             _ = ReloadContactsAsync();
         }
 
+        /// <summary>Listeye girecek kişiler: ara düğmesi metni + fotoğrafların arka planda indirilmesi.</summary>
+        private void PrepareItems(IReadOnlyCollection<ContactDto> items)
+        {
+            foreach (var c in items)
+                c.CallLabel = _callService.GetCallLabel(c);
+
+            _ = _photoService.LoadPhotosAsync(items);
+        }
+
         [RelayCommand]
         public void CallContact(ContactDto? contact)
         {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
-            if (contact == null || string.IsNullOrWhiteSpace(contact.TelephoneNumber))
-                return;
-
-            try
-            {
-                if (PhoneDialer.Default.IsSupported)
-                    PhoneDialer.Default.Open(contact.TelephoneNumber);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Arama açılamadı: {ex.Message}");
-            }
+            // Şirket hattı ayarına göre kısa kod ya da cep numarası
+            if (contact != null)
+                _callService.Call(contact);
         }
     }
 }

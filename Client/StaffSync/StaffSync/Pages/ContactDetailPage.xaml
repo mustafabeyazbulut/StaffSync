@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:StaffSync.Controls"
              xmlns:vm="clr-namespace:StaffSync.ViewModels"
              xmlns:utils="clr-namespace:StaffSync.Utils"
              x:Class="StaffSync.Pages.ContactDetailPage"
@@ -14,7 +15,7 @@
 
         <!-- Üst Bar: ‹ Rehber -->
         <Grid Grid.Row="0" HeightRequest="44" Padding="8,4,8,4">
-            <HorizontalStackLayout Spacing="2"
+            <HorizontalStackLayout controls:Touch.Feedback="True" controls:Touch.CornerRadius="8" Spacing="2"
                                    VerticalOptions="Center"
                                    HorizontalOptions="Start">
                 <HorizontalStackLayout.GestureRecognizers>
@@ -40,20 +41,11 @@
 
                 <!-- Kimlik Bloğu (Ortalı) -->
                 <VerticalStackLayout Spacing="6" HorizontalOptions="Center" Margin="0,4,0,0">
-                    <!-- 96'lık daire avatar -->
-                    <Border WidthRequest="96"
-                            HeightRequest="96"
-                            StrokeShape="RoundRectangle 48"
-                            StrokeThickness="0"
-                            BackgroundColor="{StaticResource Brand}"
-                            HorizontalOptions="Center">
-                        <Label Text="{Binding Contact.Initials}"
-                               TextColor="{StaticResource White}"
-                               FontSize="34"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Border>
+                    <!-- 96'lık avatar: fotoğraf ya da listedekiyle aynı renkte baş harfler -->
+                    <controls:ContactAvatar Name="{Binding Contact.DisplayName}"
+                                            PhotoPath="{Binding Contact.PhotoPath}"
+                                            Size="96"
+                                            HorizontalOptions="Center" />
 
                     <!-- Ad ve Unvan -->
                     <Label Text="{Binding Contact.DisplayName}"
@@ -90,14 +82,14 @@
                 <!-- Hızlı Aksiyonlar: 4 Eşit Sütun (Grid.Column zorunlu) -->
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
 
-                    <!-- Ara -->
-                    <Border Grid.Column="0"
+                    <!-- Ara (şirket hattı ayarına göre kısa kod ya da cep) -->
+                    <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="14" controls:Touch.PressedScale="0.96" Grid.Column="0"
                             HeightRequest="68"
                             StrokeShape="RoundRectangle 14"
                             StrokeThickness="0"
                             BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}">
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding CallPhoneCommand}" />
+                            <TapGestureRecognizer Command="{Binding CallCommand}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="{x:Static utils:LucideIcons.Phone}"
@@ -114,7 +106,7 @@
                     </Border>
 
                     <!-- Mesaj -->
-                    <Border Grid.Column="1"
+                    <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="14" controls:Touch.PressedScale="0.96" Grid.Column="1"
                             HeightRequest="68"
                             StrokeShape="RoundRectangle 14"
                             StrokeThickness="0"
@@ -137,7 +129,7 @@
                     </Border>
 
                     <!-- E-posta -->
-                    <Border Grid.Column="2"
+                    <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="14" controls:Touch.PressedScale="0.96" Grid.Column="2"
                             HeightRequest="68"
                             StrokeShape="RoundRectangle 14"
                             StrokeThickness="0"
@@ -160,7 +152,7 @@
                     </Border>
 
                     <!-- WhatsApp -->
-                    <Border Grid.Column="3"
+                    <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="14" controls:Touch.PressedScale="0.96" Grid.Column="3"
                             HeightRequest="68"
                             StrokeShape="RoundRectangle 14"
                             StrokeThickness="0"
@@ -191,7 +183,7 @@
                     <VerticalStackLayout Spacing="0">
 
                         <!-- Cep telefonu -->
-                        <VerticalStackLayout Spacing="2"
+                        <VerticalStackLayout controls:Touch.Feedback="True" Spacing="2"
                                              Padding="16,12"
                                              IsVisible="{Binding Contact.HasPhone}">
                             <VerticalStackLayout.GestureRecognizers>
@@ -211,7 +203,7 @@
                                  IsVisible="{Binding Contact.HasPhone}" />
 
                         <!-- Dahili / kısa kod -->
-                        <VerticalStackLayout Spacing="2"
+                        <VerticalStackLayout controls:Touch.Feedback="True" Spacing="2"
                                              Padding="16,12"
                                              IsVisible="{Binding Contact.HasShortCode}">
                             <VerticalStackLayout.GestureRecognizers>
@@ -231,7 +223,7 @@
                                  IsVisible="{Binding Contact.HasShortCode}" />
 
                         <!-- E-posta -->
-                        <VerticalStackLayout Spacing="2"
+                        <VerticalStackLayout controls:Touch.Feedback="True" Spacing="2"
                                              Padding="16,12"
                                              IsVisible="{Binding Contact.HasEmail}">
                             <VerticalStackLayout.GestureRecognizers>
@@ -300,7 +292,7 @@
                 </Border>
 
                 <!-- Telefon rehberime kaydet Butonu -->
-                <Border HeightRequest="52"
+                <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="14" controls:Touch.PressedScale="0.97" HeightRequest="52"
                         StrokeShape="RoundRectangle 14"
                         StrokeThickness="0"
                         BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}">
@@ -324,7 +316,7 @@
                 </Border>
 
                 <!-- Hatalı bilgi bildir -->
-                <HorizontalStackLayout Spacing="8"
+                <HorizontalStackLayout controls:Touch.Feedback="True" controls:Touch.CornerRadius="8" Spacing="8"
                                        HeightRequest="44"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center">

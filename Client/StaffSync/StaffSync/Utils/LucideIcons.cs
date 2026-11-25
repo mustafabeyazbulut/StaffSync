@@ -13,6 +13,10 @@ namespace StaffSync.Utils
         public const string Check = "\ue06c";
         public const string UserPlus = "\ue1a2";
         public const string Info = "\ue0f9";
+        public const string CheckCircle = "\ue07c";
+        public const string AlertTriangle = "\ue193";
+        public const string CloudOff = "\ue08d";
+        public const string LogOut = "\ue10e";
         public const string RefreshCw = "\ue145";
         public const string Users = "\ue1a4";
         public const string User = "\ue19f";

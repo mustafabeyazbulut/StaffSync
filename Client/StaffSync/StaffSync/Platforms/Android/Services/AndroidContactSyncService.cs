@@ -3,28 +3,60 @@ using Android.Accounts;
 using Android.Content;
 using Android.OS;
 using Android.Provider;
+using CommunityToolkit.Mvvm.Messaging;
+using StaffSync.Messages;
 using StaffSync.Models;
 using StaffSync.Services;
+using StaffSync.Utils;
 
 namespace StaffSync.Platforms.Android.Services
 {
     public class AndroidContactSyncService : IContactSyncService
     {
-        public const string AccountName = "StaffSync";
+        public const string AccountName = "AUNDE Rehber";
         public const string AccountType = "com.aunde.staffsync";
 
         private static readonly SemaphoreSlim _syncSemaphore = new(1, 1);
 
         private readonly IContactsService _contactsService;
         private readonly ISettingsService _settingsService;
+        private readonly IContactPhotoService _photoService;
 
-        public AndroidContactSyncService(IContactsService contactsService, ISettingsService settingsService)
+        public AndroidContactSyncService(IContactsService contactsService, ISettingsService settingsService, IContactPhotoService photoService)
         {
             _contactsService = contactsService;
             _settingsService = settingsService;
+            _photoService = photoService;
+        }
+
+        /// <summary>Kişinin fotoğrafını rehberdeki kaydına yazar; fotoğraf inemezse kişi fotoğrafsız kalır.</summary>
+        private async Task WritePhotoAsync(ContentResolver resolver, long rawContactId, ContactDto contact, CancellationToken ct)
+        {
+            try
+            {
+                var path = await _photoService.GetLocalPathAsync(contact, ct);
+                if (path == null)
+                    return;
+
+                var bytes = await File.ReadAllBytesAsync(path, ct);
+                var photoUri = global::Android.Net.Uri.WithAppendedPath(
+                    ContentUris.WithAppendedId(ContactsContract.RawContacts.ContentUri!, rawContactId),
+                    ContactsContract.RawContacts.DisplayPhoto.ContentDirectory)!;
+
+                using var descriptor = resolver.OpenAssetFileDescriptor(photoUri, "rw");
+                using var output = descriptor?.CreateOutputStream();
+                if (output != null)
+                    await output.WriteAsync(bytes, ct);
+            }
+            catch (Exception ex) when (ex is IOException || ex is Java.Lang.Exception)
+            {
+                System.Diagnostics.Debug.WriteLine($"Rehbere fotoğraf yazılamadı ({contact.Id}): {ex.Message}");
+            }
         }
 
         public bool IsSupported => true;
+
+        public bool IsSyncRunning => _syncSemaphore.CurrentCount == 0;
 
         private static global::Android.Net.Uri BuildSyncAdapterUri(global::Android.Net.Uri baseUri)
         {
@@ -35,31 +67,71 @@ namespace StaffSync.Platforms.Android.Services
                 .Build()!;
         }
 
-        public static void EnsureAccount(Context context)
+        /// <returns>
+        /// Hesap yoktu ve yeni açıldıysa true. Bu durumda cihazda kişi yoktur (ör. kullanıcı hesabı
+        /// Ayarlar'dan silmiş), artımlı değil tam senkron gerekir.
+        /// </returns>
+        public static bool EnsureAccount(Context context)
         {
             var account = new Account(AccountName, AccountType);
+            var created = false;
             var accountManager = AccountManager.Get(context);
             if (accountManager != null)
             {
-                var accounts = accountManager.GetAccountsByType(AccountType);
-                if (accounts == null || accounts.Length == 0)
+                var accounts = accountManager.GetAccountsByType(AccountType) ?? Array.Empty<Account>();
+                if (!accounts.Any(a => a.Name == AccountName))
                 {
-                    accountManager.AddAccountExplicitly(account, null, null);
+                    created = accountManager.AddAccountExplicitly(account, null, null);
                 }
             }
 
             ContentResolver.SetIsSyncable(account, ContactsContract.Authority, 1);
             ContentResolver.SetSyncAutomatically(account, ContactsContract.Authority, true);
             ContentResolver.AddPeriodicSync(account, ContactsContract.Authority, Bundle.Empty, 86400);
+
+            EnsureContactsVisible(context);
+            return created;
+        }
+
+        /// <summary>
+        /// Android, özel hesaplarda gruba bağlı olmayan kişileri varsayılan olarak gizler
+        /// (Settings.UNGROUPED_VISIBLE = 0). Bu ayar açılmazsa kişiler rehber veritabanına yazılır
+        /// ama Rehber uygulamasında görünmez.
+        /// </summary>
+        private static void EnsureContactsVisible(Context context)
+        {
+            var resolver = context.ContentResolver;
+            if (resolver == null)
+                return;
+
+            try
+            {
+                var uri = BuildSyncAdapterUri(ContactsContract.Settings.ContentUri!);
+                var values = new ContentValues();
+                values.Put(ContactsContract.ISettingsColumns.UngroupedVisible, 1);
+
+                var where = $"{ContactsContract.ISettingsColumns.AccountName}=? AND {ContactsContract.ISettingsColumns.AccountType}=?";
+                var updated = resolver.Update(uri, values, where, new[] { AccountName, AccountType });
+                if (updated == 0)
+                {
+                    values.Put(ContactsContract.ISettingsColumns.AccountName, AccountName);
+                    values.Put(ContactsContract.ISettingsColumns.AccountType, AccountType);
+                    resolver.Insert(uri, values);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AndroidContactSyncService: Görünürlük ayarı yazılamadı: {ex.Message}");
+            }
         }
 
         public async Task<int> SyncContactsAsync(CancellationToken ct = default)
         {
-            if (!await _syncSemaphore.WaitAsync(0, ct))
-            {
-                System.Diagnostics.Debug.WriteLine("AndroidContactSyncService: Senkronizasyon zaten çalışıyor, çağrı atlandı.");
-                return 0;
-            }
+            // Başka bir senkron sürüyorsa (açılış / SyncAdapter) atlamak yerine bitmesini bekle:
+            // atlanırsa kullanıcı "0 kişi senkronize edildi" görüyordu. Ardından yapılan artımlı
+            // senkron sadece aradaki değişiklikleri çeker, maliyeti düşük.
+            await _syncSemaphore.WaitAsync(ct);
+            WeakReferenceMessenger.Default.Send(new SyncStateChangedMessage(true));
 
             try
             {
@@ -72,7 +144,7 @@ namespace StaffSync.Platforms.Android.Services
                 }
 
                 var context = global::Android.App.Application.Context;
-                EnsureAccount(context);
+                var accountCreated = EnsureAccount(context);
 
                 var resolver = context.ContentResolver;
                 if (resolver == null)
@@ -81,7 +153,10 @@ namespace StaffSync.Platforms.Android.Services
                     return 0;
                 }
 
-                var lastSync = _settingsService.LastSyncTime;
+                // Hesap yeni açıldıysa cihazda kişi yoktur; kayıt biçimi değiştiyse kişiler yeniden
+                // yazılmalı. İki durumda da artımlı değil tam senkron yap.
+                var lastSync = accountCreated || ContactSyncFormat.IsOutdated(_settingsService) ? null : _settingsService.LastSyncTime;
+                var writeShortCode = _settingsService.UsesCompanyLine;
                 var changes = await _contactsService.GetChangesAsync(lastSync);
                 if (changes == null)
                 {
@@ -143,6 +218,7 @@ namespace StaffSync.Platforms.Android.Services
 
                 // 2. Toplu Upsert (50 kişilik parçalar halinde)
                 int totalCount = 0;
+                var photoTargets = new List<(ContactDto Contact, int RawInsertIndex)>();
                 foreach (var batch in changes.Upserted.Chunk(50))
                 {
                     var ops = new List<ContentProviderOperation>();
@@ -178,8 +254,24 @@ namespace StaffSync.Platforms.Android.Services
                             .WithValue(ContactsContract.CommonDataKinds.StructuredName.DisplayName, contact.DisplayName)
                             .Build());
 
-                        // Telefon
-                        if (!string.IsNullOrWhiteSpace(contact.TelephoneNumber))
+                        // Kısa kod: kullanıcı şirket hattındaysa asıl aranan numara. Varsayılan (super primary)
+                        // yapılır ki rehberden kişiye dokununca kısa kod aransın. Şirket hattı değilse kısa kod
+                        // çalışmaz, rehbere aranabilir numara olarak yazılmaz.
+                        if (writeShortCode && contact.HasShortCode)
+                        {
+                            ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.Data.ContentUri!))
+                                .WithValueBackReference(ContactsContract.Data.InterfaceConsts.RawContactId, rawIndex)
+                                .WithValue(ContactsContract.Data.InterfaceConsts.Mimetype, ContactsContract.CommonDataKinds.Phone.ContentItemType)
+                                .WithValue(ContactsContract.CommonDataKinds.Phone.Number, contact.Home!.Trim())
+                                .WithValue(ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type, (int)PhoneDataKind.Custom)
+                                .WithValue(ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Label, DisplayText.ShortCodeLabel)
+                                .WithValue(ContactsContract.Data.InterfaceConsts.IsPrimary, 1)
+                                .WithValue(ContactsContract.Data.InterfaceConsts.IsSuperPrimary, 1)
+                                .Build());
+                        }
+
+                        // Cep: gelen aramada arayan kimliği bu numarayla eşleşir, o yüzden kısa kod olsa da yazılır
+                        if (contact.HasPhone)
                         {
                             ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.Data.ContentUri!))
                                 .WithValueBackReference(ContactsContract.Data.InterfaceConsts.RawContactId, rawIndex)
@@ -212,24 +304,27 @@ namespace StaffSync.Platforms.Android.Services
                                 .Build());
                         }
 
-                        // Dahili / Not
-                        if (!string.IsNullOrWhiteSpace(contact.Home))
-                        {
-                            ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.Data.ContentUri!))
-                                .WithValueBackReference(ContactsContract.Data.InterfaceConsts.RawContactId, rawIndex)
-                                .WithValue(ContactsContract.Data.InterfaceConsts.Mimetype, ContactsContract.CommonDataKinds.Note.ContentItemType)
-                                .WithValue(ContactsContract.IDataColumns.Data1, $"Dahili / Kısa Kod: {contact.Home}")
-                                .Build());
-                        }
+                        if (contact.HasPhotoUrl)
+                            photoTargets.Add((contact, rawIndex));
 
                         totalCount++;
                     }
 
-                    resolver.ApplyBatch(ContactsContract.Authority, ops);
+                    var results = resolver.ApplyBatch(ContactsContract.Authority, ops);
+
+                    // Fotoğraflar toplu işleme konmaz (Android'in 1 MB işlem sınırını aşar); kişi eklendikten
+                    // sonra tek tek yazılır, rehber uygulaması boyutu kendisi küçültür.
+                    foreach (var (photoContact, index) in photoTargets)
+                    {
+                        if (results?[index]?.Uri is { } rawUri)
+                            await WritePhotoAsync(resolver, ContentUris.ParseId(rawUri), photoContact, ct);
+                    }
+                    photoTargets.Clear();
                 }
 
                 _settingsService.LastSyncTime = changes.ServerTimeUtc;
                 _settingsService.LastSyncError = null;
+                ContactSyncFormat.MarkWritten(_settingsService);
 
                 return totalCount;
             }
@@ -242,6 +337,7 @@ namespace StaffSync.Platforms.Android.Services
             finally
             {
                 _syncSemaphore.Release();
+                WeakReferenceMessenger.Default.Send(new SyncStateChangedMessage(false));
             }
         }
 

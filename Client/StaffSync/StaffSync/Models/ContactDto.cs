@@ -1,7 +1,26 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json.Serialization;
+
 namespace StaffSync.Models
 {
-    public class ContactDto
+    public partial class ContactDto : ObservableObject
     {
+        // --- Ekran durumu (sunucudan gelmez, önbelleğe yazılmaz) ---
+
+        /// <summary>İndirilmiş fotoğrafın cihazdaki yolu; fotoğraf yoksa ya da henüz inmediyse null.</summary>
+        [ObservableProperty]
+        [JsonIgnore]
+        public partial string? PhotoPath { get; set; }
+
+        /// <summary>Ara düğmesinde yazan: şirket hattında kısa kod ("1001"), değilse "Ara".</summary>
+        [ObservableProperty]
+        [JsonIgnore]
+        public partial string CallLabel { get; set; } = "Ara";
+
+        [JsonIgnore]
+        public bool HasPhotoUrl => !string.IsNullOrWhiteSpace(ImageUrl);
+
+        // --- Sunucu alanları ---
         public int Id { get; set; }
         public string DisplayName { get; set; } = "";
         public string? ImageUrl { get; set; }
@@ -15,18 +34,7 @@ namespace StaffSync.Models
         public string? ManagerName { get; set; }
 
         // UI Yardımcıları
-        public string Initials
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(DisplayName))
-                    return "?";
-                var parts = DisplayName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length == 1)
-                    return parts[0][0].ToString().ToUpperInvariant();
-                return $"{parts[0][0]}{parts[^1][0]}".ToUpperInvariant();
-            }
-        }
+        public string Initials => Utils.DisplayText.Initials(DisplayName);
 
         public string Subtitle
         {

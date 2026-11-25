@@ -22,7 +22,9 @@
 		
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<!-- Display name -->
-		<ApplicationTitle>StaffSync</ApplicationTitle>
+		<ApplicationTitle>AUNDE Rehber</ApplicationTitle>
+		<!-- iOS'ta tek ad var (CFBundleDisplayName), ana ekranda ikon altında kesilmesin diye kısa ad -->
+		<ApplicationTitle Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Rehber</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.staffsync</ApplicationId>

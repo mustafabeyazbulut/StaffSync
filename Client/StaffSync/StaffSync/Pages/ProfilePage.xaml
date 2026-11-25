@@ -87,6 +87,34 @@
                 </Grid>
             </Border>
 
+            <!-- ARAMA Bölümü -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="ARAMA"
+                       Style="{StaticResource SectionHeader}"
+                       Margin="4,0" />
+
+                <Border StrokeShape="RoundRectangle 14"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                        Padding="0">
+                    <Grid ColumnDefinitions="*, Auto" Padding="16,12" ColumnSpacing="12">
+                        <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                            <Label Text="Şirket hattı kullanıyorum"
+                                   FontSize="16"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                            <Label Text="{Binding CompanyLineDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                        </VerticalStackLayout>
+
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding UsesCompanyLine}"
+                                OnColor="{StaticResource Brand}"
+                                VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
             <!-- SENKRONİZASYON Bölümü -->
             <VerticalStackLayout Spacing="8">
                 <Label Text="SENKRONİZASYON"
@@ -137,7 +165,7 @@
                                  Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
 
                         <!-- Şimdi senkronize et Butonu -->
-                        <Grid HeightRequest="48" Padding="16,0" ColumnDefinitions="Auto, *">
+                        <Grid controls:Touch.Feedback="True" HeightRequest="48" Padding="16,0" ColumnDefinitions="Auto, *">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SyncNowCommand}" />
                             </Grid.GestureRecognizers>
@@ -217,7 +245,7 @@
                              Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
 
                     <!-- Çıkış yap -->
-                    <Grid HeightRequest="48" Padding="16,0">
+                    <Grid controls:Touch.Feedback="True" HeightRequest="48" Padding="16,0">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding LogoutCommand}" />
                         </Grid.GestureRecognizers>

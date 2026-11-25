@@ -37,16 +37,7 @@ namespace StaffSync.Services
             await _fileLock.WaitAsync();
             try
             {
-                if (!File.Exists(_cacheFilePath))
-                    return new List<ContactDto>();
-
-                var json = await File.ReadAllTextAsync(_cacheFilePath);
-                return System.Text.Json.JsonSerializer.Deserialize<List<ContactDto>>(json) ?? new List<ContactDto>();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"GetCachedContactsAsync okuma hatası: {ex}");
-                return new List<ContactDto>();
+                return await ReadCacheUnlockedAsync() ?? new List<ContactDto>();
             }
             finally
             {
@@ -59,6 +50,24 @@ namespace StaffSync.Services
             try
             {
                 var since = GetCacheLastSyncTime();
+                if (since != null)
+                {
+                    // Önbellek dosyası yok/bozuksa artımlı değişiklik birleştirilemez: baştan tam çek
+                    await _fileLock.WaitAsync(ct);
+                    try
+                    {
+                        if (await ReadCacheUnlockedAsync() == null)
+                        {
+                            ResetCacheUnlocked();
+                            since = null;
+                        }
+                    }
+                    finally
+                    {
+                        _fileLock.Release();
+                    }
+                }
+
                 var changes = await _contactsService.GetChangesAsync(since);
                 if (changes != null)
                 {
@@ -76,19 +85,25 @@ namespace StaffSync.Services
             await _fileLock.WaitAsync();
             try
             {
-                List<ContactDto> cached;
-                var since = GetCacheLastSyncTime();
+                var isIncremental = GetCacheLastSyncTime() != null;
+                var cached = isIncremental ? await ReadCacheUnlockedAsync() : null;
 
-                if (since == null || !File.Exists(_cacheFilePath))
+                if (isIncremental && cached == null)
                 {
+                    // Bozuk/eksik önbelleğe artımlı değişiklik eklenirse liste eksik kalır.
+                    // Sıfırla; bir sonraki RefreshCacheAsync tam listeyi çeker.
+                    ResetCacheUnlocked();
+                    return;
+                }
+
+                if (cached == null)
+                {
+                    // Tam liste: sunucudan geleni olduğu gibi al
                     cached = changes.Upserted.ToList();
                 }
                 else
                 {
-                    var json = await File.ReadAllTextAsync(_cacheFilePath);
-                    cached = System.Text.Json.JsonSerializer.Deserialize<List<ContactDto>>(json) ?? new List<ContactDto>();
-
-                    if (changes.DeletedIds != null && changes.DeletedIds.Count > 0)
+                    if (changes.DeletedIds is { Count: > 0 })
                     {
                         cached.RemoveAll(c => changes.DeletedIds.Contains(c.Id));
                     }
@@ -103,8 +118,11 @@ namespace StaffSync.Services
                     }
                 }
 
-                var outputJson = System.Text.Json.JsonSerializer.Serialize(cached);
-                await File.WriteAllTextAsync(_cacheFilePath, outputJson);
+                // Atomik yazma: önce geçici dosyaya, sonra yerine taşı. Doğrudan yazarken uygulama
+                // kapatılırsa dosya boş kalıyor ve önbellek kalıcı olarak bozuluyordu.
+                var tempPath = _cacheFilePath + ".tmp";
+                await File.WriteAllTextAsync(tempPath, System.Text.Json.JsonSerializer.Serialize(cached));
+                File.Move(tempPath, _cacheFilePath, overwrite: true);
                 Preferences.Default.Set(CacheSinceKey, changes.ServerTimeUtc.ToString("O"));
             }
             catch (Exception ex)
@@ -115,6 +133,39 @@ namespace StaffSync.Services
             {
                 _fileLock.Release();
             }
+        }
+
+        /// <summary>Önbellek dosyasını okur; dosya yoksa veya okunamıyorsa (boş/bozuk) null. Kilit çağırana ait.</summary>
+        private async Task<List<ContactDto>?> ReadCacheUnlockedAsync()
+        {
+            if (!File.Exists(_cacheFilePath))
+                return null;
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(_cacheFilePath);
+                return System.Text.Json.JsonSerializer.Deserialize<List<ContactDto>>(json);
+            }
+            catch (Exception ex) when (ex is System.Text.Json.JsonException || ex is IOException)
+            {
+                System.Diagnostics.Debug.WriteLine($"Önbellek okunamadı, sıfırlanacak: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>Önbelleği siler ve "son güncelleme" işaretini kaldırır; sonraki yenileme tam liste çeker. Kilit çağırana ait.</summary>
+        private void ResetCacheUnlocked()
+        {
+            try
+            {
+                if (File.Exists(_cacheFilePath))
+                    File.Delete(_cacheFilePath);
+            }
+            catch (IOException ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Önbellek dosyası silinemedi: {ex.Message}");
+            }
+            Preferences.Default.Remove(CacheSinceKey);
         }
     }
 }

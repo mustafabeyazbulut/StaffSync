@@ -165,6 +165,9 @@ namespace StaffSync.Controls
                     SelectedIndex = index;
                 };
                 border.GestureRecognizers.Add(tapGesture);
+                Touch.SetCornerRadius(border, 8);
+                Touch.SetPressedScale(border, 0.97);
+                Touch.SetFeedback(border, true);
 
                 Grid.SetColumn(border, i);
                 SegmentsGrid.Children.Add(border);

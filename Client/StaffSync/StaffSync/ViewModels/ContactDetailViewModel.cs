@@ -1,11 +1,27 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using StaffSync.Models;
+using StaffSync.Services;
+using StaffSync.Utils;
 
 namespace StaffSync.ViewModels
 {
     public partial class ContactDetailViewModel : ObservableObject, IQueryAttributable
     {
+        private readonly ICallService _callService;
+        private readonly ISettingsService _settingsService;
+        private readonly IContactPhotoService _photoService;
+        private readonly IDialogService _dialogService;
+
+        public ContactDetailViewModel(ICallService callService, ISettingsService settingsService,
+            IContactPhotoService photoService, IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+            _callService = callService;
+            _settingsService = settingsService;
+            _photoService = photoService;
+        }
+
         [ObservableProperty]
         public partial ContactDto? Contact { get; set; }
 
@@ -23,6 +39,10 @@ namespace StaffSync.ViewModels
                 OnPropertyChanged(nameof(HasCompany));
                 OnPropertyChanged(nameof(HasManager));
                 OnPropertyChanged(nameof(HasDepartment));
+
+                // Listeden gelirken fotoğraf genelde inmiş olur; inmediyse burada indir
+                if (c.PhotoPath == null && c.HasPhotoUrl)
+                    _ = _photoService.LoadPhotosAsync(new[] { c });
             }
         }
 
@@ -32,46 +52,26 @@ namespace StaffSync.ViewModels
             await Shell.Current.GoToAsync("..");
         }
 
+        /// <summary>Üstteki "Ara": şirket hattı ayarına göre kısa kod ya da cep.</summary>
         [RelayCommand]
-        private void CallShortCode()
+        private void Call()
         {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
-            if (Contact == null || string.IsNullOrWhiteSpace(Contact.Home))
-                return;
-
-            try
-            {
-                if (PhoneDialer.Default.IsSupported)
-                    PhoneDialer.Default.Open(Contact.Home);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Dahili arama başlatılamadı: {ex.Message}");
-            }
+            if (Contact != null)
+                _callService.Call(Contact);
         }
 
+        /// <summary>"Dahili / kısa kod" satırı: her zaman kısa kodu arar.</summary>
         [RelayCommand]
-        private void CallPhone()
-        {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
-            if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
-                return;
+        private void CallShortCode() => _callService.Dial(Contact?.Home?.Trim());
 
-            try
-            {
-                if (PhoneDialer.Default.IsSupported)
-                    PhoneDialer.Default.Open(Contact.TelephoneNumber);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Telefon araması başlatılamadı: {ex.Message}");
-            }
-        }
+        /// <summary>"Cep telefonu" satırı: her zaman cep numarasını arar.</summary>
+        [RelayCommand]
+        private void CallPhone() => _callService.Dial(Contact?.TelephoneNumber);
 
         [RelayCommand]
         private async Task SendSmsAsync()
         {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
+            Haptics.Click();
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
                 return;
 
@@ -89,7 +89,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private async Task SendEmailAsync()
         {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
+            Haptics.Click();
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.Email))
                 return;
 
@@ -110,7 +110,7 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         private async Task OpenWhatsAppAsync()
         {
-            try { HapticFeedback.Default.Perform(HapticFeedbackType.Click); } catch { }
+            Haptics.Click();
             if (Contact == null || string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
                 return;
 
@@ -144,10 +144,30 @@ namespace StaffSync.ViewModels
                 var intent = new Android.Content.Intent(Android.Provider.ContactsContract.Intents.Insert.Action);
                 intent.SetType(Android.Provider.ContactsContract.RawContacts.ContentType);
                 intent.PutExtra(Android.Provider.ContactsContract.Intents.Insert.Name, Contact.DisplayName);
-                if (!string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
+
+                // Numaralar Insert.Data satırlarıyla verilir: kısa kodun "Kısa kod" etiketi ancak böyle taşınır.
+                // Şirket hattı kullanan için kısa kod ilk sırada; cep her zaman (arayan kimliği için).
+                var phoneRows = new List<Android.OS.IParcelable>();
+                if (_settingsService.UsesCompanyLine && Contact.HasShortCode)
                 {
-                    intent.PutExtra(Android.Provider.ContactsContract.Intents.Insert.Phone, Contact.TelephoneNumber);
-                    intent.PutExtra(Android.Provider.ContactsContract.Intents.Insert.PhoneType, (int)Android.Provider.PhoneDataKind.Mobile);
+                    var shortCode = new Android.Content.ContentValues();
+                    shortCode.Put(Android.Provider.ContactsContract.Data.InterfaceConsts.Mimetype, Android.Provider.ContactsContract.CommonDataKinds.Phone.ContentItemType);
+                    shortCode.Put(Android.Provider.ContactsContract.CommonDataKinds.Phone.Number, Contact.Home!.Trim());
+                    shortCode.Put(Android.Provider.ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type, (int)Android.Provider.PhoneDataKind.Custom);
+                    shortCode.Put(Android.Provider.ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Label, DisplayText.ShortCodeLabel);
+                    phoneRows.Add(shortCode);
+                }
+                if (Contact.HasPhone)
+                {
+                    var mobile = new Android.Content.ContentValues();
+                    mobile.Put(Android.Provider.ContactsContract.Data.InterfaceConsts.Mimetype, Android.Provider.ContactsContract.CommonDataKinds.Phone.ContentItemType);
+                    mobile.Put(Android.Provider.ContactsContract.CommonDataKinds.Phone.Number, Contact.TelephoneNumber);
+                    mobile.Put(Android.Provider.ContactsContract.CommonDataKinds.Phone.InterfaceConsts.Type, (int)Android.Provider.PhoneDataKind.Mobile);
+                    phoneRows.Add(mobile);
+                }
+                if (phoneRows.Count > 0)
+                {
+                    intent.PutParcelableArrayListExtra(Android.Provider.ContactsContract.Intents.Insert.Data, phoneRows);
                 }
                 if (!string.IsNullOrWhiteSpace(Contact.Email))
                 {
@@ -172,15 +192,8 @@ namespace StaffSync.ViewModels
                     JobTitle = Contact.JobTitle ?? "",
                     DepartmentName = Contact.Department ?? ""
                 };
-                if (!string.IsNullOrWhiteSpace(Contact.TelephoneNumber))
-                {
-                    newContact.PhoneNumbers = new[]
-                    {
-                        new Contacts.CNLabeledValue<Contacts.CNPhoneNumber>(
-                            Contacts.CNLabelPhoneNumberKey.Mobile,
-                            new Contacts.CNPhoneNumber(Contact.TelephoneNumber))
-                    };
-                }
+                newContact.PhoneNumbers = Platforms.iOS.Services.IosContactSyncService.BuildPhoneNumbers(
+                    Contact, _settingsService.UsesCompanyLine);
                 if (!string.IsNullOrWhiteSpace(Contact.Email))
                 {
                     newContact.EmailAddresses = new[]
@@ -217,25 +230,18 @@ namespace StaffSync.ViewModels
                     rootVc?.PresentViewController(navController, true, null);
                 });
 #else
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    await page.DisplayAlertAsync(
-                        "Bilgi",
-                        "Bu platformda rehbere kaydetme desteklenmemektedir.",
-                        "Tamam");
-                }
+                await _dialogService.AlertAsync(
+                    "Bu cihazda kullanılamıyor",
+                    "Rehbere kaydetme bu cihazda desteklenmiyor.");
 #endif
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Rehbere kaydetme hatası: {ex}");
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    await page.DisplayAlertAsync(
-                        "Hata",
-                        "Rehber ekranı açılamadı: " + ex.Message,
-                        "Tamam");
-                }
+                await _dialogService.AlertAsync(
+                    "Rehber açılamadı",
+                    "Kişiyi kaydetmek için telefon rehberi açılamadı. Lütfen tekrar deneyin.",
+                    DialogKind.Error);
             }
         }
 

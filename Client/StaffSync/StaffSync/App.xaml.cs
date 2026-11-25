@@ -1,4 +1,4 @@
-﻿using StaffSync.Services;
+using StaffSync.Services;
 
 namespace StaffSync
 {
@@ -24,7 +24,9 @@ namespace StaffSync
             Application.Current!.RequestedThemeChanged += (s, e) =>
             {
 #if ANDROID
-                (Microsoft.Maui.ApplicationModel.Platform.CurrentActivity as MainActivity)?.UpdateStatusBar();
+                // Sayfa zemini (AppThemeBinding) yeni temaya geçtikten sonra durum çubuğunu güncelle
+                Dispatcher.Dispatch(() =>
+                    (Microsoft.Maui.ApplicationModel.Platform.CurrentActivity as MainActivity)?.UpdateStatusBar());
 #endif
             };
 

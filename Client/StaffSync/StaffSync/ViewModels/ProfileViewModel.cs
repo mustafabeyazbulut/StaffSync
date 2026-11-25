@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using StaffSync.Messages;
 using StaffSync.Models;
 using StaffSync.Services;
+using StaffSync.Utils;
 
 namespace StaffSync.ViewModels
 {
@@ -11,21 +14,40 @@ namespace StaffSync.ViewModels
         private readonly ISettingsService _settingsService;
         private readonly IContactSyncService _syncService;
         private readonly IContactCacheService _cacheService;
+        private readonly IDialogService _dialogService;
 
         public ProfileViewModel(
             IAuthService authService,
             ISettingsService settingsService,
             IContactSyncService syncService,
-            IContactCacheService cacheService)
+            IContactCacheService cacheService,
+            IDialogService dialogService)
         {
             _authService = authService;
             _settingsService = settingsService;
             _syncService = syncService;
             _cacheService = cacheService;
+            _dialogService = dialogService;
 
             IsSyncEnabled = _settingsService.IsSyncEnabled;
             SelectedThemeIndex = (int)_settingsService.SelectedTheme;
+            UsesCompanyLine = _settingsService.UsesCompanyLine;
+
+            // Açılış / arka plan senkronu bu ekran açıkken biterse "Son senkron" anında güncellensin.
+            WeakReferenceMessenger.Default.Register<SyncStateChangedMessage>(this, (r, m) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    IsSyncing = _manualSyncInProgress || m.Value;
+                    if (!m.Value)
+                        UpdateSyncStatusText();
+                });
+            });
         }
+
+        // "Şimdi senkronize et" ile başlatılan senkron; arka plan senkronundan ayrı tutulur ki
+        // arka plan bittiğinde düğme tekrar basılabilir hale gelip ikinci bir uyarı çıkmasın.
+        private bool _manualSyncInProgress;
 
         [ObservableProperty]
         public partial UserInfo? CurrentUser { get; set; }
@@ -42,7 +64,7 @@ namespace StaffSync.ViewModels
         public bool HasUserDepartment => !string.IsNullOrWhiteSpace(UserDepartment);
 
         [ObservableProperty]
-        public partial string UserInitials { get; set; } = "??";
+        public partial string UserInitials { get; set; } = "";
 
         [ObservableProperty]
         public partial bool IsAdmin { get; set; }
@@ -66,6 +88,28 @@ namespace StaffSync.ViewModels
 
         public string AppVersion => AppInfo.Current.VersionString;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CompanyLineDescription))]
+        public partial bool UsesCompanyLine { get; set; }
+
+        public string CompanyLineDescription => UsesCompanyLine
+            ? "Aramalar kısa kodla yapılır"
+            : "Aramalar cep numarasıyla yapılır";
+
+        partial void OnUsesCompanyLineChanged(bool value)
+        {
+            if (value == _settingsService.UsesCompanyLine)
+                return; // ilk yüklemede ayarın kendisi atanıyor
+
+            _settingsService.UsesCompanyLine = value;
+            WeakReferenceMessenger.Default.Send(new CompanyLineChangedMessage(value));
+
+            // Telefon rehberindeki varsayılan numara da bu tercihe göre yazılır: biçim değişti,
+            // senkron açıksa kişiler hemen yeniden yazılsın.
+            if (_settingsService.IsSyncEnabled)
+                _ = SyncNowAsync();
+        }
+
         partial void OnSelectedThemeIndexChanged(int value)
         {
             if (value >= 0 && value <= 2)
@@ -85,68 +129,37 @@ namespace StaffSync.ViewModels
             CurrentUser = await _authService.GetCurrentUserAsync();
             if (CurrentUser != null)
             {
-                UserEmail = CurrentUser.Email ?? "";
-                UserDisplayName = CurrentUser.Name ?? "";
+                UserEmail = CurrentUser.Email;
+                IsAdmin = CurrentUser.Role.Contains("admin", StringComparison.OrdinalIgnoreCase);
 
-                IsAdmin = !string.IsNullOrWhiteSpace(CurrentUser.Role) &&
-                          CurrentUser.Role.Contains("admin", StringComparison.OrdinalIgnoreCase);
+                // Önce hesap bilgisiyle hemen doldur; önbellek (senkron sürerken kilitli olabilir) okununca iyileştir
+                UserDisplayName = DisplayText.UserDisplayName(CurrentUser, Array.Empty<ContactDto>());
+                UserInitials = DisplayText.Initials(UserDisplayName);
 
+                IReadOnlyList<ContactDto> cached = Array.Empty<ContactDto>();
                 try
                 {
-                    var cached = await _cacheService.GetCachedContactsAsync();
-                    var match = cached.FirstOrDefault(c =>
-                        !string.IsNullOrWhiteSpace(c.Email) &&
-                        string.Equals(c.Email.Trim(), UserEmail.Trim(), StringComparison.OrdinalIgnoreCase));
-
-                    if (match != null)
-                    {
-                        if (!string.IsNullOrWhiteSpace(match.DisplayName))
-                            UserDisplayName = match.DisplayName;
-                        UserDepartment = match.Department;
-                    }
+                    cached = await _cacheService.GetCachedContactsAsync();
                 }
-                catch { }
-
-                if (string.IsNullOrWhiteSpace(UserDisplayName))
+                catch (Exception ex)
                 {
-                    UserDisplayName = UserEmail.Split('@')[0];
+                    // Önbellek okunamazsa profil yine de hesap adı/e-posta ile gösterilir
+                    System.Diagnostics.Debug.WriteLine($"Profil önbellek okuma hatası: {ex}");
                 }
 
-                UserInitials = ComputeInitials(UserDisplayName);
+                UserDisplayName = DisplayText.UserDisplayName(CurrentUser, cached);
+                UserDepartment = DisplayText.FindSelf(CurrentUser, cached)?.Department;
+                UserInitials = DisplayText.Initials(UserDisplayName);
                 OnPropertyChanged(nameof(HasUserDepartment));
             }
 
             UpdateSyncStatusText();
-        }
-
-        private static string ComputeInitials(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return "??";
-            var parts = name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 1)
-                return parts[0][0].ToString().ToUpperInvariant();
-            return $"{parts[0][0]}{parts[^1][0]}".ToUpperInvariant();
+            IsSyncing = _manualSyncInProgress || _syncService.IsSyncRunning;
         }
 
         private void UpdateSyncStatusText()
         {
-            var lastTime = _settingsService.LastSyncTime;
-            if (lastTime.HasValue)
-            {
-                var local = lastTime.Value.ToLocalTime();
-                var today = DateTime.Today;
-                if (local.Date == today)
-                    LastSyncText = $"Bugün {local:HH:mm}";
-                else if (local.Date == today.AddDays(-1))
-                    LastSyncText = $"Dün {local:HH:mm}";
-                else
-                    LastSyncText = $"{local:dd.MM.yyyy HH:mm}";
-            }
-            else
-            {
-                LastSyncText = "Henüz yapılmadı";
-            }
+            LastSyncText = DisplayText.LastSync(_settingsService.LastSyncTime) ?? "Henüz yapılmadı";
 
             LastSyncError = _settingsService.LastSyncError;
             OnPropertyChanged(nameof(HasSyncError));
@@ -160,20 +173,17 @@ namespace StaffSync.ViewModels
 
             if (!newValue)
             {
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    var count = await _syncService.GetSyncedContactsCountAsync();
-                    var confirmed = await page.DisplayAlertAsync(
-                        "Rehber Senkronizasyonunu Kapat",
-                        $"StaffSync tarafından telefonunuza eklenen {count} şirket kişisi rehberinizden kaldırılacaktır. Kişisel rehberinizdeki kişilere dokunulmaz.\n\nOnaylıyor musunuz?",
-                        "Evet, Temizle ve Kapat",
-                        "İptal");
+                var count = await _syncService.GetSyncedContactsCountAsync();
+                var confirmed = await _dialogService.ConfirmAsync(
+                    "Rehber aktarımı kapatılsın mı?",
+                    $"AUNDE Rehber'in telefonunuza eklediği {count} şirket kişisi rehberinizden kaldırılacak. Kendi kişilerinize dokunulmaz.",
+                    "Kapat ve kaldır",
+                    destructive: true);
 
-                    if (!confirmed)
-                    {
-                        IsSyncEnabled = true;
-                        return;
-                    }
+                if (!confirmed)
+                {
+                    IsSyncEnabled = true;
+                    return;
                 }
 
                 try
@@ -214,13 +224,9 @@ namespace StaffSync.ViewModels
                 {
                     _settingsService.IsSyncEnabled = false;
                     IsSyncEnabled = false;
-                    if (Application.Current?.Windows[0].Page is Page page)
-                    {
-                        await page.DisplayAlertAsync(
-                            "İzin Verilmedi",
-                            "Rehber okuma/yazma izni verilmediği için senkronizasyon açılamadı. Lütfen cihaz ayarlarından StaffSync uygulamasına rehber izni veriniz.",
-                            "Tamam");
-                    }
+                    await _dialogService.AlertAsync(
+                        "Rehber izni gerekiyor",
+                        "Şirket kişilerini telefonunuza ekleyebilmemiz için rehber izni gerekiyor. İzni dilediğiniz zaman telefonun Ayarlar > Uygulamalar > AUNDE Rehber bölümünden verebilirsiniz.");
                     return;
                 }
 
@@ -233,58 +239,55 @@ namespace StaffSync.ViewModels
         [RelayCommand]
         public async Task SyncNowAsync()
         {
-            if (IsSyncing)
+            if (_manualSyncInProgress)
                 return;
 
             try
             {
+                _manualSyncInProgress = true;
                 IsSyncing = true;
+                // Arka planda bir senkron sürüyorsa servis onun bitmesini bekler, sonra artımlı senkron yapar.
                 var count = await _syncService.SyncContactsAsync();
                 UpdateSyncStatusText();
 
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    if (!string.IsNullOrEmpty(_settingsService.LastSyncError))
-                    {
-                        await page.DisplayAlertAsync("Senkronizasyon Hatası", _settingsService.LastSyncError, "Tamam");
-                    }
-                    else
-                    {
-                        await page.DisplayAlertAsync("Senkronizasyon", $"{count} kişi başarıyla senkronize edildi.", "Tamam");
-                    }
-                }
+                if (!string.IsNullOrEmpty(_settingsService.LastSyncError))
+                    await ShowSyncErrorAsync(_settingsService.LastSyncError);
+                else if (count == 0)
+                    await _dialogService.ToastAsync("Rehberiniz güncel");
+                else
+                    await _dialogService.ToastAsync($"{count} kişi güncellendi");
             }
             catch (Exception ex)
             {
                 _settingsService.LastSyncError = ex.Message;
                 UpdateSyncStatusText();
-                if (Application.Current?.Windows[0].Page is Page page)
-                {
-                    await page.DisplayAlertAsync("Senkronizasyon Hatası", ex.Message, "Tamam");
-                }
+                await ShowSyncErrorAsync(ex.Message);
             }
             finally
             {
-                IsSyncing = false;
+                _manualSyncInProgress = false;
+                IsSyncing = _syncService.IsSyncRunning;
             }
         }
+
+        private Task ShowSyncErrorAsync(string detail) =>
+            _dialogService.AlertAsync(
+                "Rehber güncellenemedi",
+                $"{detail}\n\nBiraz sonra tekrar deneyebilirsiniz.",
+                DialogKind.Error);
 
         [RelayCommand]
         public async Task LogoutAsync()
         {
-            if (Application.Current?.Windows[0].Page is Page page)
-            {
-                var confirm = await page.DisplayAlertAsync(
-                    "Çıkış Yap",
-                    "Hesabınızdan çıkış yapmak istediğinize emin misiniz?",
-                    "Evet, Çıkış Yap",
-                    "İptal");
+            var confirm = await _dialogService.ConfirmAsync(
+                "Çıkış yapılsın mı?",
+                "Tekrar giriş yapana kadar şirket rehberini göremezsiniz.",
+                "Çıkış yap");
 
-                if (confirm)
-                {
-                    await _authService.LogoutAsync();
-                    await Shell.Current.GoToAsync("//login");
-                }
+            if (confirm)
+            {
+                await _authService.LogoutAsync();
+                await Shell.Current.GoToAsync("//login");
             }
         }
     }

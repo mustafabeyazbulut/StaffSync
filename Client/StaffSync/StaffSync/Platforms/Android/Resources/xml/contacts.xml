@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  "AUNDE Rehber" hesabını rehber uygulamalarına kişi hesabı olarak tanıtır; bu bildirim olmadan
+  kişiler veritabanında olsa da bazı Kişiler uygulamaları hesabı listelemiyor.
+  Düzenleme ekranı (editor) tanımlanmadığı için bu kişiler rehberde salt okunur görünür:
+  şirket kişileri telefonda değiştirilmez, doğrusu uygulamadaki "Hatalı bilgi bildir" ile iletilir.
+-->
+<ContactsAccountType xmlns:android="http://schemas.android.com/apk/res/android" />

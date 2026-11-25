@@ -24,7 +24,7 @@
                 </Image.GestureRecognizers>
             </Image>
 
-            <Label Text="StaffSync"
+            <Label Text="AUNDE Rehber"
                    FontSize="32"
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"

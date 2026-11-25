@@ -1,8 +1,11 @@
 #if IOS
 using Contacts;
+using CommunityToolkit.Mvvm.Messaging;
 using Foundation;
+using StaffSync.Messages;
 using StaffSync.Models;
 using StaffSync.Services;
+using StaffSync.Utils;
 using System.Text.Json;
 
 namespace StaffSync.Platforms.iOS.Services
@@ -10,6 +13,7 @@ namespace StaffSync.Platforms.iOS.Services
     public class IosContactSyncService : IContactSyncService
     {
         private const string GroupIdPrefKey = "Ios_StaffSync_GroupId";
+        private const string GroupName = "AUNDE Rehber";
         private static readonly string MapFilePath = Path.Combine(FileSystem.AppDataDirectory, "ios_contact_map.json");
 
         private static readonly NSString[] KeysToFetch = new[]
@@ -20,7 +24,8 @@ namespace StaffSync.Platforms.iOS.Services
             CNContactKey.EmailAddresses,
             CNContactKey.OrganizationName,
             CNContactKey.DepartmentName,
-            CNContactKey.JobTitle
+            CNContactKey.JobTitle,
+            CNContactKey.ImageData // okunmazsa değiştirilebilir kopyada fotoğraf yazılamaz
         };
 
         private static readonly SemaphoreSlim _syncSemaphore = new(1, 1);
@@ -28,13 +33,25 @@ namespace StaffSync.Platforms.iOS.Services
         private readonly IContactsService _contactsService;
         private readonly ISettingsService _settingsService;
 
-        public IosContactSyncService(IContactsService contactsService, ISettingsService settingsService)
+        public IosContactSyncService(IContactsService contactsService, ISettingsService settingsService, IContactPhotoService photoService)
         {
             _contactsService = contactsService;
             _settingsService = settingsService;
+            _photoService = photoService;
+        }
+
+        private readonly IContactPhotoService _photoService;
+
+        /// <summary>Kişinin fotoğrafı (iOS rehberi için); fotoğraf yoksa ya da inemezse null.</summary>
+        private async Task<NSData?> LoadPhotoDataAsync(ContactDto contact, CancellationToken ct)
+        {
+            var path = await _photoService.GetLocalPathAsync(contact, ct);
+            return path == null ? null : NSData.FromArray(await File.ReadAllBytesAsync(path, ct));
         }
 
         public bool IsSupported => true;
+
+        public bool IsSyncRunning => _syncSemaphore.CurrentCount == 0;
 
         private static Dictionary<int, string> LoadContactMap()
         {
@@ -92,11 +109,11 @@ namespace StaffSync.Platforms.iOS.Services
                 var groups = store.GetGroups(null, out var error);
                 if (error == null && groups != null)
                 {
-                    var staffSyncGroup = groups.FirstOrDefault(g => g.Name == "StaffSync");
-                    if (staffSyncGroup != null)
+                    var appGroup = groups.FirstOrDefault(g => g.Name == GroupName);
+                    if (appGroup != null)
                     {
-                        Preferences.Set(GroupIdPrefKey, staffSyncGroup.Identifier);
-                        return staffSyncGroup.Identifier;
+                        Preferences.Set(GroupIdPrefKey, appGroup.Identifier);
+                        return appGroup.Identifier;
                     }
                 }
             }
@@ -105,7 +122,7 @@ namespace StaffSync.Platforms.iOS.Services
                 System.Diagnostics.Debug.WriteLine($"Grupları listeleme hatası: {ex}");
             }
 
-            var newGroup = new CNMutableGroup { Name = "StaffSync" };
+            var newGroup = new CNMutableGroup { Name = GroupName };
             var saveReq = new CNSaveRequest();
             saveReq.AddGroup(newGroup, null);
             if (store.ExecuteSaveRequest(saveReq, out var saveError) && saveError == null)
@@ -115,6 +132,20 @@ namespace StaffSync.Platforms.iOS.Services
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Şirket hattı kullanan için kısa kod ilk sırada (asıl aranan numara; iOS ilk numarayı öne
+        /// çıkarır). Cep her zaman yazılır: gelen aramada arayan kimliği bununla eşleşir.
+        /// </summary>
+        internal static CNLabeledValue<CNPhoneNumber>[] BuildPhoneNumbers(ContactDto contact, bool includeShortCode)
+        {
+            var numbers = new List<CNLabeledValue<CNPhoneNumber>>(2);
+            if (includeShortCode && contact.HasShortCode)
+                numbers.Add(new CNLabeledValue<CNPhoneNumber>(DisplayText.ShortCodeLabel, new CNPhoneNumber(contact.Home!.Trim())));
+            if (contact.HasPhone)
+                numbers.Add(new CNLabeledValue<CNPhoneNumber>(CNLabelPhoneNumberKey.Mobile, new CNPhoneNumber(contact.TelephoneNumber!)));
+            return numbers.ToArray();
         }
 
         private static (string GivenName, string FamilyName) SplitName(string? displayName)
@@ -135,11 +166,9 @@ namespace StaffSync.Platforms.iOS.Services
 
         public async Task<int> SyncContactsAsync(CancellationToken ct = default)
         {
-            if (!await _syncSemaphore.WaitAsync(0, ct))
-            {
-                System.Diagnostics.Debug.WriteLine("IosContactSyncService: Senkronizasyon zaten çalışıyor, çağrı atlandı.");
-                return 0;
-            }
+            // Başka bir senkron sürüyorsa atlamak yerine bitmesini bekle (bkz. Android servisi).
+            await _syncSemaphore.WaitAsync(ct);
+            WeakReferenceMessenger.Default.Send(new SyncStateChangedMessage(true));
 
             try
             {
@@ -150,7 +179,9 @@ namespace StaffSync.Platforms.iOS.Services
                     return 0;
                 }
 
-                var lastSync = _settingsService.LastSyncTime;
+                // Kayıt biçimi değiştiyse tüm kişiler yeni biçimle yeniden yazılsın: tam senkron
+                var lastSync = ContactSyncFormat.IsOutdated(_settingsService) ? null : _settingsService.LastSyncTime;
+                var writeShortCode = _settingsService.UsesCompanyLine;
                 var changes = await _contactsService.GetChangesAsync(lastSync);
                 if (changes == null)
                 {
@@ -266,6 +297,7 @@ namespace StaffSync.Platforms.iOS.Services
                         }
 
                         var (givenName, familyName) = SplitName(contact.DisplayName);
+                        var photoData = await LoadPhotoDataAsync(contact, ct);
 
                         if (existingContact != null)
                         {
@@ -277,19 +309,8 @@ namespace StaffSync.Platforms.iOS.Services
                                 mutable.DepartmentName = contact.Department ?? "";
                                 mutable.JobTitle = contact.JobTitle ?? "";
 
-                                if (!string.IsNullOrWhiteSpace(contact.TelephoneNumber))
-                                {
-                                    mutable.PhoneNumbers = new[]
-                                    {
-                                        new CNLabeledValue<CNPhoneNumber>(
-                                            CNLabelPhoneNumberKey.Mobile,
-                                            new CNPhoneNumber(contact.TelephoneNumber))
-                                    };
-                                }
-                                else
-                                {
-                                    mutable.PhoneNumbers = Array.Empty<CNLabeledValue<CNPhoneNumber>>();
-                                }
+                                mutable.PhoneNumbers = BuildPhoneNumbers(contact, writeShortCode);
+                                mutable.ImageData = photoData; // fotoğraf kaldırıldıysa null → rehberden de kalkar
 
                                 if (!string.IsNullOrWhiteSpace(contact.Email))
                                 {
@@ -319,15 +340,9 @@ namespace StaffSync.Platforms.iOS.Services
                                 JobTitle = contact.JobTitle ?? ""
                             };
 
-                            if (!string.IsNullOrWhiteSpace(contact.TelephoneNumber))
-                            {
-                                newContact.PhoneNumbers = new[]
-                                {
-                                    new CNLabeledValue<CNPhoneNumber>(
-                                        CNLabelPhoneNumberKey.Mobile,
-                                        new CNPhoneNumber(contact.TelephoneNumber))
-                                };
-                            }
+                            newContact.PhoneNumbers = BuildPhoneNumbers(contact, writeShortCode);
+                            if (photoData != null)
+                                newContact.ImageData = photoData;
 
                             if (!string.IsNullOrWhiteSpace(contact.Email))
                             {
@@ -365,6 +380,7 @@ namespace StaffSync.Platforms.iOS.Services
                 {
                     _settingsService.LastSyncTime = changes.ServerTimeUtc;
                     _settingsService.LastSyncError = null;
+                    ContactSyncFormat.MarkWritten(_settingsService);
                 }
 
                 return totalCount;
@@ -378,6 +394,7 @@ namespace StaffSync.Platforms.iOS.Services
             finally
             {
                 _syncSemaphore.Release();
+                WeakReferenceMessenger.Default.Send(new SyncStateChangedMessage(false));
             }
         }
 

@@ -10,8 +10,11 @@ namespace StaffSync.ViewModels
         private readonly IAuthService _authService;
         private readonly ISettingsService _settingsService;
 
-        public LoginViewModel(IAuthService authService, ISettingsService settingsService)
+        private readonly IDialogService _dialogService;
+
+        public LoginViewModel(IAuthService authService, ISettingsService settingsService, IDialogService dialogService)
         {
+            _dialogService = dialogService;
             _authService = authService;
             _settingsService = settingsService;
         }
@@ -113,7 +116,7 @@ namespace StaffSync.ViewModels
                 if (!string.IsNullOrWhiteSpace(newUrl))
                 {
                     ApiConfig.BaseUrl = newUrl.Trim();
-                    await page.DisplayAlertAsync("Bilgi", $"Sunucu adresi güncellendi: {ApiConfig.BaseUrl}", "Tamam");
+                    await _dialogService.ToastAsync($"Sunucu adresi güncellendi", DialogKind.Info);
                 }
             }
         }

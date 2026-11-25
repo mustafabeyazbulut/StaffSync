@@ -202,7 +202,9 @@ namespace StaffSync.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return false;
+                    // 5xx vb. sunucu tarafı arıza (ör. veritabanına ulaşılamıyor): refresh token geçersiz
+                    // değil, oturumu düşürme. Ağ hatası gibi ele alınır; uygulama önbellekle devam eder.
+                    throw new ApiOfflineException($"Sunucu şu an yanıt vermiyor ({(int)response.StatusCode}).");
                 }
 
                 var result = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();

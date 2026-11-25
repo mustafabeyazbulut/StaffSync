@@ -91,7 +91,7 @@
                             <TapGestureRecognizer Command="{Binding OpenDepartmentPickerCommand}" />
                         </Border.GestureRecognizers>
 
-                        <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10" MinimumHeightRequest="48">
+                        <Grid controls:Touch.Feedback="True" ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10" MinimumHeightRequest="48">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding OpenDepartmentPickerCommand}" />
                             </Grid.GestureRecognizers>
@@ -147,7 +147,7 @@
                                 BindableLayout.ItemsSource="{Binding Companies}">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:CompanyFilterItem">
-                                <Border HeightRequest="36"
+                                <Border controls:Touch.Feedback="True" controls:Touch.CornerRadius="18" controls:Touch.PressedScale="0.96" HeightRequest="36"
                                         StrokeShape="RoundRectangle 18"
                                         StrokeThickness="1"
                                         Margin="0,0,8,8"
