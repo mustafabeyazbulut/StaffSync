@@ -163,7 +163,7 @@
                     <CollectionView.GroupHeaderTemplate>
                         <DataTemplate x:DataType="vm:ContactGroup">
                             <Grid Padding="16,6,16,4"
-                                  BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkBackground}}">
+                                  BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkBg}}">
                                 <Label Text="{Binding Key}"
                                        FontSize="14"
                                        FontAttributes="Bold"
