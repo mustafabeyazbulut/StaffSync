@@ -3,156 +3,358 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StaffSync.ViewModels"
              xmlns:models="clr-namespace:StaffSync.Models"
+             xmlns:utils="clr-namespace:StaffSync.Utils"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              x:Class="StaffSync.Pages.ReportCorrectionPage"
              x:DataType="vm:ReportCorrectionViewModel"
-             Title="Hatalı Bilgi Bildir">
+             Shell.PresentationMode="ModalAnimated"
+             ios:Page.ModalPresentationStyle="PageSheet"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageGroupedLight}, Dark={StaticResource PageGroupedDark}}"
+             Title="Düzeltme Öner">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="24" Padding="20,20,20,32">
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
 
-            <!-- Kişi Bilgisi Özeti -->
-            <Border BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkCard}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="16">
-                <VerticalStackLayout Spacing="4">
-                    <Label Text="DÜZELTİLECEK KİŞİ" FontSize="11" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-                    <Label Text="{Binding Contact.DisplayName}" FontSize="18" FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-                    <Label Text="{Binding Contact.Subtitle}" FontSize="13"
-                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray300}}" />
-                </VerticalStackLayout>
-            </Border>
+        <!-- Tutamak (Grabber Çizgisi) -->
+        <BoxView Grid.Row="0"
+                 WidthRequest="36"
+                 HeightRequest="5"
+                 CornerRadius="3"
+                 Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}"
+                 HorizontalOptions="Center"
+                 Margin="0,8,0,0" />
 
-            <!-- Hata Mesajı -->
-            <Border BackgroundColor="#FEE2E2"
-                    Stroke="#EF4444"
-                    StrokeShape="RoundRectangle 8"
-                    Padding="12"
-                    IsVisible="{Binding HasError}">
-                <Label Text="{Binding ErrorMessage}"
-                       TextColor="#B91C1C"
-                       FontSize="13"
-                       HorizontalOptions="Center" />
-            </Border>
+        <!-- Üst Bar: Vazgeç | Düzeltme öner | (boş) -->
+        <Grid Grid.Row="1"
+              HeightRequest="44"
+              Padding="8,0"
+              ColumnDefinitions="Auto, *, Auto">
+            <Button Grid.Column="0"
+                    Text="Vazgeç"
+                    Command="{Binding CancelCommand}"
+                    FontSize="17"
+                    TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                    BackgroundColor="Transparent"
+                    Padding="8,0"
+                    HeightRequest="44" />
 
-            <!-- 1. Adım: Hangi Bilgi Hatalı? -->
-            <VerticalStackLayout Spacing="10">
-                <Label Text="1. HANGİ BİLGİ HATALI? (Birden fazla seçebilirsiniz)"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+            <Label Grid.Column="1"
+                   Text="Düzeltme öner"
+                   FontSize="17"
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
 
-                <BindableLayout.ItemsSource>
-                    <Binding Path="FieldOptions" />
-                </BindableLayout.ItemsSource>
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="models:CorrectionFieldOption">
-                        <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray800}}"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
-                                StrokeShape="RoundRectangle 8"
-                                Margin="0,3"
-                                Padding="12,6">
-                            <Grid ColumnDefinitions="*,Auto" HeightRequest="36">
-                                <Label Text="{Binding Label}"
-                                       FontSize="14"
-                                       TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}"
-                                       VerticalOptions="Center" />
+            <!-- Dengeleme için boş alan -->
+            <BoxView Grid.Column="2" WidthRequest="60" HeightRequest="1" Color="Transparent" />
+        </Grid>
 
-                                <CheckBox Grid.Column="1"
-                                          IsChecked="{Binding IsSelected}"
-                                          Color="{StaticResource Primary}"
-                                          VerticalOptions="Center"
-                                          MinimumHeightRequest="44"
-                                          MinimumWidthRequest="44" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </VerticalStackLayout>
+        <!-- FORM GÖRÜNÜMÜ (!IsSubmitted) -->
+        <ScrollView Grid.Row="2"
+                    IsVisible="{Binding IsSubmitted, Converter={StaticResource InvertedBoolConverter}}"
+                    Padding="16,12,16,16"
+                    VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="20">
 
-            <!-- 2. Adım: Doğru Değerler -->
-            <VerticalStackLayout Spacing="12">
-                <Label Text="2. DOĞRU BİLGİLERİ GİRİNİZ"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                <!-- Kişi Satırı: 48'lik Brand avatar + ad + açıklama -->
+                <Grid ColumnDefinitions="48, *" ColumnSpacing="12" VerticalOptions="Center">
+                    <Border Grid.Column="0"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            StrokeShape="RoundRectangle 24"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource BrandLight}, Dark={StaticResource BrandDark}}"
+                            VerticalOptions="Center">
+                        <Label Text="{Binding Contact.Initials}"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="{Binding Contact.DisplayName}"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                        <Label Text="Yanlış olan bilgiye dokun, doğrusunu yaz."
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                    </VerticalStackLayout>
+                </Grid>
 
-                <BindableLayout.ItemsSource>
-                    <Binding Path="FieldOptions" />
-                </BindableLayout.ItemsSource>
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="models:CorrectionFieldOption">
-                        <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
-                                StrokeShape="RoundRectangle 10"
-                                Padding="14"
-                                Margin="0,4"
-                                IsVisible="{Binding IsSelected}">
-                            <VerticalStackLayout Spacing="8">
-                                <Label Text="{Binding Label}" FontSize="13" FontAttributes="Bold"
-                                       TextColor="{StaticResource Primary}" />
-
-                                <!-- Mevcut Değer -->
-                                <Label Text="{Binding CurrentValue, StringFormat='Mevcut: {0}'}"
-                                       FontSize="12"
-                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-
-                                <!-- Yeni Değer Girişi -->
-                                <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
-                                        StrokeShape="RoundRectangle 8"
-                                        Padding="10,0"
-                                        HeightRequest="44">
-                                    <Entry Text="{Binding ProposedValue}"
-                                           Placeholder="Doğru değeri yazınız..."
-                                           FontSize="14"
-                                           VerticalOptions="Center" />
-                                </Border>
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </VerticalStackLayout>
-
-            <!-- 3. Adım: İsteğe Bağlı Açıklama -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="3. EK AÇIKLAMA (İsteğe bağlı)"
-                       FontSize="12"
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-
-                <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray700}}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
-                        StrokeShape="RoundRectangle 10"
-                        Padding="12"
-                        HeightRequest="100">
-                    <Editor Text="{Binding Note}"
-                            Placeholder="Örn: Kişi geçen ay başka departmana geçti..."
-                            FontSize="14"
-                            AutoSize="Disabled" />
+                <!-- Hata Mesajı -->
+                <Border IsVisible="{Binding HasError}"
+                        BackgroundColor="{AppThemeBinding Light=#FEE2E2, Dark=#381515}"
+                        Stroke="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="12">
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                           FontSize="13"
+                           HorizontalOptions="Center" />
                 </Border>
-            </VerticalStackLayout>
 
-            <!-- Gönder Butonu -->
-            <VerticalStackLayout Spacing="8" Margin="0,8,0,0">
-                <Button Text="Bildirimi Gönder"
+                <!-- Alanlar Kartı: Tek Card, 14 Radius -->
+                <Border StrokeShape="RoundRectangle 14"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                        Padding="0">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding FieldOptions}" Spacing="0">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:CorrectionFieldOption">
+                                <VerticalStackLayout Spacing="0">
+                                    <!-- Satır Container -->
+                                    <Border StrokeThickness="0" Padding="0">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedTintLight}, Dark={StaticResource SelectedTintDark}}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </DataTrigger>
+                                        </Border.Triggers>
+
+                                        <VerticalStackLayout Spacing="0">
+                                            <!-- Tıklanabilir Satır (Min 58 px) -->
+                                            <Grid ColumnDefinitions="*, Auto"
+                                                  MinimumHeightRequest="58"
+                                                  Padding="16,10">
+                                                <Grid.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding ToggleCommand}" />
+                                                </Grid.GestureRecognizers>
+
+                                                <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                                    <Label Text="{Binding Label}"
+                                                           FontSize="13"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                                    <Label Text="{Binding CurrentValueDisplay}"
+                                                           FontSize="16">
+                                                        <Label.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="False">
+                                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                                                <Setter Property="TextDecorations" Value="None" />
+                                                            </DataTrigger>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                                                <Setter Property="TextDecorations" Value="Strikethrough" />
+                                                            </DataTrigger>
+                                                        </Label.Triggers>
+                                                    </Label>
+                                                </VerticalStackLayout>
+
+                                                <!-- 24'lük Seçim Halkası -->
+                                                <Border Grid.Column="1"
+                                                        WidthRequest="24"
+                                                        HeightRequest="24"
+                                                        StrokeShape="RoundRectangle 12"
+                                                        VerticalOptions="Center">
+                                                    <Border.Triggers>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+                                                            <Setter Property="StrokeThickness" Value="2" />
+                                                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource RingLight}, Dark={StaticResource RingDark}}" />
+                                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="StrokeThickness" Value="0" />
+                                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandLight}, Dark={StaticResource BrandDark}}" />
+                                                        </DataTrigger>
+                                                    </Border.Triggers>
+
+                                                    <Label Text="{x:Static utils:LucideIcons.Check}"
+                                                           FontFamily="Lucide"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           TextColor="White"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"
+                                                           IsVisible="{Binding IsSelected}" />
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Seçilince Açılan Doğrusu Giriş Kutusu -->
+                                            <Border IsVisible="{Binding IsSelected}"
+                                                    Margin="16,0,16,12"
+                                                    HeightRequest="44"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    StrokeThickness="1.5"
+                                                    Stroke="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                                                    Padding="12,0">
+                                                <Grid ColumnDefinitions="Auto, *">
+                                                    <Label Grid.Column="0"
+                                                           Text="Doğrusu"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           TextColor="{AppThemeBinding Light={StaticResource BrandTextLight}, Dark={StaticResource BrandTextDark}}"
+                                                           VerticalOptions="Center"
+                                                           Margin="0,0,10,0" />
+                                                    <Entry Grid.Column="1"
+                                                           Text="{Binding ProposedValue}"
+                                                           Placeholder="{Binding Placeholder}"
+                                                           FontSize="16"
+                                                           Keyboard="{Binding Keyboard}"
+                                                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                                                           PlaceholderColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                                                           VerticalOptions="Center" />
+                                                </Grid>
+                                            </Border>
+                                        </VerticalStackLayout>
+                                    </Border>
+
+                                    <!-- 1px Satır Ayırıcı -->
+                                    <BoxView HeightRequest="1"
+                                             Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Not (İsteğe Bağlı) -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="NOT (İSTEĞE BAĞLI)"
+                           FontSize="13"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                           Margin="4,0" />
+                    <Border StrokeShape="RoundRectangle 14"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                            Padding="16,12">
+                        <Editor Text="{Binding Note}"
+                                Placeholder="Örn. Ocak ayında departman değiştirdi"
+                                PlaceholderColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                                FontSize="16"
+                                HeightRequest="68"
+                                AutoSize="Disabled" />
+                    </Border>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ALT ÇUBUK (!IsSubmitted) -->
+        <Border Grid.Row="3"
+                IsVisible="{Binding IsSubmitted, Converter={StaticResource InvertedBoolConverter}}"
+                StrokeThickness="0"
+                Padding="16,12,16,24">
+            <VerticalStackLayout Spacing="8">
+                <!-- Üst 1px Çizgi -->
+                <BoxView HeightRequest="1"
+                         Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}"
+                         Margin="-16,-12,-16,0" />
+
+                <!-- Gönder Butonu -->
+                <Button Text="{Binding SubmitButtonText}"
                         Command="{Binding SendCorrectionCommand}"
-                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}, FallbackValue=True}"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
-                        FontAttributes="Bold"
-                        FontSize="15"
-                        HeightRequest="48"
-                        CornerRadius="8" />
+                        IsEnabled="{Binding CanSubmit}"
+                        HeightRequest="52"
+                        CornerRadius="14"
+                        FontSize="17"
+                        FontAttributes="Bold">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding CanSubmit}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandLight}, Dark={StaticResource BrandDark}}" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding CanSubmit}" Value="False">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledLight}, Dark={StaticResource DisabledDark}}" />
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledTextLight}, Dark={StaticResource DisabledTextDark}}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
-                <ActivityIndicator IsRunning="{Binding IsBusy}"
-                                   IsVisible="{Binding IsBusy}"
-                                   Color="{StaticResource Primary}"
-                                   HorizontalOptions="Center" />
+                <Label Text="Önerin, rehberi yöneten birime adınla iletilir."
+                       FontSize="12"
+                       TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                       HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
+        </Border>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <!-- BAŞARI DURUMU (IsSubmitted) -->
+        <ScrollView Grid.Row="2"
+                    Grid.RowSpan="2"
+                    IsVisible="{Binding IsSubmitted}"
+                    Padding="24,36,24,32">
+            <VerticalStackLayout Spacing="24">
+
+                <!-- 72'lik OkSoft Daire + İkon -->
+                <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,16,0,0">
+                    <Border WidthRequest="72"
+                            HeightRequest="72"
+                            StrokeShape="RoundRectangle 36"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource OkSoftLight}, Dark={StaticResource OkSoftDark}}"
+                            HorizontalOptions="Center">
+                        <Label Text="{x:Static utils:LucideIcons.Check}"
+                               FontFamily="Lucide"
+                               FontSize="36"
+                               TextColor="{AppThemeBinding Light={StaticResource OkLight}, Dark={StaticResource OkDark}}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="Önerin iletildi"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Onaylandığında rehber herkeste kendiliğinden güncellenecek."
+                           FontSize="15"
+                           TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Gönderilenlerin Özeti Kartı -->
+                <Border StrokeShape="RoundRectangle 14"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                        Padding="0">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding SubmittedItems}" Spacing="0">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:CorrectionFieldOption">
+                                <VerticalStackLayout Spacing="0">
+                                    <VerticalStackLayout Padding="16,12" Spacing="4">
+                                        <Label Text="{Binding Label}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Label Text="{Binding CurrentValueDisplay}"
+                                                   FontSize="15"
+                                                   TextDecorations="Strikethrough"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                            <Label Text="→"
+                                                   FontSize="15"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextMutedLight}, Dark={StaticResource TextMutedDark}}" />
+                                            <Label Text="{Binding ProposedValue}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                    <BoxView HeightRequest="1"
+                                             Color="{AppThemeBinding Light={StaticResource LineLight}, Dark={StaticResource LineDark}}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Tamam Butonu -->
+                <Button Text="Tamam"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        HeightRequest="52"
+                        CornerRadius="14"
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        Margin="0,16,0,0" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
 
 </ContentPage>

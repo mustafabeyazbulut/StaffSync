@@ -14,9 +14,11 @@ namespace StaffSync.ViewModels
         {
             _contactsService = contactsService;
             FieldOptions = new ObservableCollection<CorrectionFieldOption>();
+            SubmittedItems = new ObservableCollection<CorrectionFieldOption>();
         }
 
         public ObservableCollection<CorrectionFieldOption> FieldOptions { get; }
+        public ObservableCollection<CorrectionFieldOption> SubmittedItems { get; }
 
         [ObservableProperty]
         public partial ContactDto? Contact { get; set; }
@@ -26,6 +28,15 @@ namespace StaffSync.ViewModels
 
         [ObservableProperty]
         public partial bool IsBusy { get; set; }
+
+        [ObservableProperty]
+        public partial bool IsSubmitted { get; set; }
+
+        [ObservableProperty]
+        public partial string SubmitButtonText { get; set; } = "Düzeltme seç";
+
+        [ObservableProperty]
+        public partial bool CanSubmit { get; set; } = false;
 
         [ObservableProperty]
         public partial string? ErrorMessage { get; set; }
@@ -49,16 +60,65 @@ namespace StaffSync.ViewModels
         private void BuildFieldOptions(ContactDto c)
         {
             FieldOptions.Clear();
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "DisplayName", Label = "Ad soyad", CurrentValue = c.DisplayName });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "TelephoneNumber", Label = "Cep telefonu", CurrentValue = c.TelephoneNumber ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Home", Label = "Kısa kod / dahili", CurrentValue = c.Home ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Email", Label = "E-posta", CurrentValue = c.Email ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "JobTitle", Label = "Unvan", CurrentValue = c.JobTitle ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Department", Label = "Departman", CurrentValue = c.Department ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Office", Label = "Ofis", CurrentValue = c.Office ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Company", Label = "Şirket", CurrentValue = c.Company ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "ManagerName", Label = "Yönetici", CurrentValue = c.ManagerName ?? "" });
-            FieldOptions.Add(new CorrectionFieldOption { FieldName = "Other", Label = "Diğer", CurrentValue = "" });
+            SubmittedItems.Clear();
+            IsSubmitted = false;
+            Note = null;
+            ErrorMessage = null;
+
+            AddField("TelephoneNumber", "Cep telefonu", c.TelephoneNumber ?? "", "Yeni numara", Keyboard.Telephone);
+            AddField("Home", "Kısa kod / dahili", c.Home ?? "", "Yeni dahili", Keyboard.Telephone);
+            AddField("Email", "E-posta", c.Email ?? "", "Doğru e-posta", Keyboard.Email);
+            AddField("JobTitle", "Unvan", c.JobTitle ?? "", "Doğru unvan", Keyboard.Default);
+            AddField("Department", "Departman", c.Department ?? "", "Doğru departman", Keyboard.Default);
+            AddField("Office", "Ofis", c.Office ?? "", "Doğru ofis", Keyboard.Default);
+            AddField("Company", "Şirket", c.Company ?? "", "Doğru şirket", Keyboard.Default);
+            AddField("ManagerName", "Yönetici", c.ManagerName ?? "", "Doğru yönetici", Keyboard.Default);
+
+            UpdateSubmitState();
+        }
+
+        private void AddField(string fieldName, string label, string currentValue, string placeholder, Keyboard keyboard)
+        {
+            var opt = new CorrectionFieldOption
+            {
+                FieldName = fieldName,
+                Label = label,
+                CurrentValue = currentValue,
+                Placeholder = placeholder,
+                Keyboard = keyboard,
+                OnChanged = UpdateSubmitState
+            };
+            FieldOptions.Add(opt);
+        }
+
+        public void UpdateSubmitState()
+        {
+            var readyCount = FieldOptions.Count(f => f.IsSelected && !string.IsNullOrWhiteSpace(f.ProposedValue));
+
+            if (readyCount == 0)
+            {
+                SubmitButtonText = "Düzeltme seç";
+                CanSubmit = false;
+            }
+            else if (readyCount == 1)
+            {
+                SubmitButtonText = "1 düzeltmeyi gönder";
+                CanSubmit = !IsBusy;
+            }
+            else
+            {
+                SubmitButtonText = $"{readyCount} düzeltmeyi gönder";
+                CanSubmit = !IsBusy;
+            }
+        }
+
+        [RelayCommand]
+        private async Task CancelAsync()
+        {
+            if (Shell.Current.Navigation.ModalStack.Count > 0)
+                await Shell.Current.Navigation.PopModalAsync();
+            else
+                await Shell.Current.GoToAsync("..");
         }
 
         [RelayCommand]
@@ -84,7 +144,7 @@ namespace StaffSync.ViewModels
                     return;
                 }
 
-                if (f.FieldName != "Other" && string.Equals(f.ProposedValue.Trim(), f.CurrentValue.Trim(), StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(f.ProposedValue.Trim(), f.CurrentValue.Trim(), StringComparison.OrdinalIgnoreCase))
                 {
                     ErrorMessage = $"'{f.Label}' için girilen yeni değer mevcut değer ile aynı olamaz.";
                     return;
@@ -94,6 +154,8 @@ namespace StaffSync.ViewModels
             try
             {
                 IsBusy = true;
+                UpdateSubmitState();
+
                 var items = selectedFields.Select(f => new CorrectionItemInput
                 {
                     FieldName = f.FieldName,
@@ -103,14 +165,12 @@ namespace StaffSync.ViewModels
                 var success = await _contactsService.ReportCorrectionAsync(Contact.Id, Note?.Trim(), items);
                 if (success)
                 {
-                    if (Application.Current?.Windows[0].Page is Page page)
+                    SubmittedItems.Clear();
+                    foreach (var f in selectedFields)
                     {
-                        await page.DisplayAlertAsync(
-                            "Bildirim Alındı",
-                            "Düzeltme bildiriminiz başarıyla iletildi. Yetkili onayından sonra rehberde güncellenecektir.",
-                            "Tamam");
+                        SubmittedItems.Add(f);
                     }
-                    await Shell.Current.GoToAsync("..");
+                    IsSubmitted = true;
                 }
                 else
                 {
@@ -119,15 +179,16 @@ namespace StaffSync.ViewModels
             }
             catch (SessionExpiredException)
             {
-                // Zaten login'e gidiliyor, hata mesajı gösterme
+                await Shell.Current.GoToAsync("//login");
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Bir hata oluştu: {ex.Message}";
+                ErrorMessage = $"Beklenmeyen bir hata oluştu: {ex.Message}";
             }
             finally
             {
                 IsBusy = false;
+                UpdateSubmitState();
             }
         }
     }
