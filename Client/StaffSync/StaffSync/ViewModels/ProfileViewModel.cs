@@ -10,15 +10,18 @@ namespace StaffSync.ViewModels
         private readonly IAuthService _authService;
         private readonly ISettingsService _settingsService;
         private readonly IContactSyncService _syncService;
+        private readonly IContactCacheService _cacheService;
 
         public ProfileViewModel(
             IAuthService authService,
             ISettingsService settingsService,
-            IContactSyncService syncService)
+            IContactSyncService syncService,
+            IContactCacheService cacheService)
         {
             _authService = authService;
             _settingsService = settingsService;
             _syncService = syncService;
+            _cacheService = cacheService;
 
             IsSyncEnabled = _settingsService.IsSyncEnabled;
             SelectedThemeIndex = (int)_settingsService.SelectedTheme;
@@ -28,10 +31,27 @@ namespace StaffSync.ViewModels
         public partial UserInfo? CurrentUser { get; set; }
 
         [ObservableProperty]
+        public partial string UserDisplayName { get; set; } = "";
+
+        [ObservableProperty]
+        public partial string UserEmail { get; set; } = "";
+
+        [ObservableProperty]
+        public partial string? UserDepartment { get; set; }
+
+        public bool HasUserDepartment => !string.IsNullOrWhiteSpace(UserDepartment);
+
+        [ObservableProperty]
+        public partial string UserInitials { get; set; } = "??";
+
+        [ObservableProperty]
+        public partial bool IsAdmin { get; set; }
+
+        [ObservableProperty]
         public partial bool IsSyncing { get; set; }
 
         [ObservableProperty]
-        public partial string LastSyncText { get; set; } = "Henüz senkronize edilmedi";
+        public partial string LastSyncText { get; set; } = "Henüz yapılmadı";
 
         [ObservableProperty]
         public partial string? LastSyncError { get; set; }
@@ -46,10 +66,67 @@ namespace StaffSync.ViewModels
 
         public string AppVersion => AppInfo.Current.VersionString;
 
+        partial void OnSelectedThemeIndexChanged(int value)
+        {
+            if (value >= 0 && value <= 2)
+            {
+                _settingsService.SelectedTheme = (ThemeOption)value;
+                Application.Current!.UserAppTheme = value switch
+                {
+                    1 => AppTheme.Light,
+                    2 => AppTheme.Dark,
+                    _ => AppTheme.Unspecified
+                };
+            }
+        }
+
         public async Task InitializeAsync()
         {
             CurrentUser = await _authService.GetCurrentUserAsync();
+            if (CurrentUser != null)
+            {
+                UserEmail = CurrentUser.Email ?? "";
+                UserDisplayName = CurrentUser.Name ?? "";
+
+                IsAdmin = !string.IsNullOrWhiteSpace(CurrentUser.Role) &&
+                          CurrentUser.Role.Contains("admin", StringComparison.OrdinalIgnoreCase);
+
+                try
+                {
+                    var cached = await _cacheService.GetCachedContactsAsync();
+                    var match = cached.FirstOrDefault(c =>
+                        !string.IsNullOrWhiteSpace(c.Email) &&
+                        string.Equals(c.Email.Trim(), UserEmail.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                    if (match != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(match.DisplayName))
+                            UserDisplayName = match.DisplayName;
+                        UserDepartment = match.Department;
+                    }
+                }
+                catch { }
+
+                if (string.IsNullOrWhiteSpace(UserDisplayName))
+                {
+                    UserDisplayName = UserEmail.Split('@')[0];
+                }
+
+                UserInitials = ComputeInitials(UserDisplayName);
+                OnPropertyChanged(nameof(HasUserDepartment));
+            }
+
             UpdateSyncStatusText();
+        }
+
+        private static string ComputeInitials(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return "??";
+            var parts = name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1)
+                return parts[0][0].ToString().ToUpperInvariant();
+            return $"{parts[0][0]}{parts[^1][0]}".ToUpperInvariant();
         }
 
         private void UpdateSyncStatusText()
@@ -58,11 +135,17 @@ namespace StaffSync.ViewModels
             if (lastTime.HasValue)
             {
                 var local = lastTime.Value.ToLocalTime();
-                LastSyncText = $"Son senkron: {local:dd.MM.yyyy HH:mm}";
+                var today = DateTime.Today;
+                if (local.Date == today)
+                    LastSyncText = $"Bugün {local:HH:mm}";
+                else if (local.Date == today.AddDays(-1))
+                    LastSyncText = $"Dün {local:HH:mm}";
+                else
+                    LastSyncText = $"{local:dd.MM.yyyy HH:mm}";
             }
             else
             {
-                LastSyncText = "Henüz senkronize edilmedi";
+                LastSyncText = "Henüz yapılmadı";
             }
 
             LastSyncError = _settingsService.LastSyncError;
@@ -77,7 +160,6 @@ namespace StaffSync.ViewModels
 
             if (!newValue)
             {
-                // Kapatırken onay modalı sor (Spec kuralı)
                 if (Application.Current?.Windows[0].Page is Page page)
                 {
                     var count = await _syncService.GetSyncedContactsCountAsync();
@@ -89,7 +171,6 @@ namespace StaffSync.ViewModels
 
                     if (!confirmed)
                     {
-                        // Geri al
                         IsSyncEnabled = true;
                         return;
                     }
@@ -110,7 +191,6 @@ namespace StaffSync.ViewModels
             }
             else
             {
-                // Açarken izin kontrolü / isteği ana thread'de
                 var status = await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     var writeStatus = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
@@ -186,16 +266,6 @@ namespace StaffSync.ViewModels
             finally
             {
                 IsSyncing = false;
-            }
-        }
-
-        [RelayCommand]
-        public void SetTheme(string themeStr)
-        {
-            if (int.TryParse(themeStr, out var idx) && idx >= 0 && idx <= 2)
-            {
-                SelectedThemeIndex = idx;
-                _settingsService.SelectedTheme = (ThemeOption)idx;
             }
         }
 
