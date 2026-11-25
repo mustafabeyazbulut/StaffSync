@@ -23,6 +23,8 @@ namespace StaffSync.Platforms.iOS.Services
             CNContactKey.JobTitle
         };
 
+        private static readonly SemaphoreSlim _syncSemaphore = new(1, 1);
+
         private readonly IContactsService _contactsService;
         private readonly ISettingsService _settingsService;
 
@@ -133,6 +135,12 @@ namespace StaffSync.Platforms.iOS.Services
 
         public async Task<int> SyncContactsAsync(CancellationToken ct = default)
         {
+            if (!await _syncSemaphore.WaitAsync(0, ct))
+            {
+                System.Diagnostics.Debug.WriteLine("IosContactSyncService: Senkronizasyon zaten çalışıyor, çağrı atlandı.");
+                return 0;
+            }
+
             try
             {
                 var status = await Permissions.CheckStatusAsync<Permissions.ContactsWrite>();
@@ -348,6 +356,10 @@ namespace StaffSync.Platforms.iOS.Services
                 _settingsService.LastSyncError = $"iOS senkron hatası: {ex.Message}";
                 System.Diagnostics.Debug.WriteLine($"IosContactSyncService hatası: {ex}");
                 return 0;
+            }
+            finally
+            {
+                _syncSemaphore.Release();
             }
         }
 
