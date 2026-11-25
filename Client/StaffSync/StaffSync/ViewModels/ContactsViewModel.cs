@@ -18,6 +18,15 @@ namespace StaffSync.ViewModels
         }
     }
 
+    public partial class DepartmentChipItem : ObservableObject
+    {
+        public string Name { get; set; } = "";
+        public string DisplayLabel { get; set; } = "";
+
+        [ObservableProperty]
+        public partial bool IsSelected { get; set; }
+    }
+
     public partial class ContactsViewModel : ObservableObject
     {
         private readonly IContactsService _contactsService;
@@ -61,6 +70,45 @@ namespace StaffSync.ViewModels
         public ObservableCollection<ContactGroup> GroupedContacts { get; }
         public ObservableCollection<string> AlphabetLetters { get; }
         public ObservableCollection<string> ActiveDepartmentFilters { get; }
+        public ObservableCollection<DepartmentChipItem> DepartmentChips { get; } = new();
+
+        [ObservableProperty]
+        public partial string UserInitials { get; set; } = "MB";
+
+        public string LastSyncTimeFormatted
+        {
+            get
+            {
+                var time = _settingsService.LastSyncTime ?? _settingsService.GetCachedContactsTimestamp();
+                if (!time.HasValue)
+                    return "Son senkron: henüz yapılmadı";
+
+                var local = time.Value.ToLocalTime();
+                var today = DateTime.Today;
+                if (local.Date == today)
+                    return $"Son senkron: bugün {local:HH:mm}";
+                if (local.Date == today.AddDays(-1))
+                    return $"Son senkron: dün {local:HH:mm}";
+                return $"Son senkron: {local:dd.MM.yyyy HH:mm}";
+            }
+        }
+
+        public string ListHeaderLabel
+        {
+            get
+            {
+                var sortText = SortBy switch
+                {
+                    "Department" => "Departmana göre sıralı",
+                    "JobTitle" => "Unvana göre sıralı",
+                    _ => "Ada göre sıralı"
+                };
+                return $"{TotalCount} kişi gösteriliyor · {sortText}";
+            }
+        }
+
+        public bool IsEmpty => !IsBusy && TotalCount == 0;
+        public bool HasMore => _hasMore;
 
         [ObservableProperty]
         public partial bool IsGrouped { get; set; } = true;
@@ -71,6 +119,13 @@ namespace StaffSync.ViewModels
         {
             IsGrouped = string.IsNullOrEmpty(value) || string.Equals(value, "Name", StringComparison.OrdinalIgnoreCase);
             OnPropertyChanged(nameof(IsNotGrouped));
+            OnPropertyChanged(nameof(ListHeaderLabel));
+        }
+
+        partial void OnTotalCountChanged(int value)
+        {
+            OnPropertyChanged(nameof(ListHeaderLabel));
+            OnPropertyChanged(nameof(IsEmpty));
         }
 
         [ObservableProperty]
@@ -135,10 +190,121 @@ namespace StaffSync.ViewModels
 
         public async Task InitializeAsync()
         {
+            await UpdateUserInitialsAsync();
+            OnPropertyChanged(nameof(LastSyncTimeFormatted));
+
+            if (DepartmentChips.Count == 0)
+            {
+                await LoadDepartmentChipsAsync();
+            }
+
             if (Contacts.Count == 0)
             {
                 await ReloadContactsAsync();
             }
+        }
+
+        private async Task LoadDepartmentChipsAsync()
+        {
+            try
+            {
+                var options = await _contactsService.GetFilterOptionsAsync();
+                DepartmentChips.Clear();
+
+                var allChip = new DepartmentChipItem
+                {
+                    Name = "ALL",
+                    DisplayLabel = "Tümü",
+                    IsSelected = ActiveDepartmentFilters.Count == 0
+                };
+                DepartmentChips.Add(allChip);
+
+                if (options?.Departments != null)
+                {
+                    foreach (var d in options.Departments.OrderBy(x => x.Name))
+                    {
+                        if (string.IsNullOrWhiteSpace(d.Name)) continue;
+                        DepartmentChips.Add(new DepartmentChipItem
+                        {
+                            Name = d.Name,
+                            DisplayLabel = d.Name,
+                            IsSelected = ActiveDepartmentFilters.Contains(d.Name)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Departman çipleri yüklenemedi: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        public void SelectDepartmentChip(DepartmentChipItem chip)
+        {
+            if (chip == null) return;
+
+            foreach (var c in DepartmentChips)
+                c.IsSelected = false;
+
+            chip.IsSelected = true;
+
+            ActiveDepartmentFilters.Clear();
+            if (chip.Name != "ALL")
+            {
+                ActiveDepartmentFilters.Add(chip.Name);
+            }
+
+            OnPropertyChanged(nameof(ActiveFilterCount));
+            OnPropertyChanged(nameof(HasActiveFilters));
+            _ = ReloadContactsAsync();
+        }
+
+        private void SyncChipsWithFilters()
+        {
+            if (DepartmentChips.Count == 0) return;
+
+            foreach (var chip in DepartmentChips)
+            {
+                if (chip.Name == "ALL")
+                    chip.IsSelected = (ActiveDepartmentFilters.Count == 0);
+                else
+                    chip.IsSelected = ActiveDepartmentFilters.Contains(chip.Name);
+            }
+        }
+
+        [RelayCommand]
+        public async Task OpenProfileAsync()
+        {
+            await Shell.Current.GoToAsync("//main/profile");
+        }
+
+        private async Task UpdateUserInitialsAsync()
+        {
+            try
+            {
+                var email = Preferences.Default.Get("StaffSync_LastEmail", "");
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    email = _settingsService.SelectedTheme.ToString();
+                }
+                var cached = await _contactCacheService.GetCachedContactsAsync();
+                var me = cached.FirstOrDefault(c => string.Equals(c.Email, email, StringComparison.OrdinalIgnoreCase));
+                if (me != null && !string.IsNullOrWhiteSpace(me.Initials))
+                {
+                    UserInitials = me.Initials;
+                }
+                else if (!string.IsNullOrWhiteSpace(email) && email.Contains('@'))
+                {
+                    var prefix = email.Split('@')[0];
+                    var parts = prefix.Split('.', '_', '-');
+                    if (parts.Length >= 2 && parts[0].Length > 0 && parts[1].Length > 0)
+                        UserInitials = $"{parts[0][0]}{parts[1][0]}".ToUpperInvariant();
+                    else if (prefix.Length >= 2)
+                        UserInitials = prefix[..2].ToUpperInvariant();
+                }
+            }
+            catch {}
         }
 
         private void ApplyFilterCriteria(FilterCriteria criteria)
@@ -149,6 +315,8 @@ namespace StaffSync.ViewModels
 
             SelectedCompany = criteria.SelectedCompany;
             SortBy = criteria.SortBy;
+
+            SyncChipsWithFilters();
 
             OnPropertyChanged(nameof(ActiveFilterCount));
             OnPropertyChanged(nameof(HasActiveFilters));
@@ -208,6 +376,10 @@ namespace StaffSync.ViewModels
                     IsOffline = false;
                     TotalCount = result.TotalCount;
                     _hasMore = result.HasMore;
+                    OnPropertyChanged(nameof(HasMore));
+                    OnPropertyChanged(nameof(IsEmpty));
+                    OnPropertyChanged(nameof(ListHeaderLabel));
+                    OnPropertyChanged(nameof(LastSyncTimeFormatted));
 
                     Contacts.Clear();
                     GroupedContacts.Clear();
@@ -350,6 +522,8 @@ namespace StaffSync.ViewModels
                     _currentPage = nextPage;
                     _hasMore = result.HasMore;
                     TotalCount = result.TotalCount;
+                    OnPropertyChanged(nameof(HasMore));
+                    OnPropertyChanged(nameof(ListHeaderLabel));
 
                     var culture = new System.Globalization.CultureInfo("tr-TR");
 

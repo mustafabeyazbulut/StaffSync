@@ -33,7 +33,7 @@ namespace StaffSync.Models
             get
             {
                 if (!string.IsNullOrWhiteSpace(JobTitle) && !string.IsNullOrWhiteSpace(Department))
-                    return $"{JobTitle} • {Department}";
+                    return $"{JobTitle} · {Department}";
                 return JobTitle ?? Department ?? Company ?? "";
             }
         }
