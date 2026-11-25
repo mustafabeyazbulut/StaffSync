@@ -77,6 +77,40 @@ namespace StaffSync.Services
             return await SecureStorage.Default.GetAsync(RefreshTokenKey);
         }
 
+        private static async Task<string> ReadErrorMessageAsync(HttpResponseMessage response)
+        {
+            string errorMessage = $"HTTP {(int)response.StatusCode}: {response.ReasonPhrase}";
+            try
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    using var doc = JsonDocument.Parse(content);
+                    if (doc.RootElement.TryGetProperty("errors", out var errorsProp) && errorsProp.ValueKind == JsonValueKind.Array)
+                    {
+                        var errors = errorsProp.EnumerateArray()
+                            .Select(e => e.GetString())
+                            .Where(e => !string.IsNullOrEmpty(e))
+                            .ToList();
+                        if (errors.Count > 0)
+                            errorMessage = string.Join("\n", errors);
+                    }
+                    else if (doc.RootElement.TryGetProperty("message", out var msgProp))
+                    {
+                        errorMessage = msgProp.GetString() ?? errorMessage;
+                    }
+                    else
+                    {
+                        errorMessage = content;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return errorMessage;
+        }
+
         public async Task<bool> LoginAsync(string email, string password)
         {
             try
@@ -85,11 +119,20 @@ namespace StaffSync.Services
                 var response = await _httpClient.PostAsJsonAsync($"{ApiConfig.BaseUrl.TrimEnd('/')}/api/Auth/Login", request);
 
                 if (!response.IsSuccessStatusCode)
-                    return false;
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                        response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        return false;
+                    }
+
+                    var errorMsg = await ReadErrorMessageAsync(response);
+                    throw new ApiException(response.StatusCode, errorMsg);
+                }
 
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (result == null || string.IsNullOrEmpty(result.Token))
-                    return false;
+                    throw new InvalidOperationException("Sunucudan geçerli bir giriş cevabı alınamadı.");
 
                 await SecureStorage.Default.SetAsync(AccessTokenKey, result.Token);
                 if (!string.IsNullOrEmpty(result.RefreshToken))
@@ -112,10 +155,6 @@ namespace StaffSync.Services
             catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is System.IO.IOException)
             {
                 throw new ApiOfflineException("Giriş yapılırken sunucuya ulaşılamadı.", ex);
-            }
-            catch
-            {
-                return false;
             }
         }
 

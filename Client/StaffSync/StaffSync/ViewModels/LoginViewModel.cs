@@ -69,9 +69,17 @@ namespace StaffSync.ViewModels
                     ErrorMessage = "E-posta veya şifre hatalı. Lütfen kontrol ediniz.";
                 }
             }
+            catch (ApiOfflineException ex)
+            {
+                ErrorMessage = ex.Message;
+            }
+            catch (ApiException ex)
+            {
+                ErrorMessage = ex.Message;
+            }
             catch (Exception ex)
             {
-                ErrorMessage = $"Sunucuya bağlanılamadı: {ex.Message}";
+                ErrorMessage = ex.Message;
             }
             finally
             {
