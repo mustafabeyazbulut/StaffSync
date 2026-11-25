@@ -8,4 +8,4 @@
 - [Tasarım kararları ve DURUM (Kasım 2026)](design-decisions-2026-11.md) — spec + planlar, nerede kalındı (mobil düzeltmeler bitti, cihaz testi kaldı), tuşlu telefon vCard/CSV, hata bildirimi, repo korunur
 - [Şirket hattı ve kısa kod](company-line-shortcode.md) — kısa kod asıl aranan numara; Profil'deki şirket hattı ayarına göre ICallService karar verir
 - [Kod kalitesi kuralı](code-quality-rule.md) — Antigravity kodu: eski/obsolete hiçbir şey kalmaz, dokunulan yer iyileştirilir, MVVM+servis mimarisi korunur
-- [Tasarım rötuşu + YARIM İŞLER](design-polish-by-claude.md) — tasarımı Claude yapar; son durum 2026-11-26: arama/fotoğraf/uyarı tasarımı bitti; commit edildi; devam: push/PR, modal durum çubuğu, gerçek cihaz
+- [Tasarım rötuşu + YARIM İŞLER](design-polish-by-claude.md) — tasarımı Claude yapar; son durum 2026-11-26: arama/fotoğraf/uyarı tasarımı bitti; commit edildi; push edildi; devam: PR, modal durum çubuğu, gerçek cihaz

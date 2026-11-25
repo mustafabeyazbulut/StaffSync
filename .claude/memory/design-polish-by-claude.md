@@ -45,7 +45,7 @@ Kullanıcı 2026-11-25'te: "antigravity değil senden istiyorum tasarımsal olar
 - **Yayın notu:** App_Data/contact-photos sunucuda çalışma verisi → CanliIIS.pubxml'de App_Data atlama kuralı GEREKİR (global kural). Profil henüz yok.
 
 ## YARIM KALANLAR (devam buradan)
-1. **Push edilmedi:** `feature/backend-rehber` dalı sadece yerelde commit'li; push/PR kullanıcıya sorulacak.
+1. **PR açılmadı:** `feature/backend-rehber` 2026-11-26'da origin'e push edildi; main'e PR açılacak mı kullanıcıya sorulacak.
 2. Modal (uyarı kartı, sheet'ler) açıkken durum çubuğu beyaz kalıyor.
 3. Gerçek Android cihazda (Samsung) Kişiler uygulamasında hesap görünüyor mu; iOS hiç denenmedi.
 4. Çevrimdışı mod testi yapılmadı.
