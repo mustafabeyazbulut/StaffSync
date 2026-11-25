@@ -22,5 +22,17 @@ namespace StaffSync.Pages
             base.OnAppearing();
             await _viewModel.InitializeAsync();
         }
+
+        private void OnLetterTapped(object? sender, EventArgs e)
+        {
+            if (sender is BindableObject bindable && bindable.BindingContext is string letter)
+            {
+                var group = _viewModel.GroupedContacts.FirstOrDefault(g => g.Key.Equals(letter, StringComparison.OrdinalIgnoreCase));
+                if (group != null)
+                {
+                    GroupedListView.ScrollTo(group, position: ScrollToPosition.Start, animate: false);
+                }
+            }
+        }
     }
 }

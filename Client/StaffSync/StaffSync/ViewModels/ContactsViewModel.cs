@@ -8,6 +8,16 @@ using System.Collections.ObjectModel;
 
 namespace StaffSync.ViewModels
 {
+    public class ContactGroup : ObservableCollection<ContactDto>
+    {
+        public string Key { get; }
+
+        public ContactGroup(string key, IEnumerable<ContactDto> contacts) : base(contacts)
+        {
+            Key = key;
+        }
+    }
+
     public partial class ContactsViewModel : ObservableObject
     {
         private readonly IContactsService _contactsService;
@@ -21,6 +31,11 @@ namespace StaffSync.ViewModels
         private const int PageSize = 25;
         private bool _hasMore = true;
 
+        private static readonly string[] TurkishAlphabet = new[]
+        {
+            "A", "B", "C", "Ç", "D", "E", "F", "G", "H", "I", "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "V", "Y", "Z"
+        };
+
         public ContactsViewModel(
             IContactsService contactsService,
             ISettingsService settingsService,
@@ -31,6 +46,8 @@ namespace StaffSync.ViewModels
             _contactCacheService = contactCacheService;
 
             Contacts = new ObservableCollection<ContactDto>();
+            GroupedContacts = new ObservableCollection<ContactGroup>();
+            AlphabetLetters = new ObservableCollection<string>(TurkishAlphabet);
             ActiveDepartmentFilters = new ObservableCollection<string>();
 
             // Filtre ekranından gelen mesajları dinle
@@ -41,7 +58,20 @@ namespace StaffSync.ViewModels
         }
 
         public ObservableCollection<ContactDto> Contacts { get; }
+        public ObservableCollection<ContactGroup> GroupedContacts { get; }
+        public ObservableCollection<string> AlphabetLetters { get; }
         public ObservableCollection<string> ActiveDepartmentFilters { get; }
+
+        [ObservableProperty]
+        public partial bool IsGrouped { get; set; } = true;
+
+        public bool IsNotGrouped => !IsGrouped;
+
+        partial void OnSortByChanged(string? value)
+        {
+            IsGrouped = string.IsNullOrEmpty(value) || string.Equals(value, "Name", StringComparison.OrdinalIgnoreCase);
+            OnPropertyChanged(nameof(IsNotGrouped));
+        }
 
         [ObservableProperty]
         public partial string SearchText { get; set; } = "";
@@ -123,6 +153,19 @@ namespace StaffSync.ViewModels
             _ = ReloadContactsAsync();
         }
 
+        public static string GetInitialLetter(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return "#";
+
+            var trimmed = name.Trim();
+            var firstChar = trimmed.Substring(0, 1).ToUpper(new System.Globalization.CultureInfo("tr-TR"));
+            if (char.IsLetter(firstChar[0]))
+                return firstChar;
+
+            return "#";
+        }
+
         [RelayCommand]
         public async Task RefreshAsync()
         {
@@ -164,8 +207,23 @@ namespace StaffSync.ViewModels
                     _hasMore = result.HasMore;
 
                     Contacts.Clear();
+                    GroupedContacts.Clear();
+
                     foreach (var c in result.Items)
                         Contacts.Add(c);
+
+                    if (IsGrouped)
+                    {
+                        var culture = new System.Globalization.CultureInfo("tr-TR");
+                        var groups = result.Items
+                            .GroupBy(c => GetInitialLetter(c.DisplayName))
+                            .OrderBy(g => g.Key == "#" ? "ZZZ" : g.Key, StringComparer.Create(culture, false));
+
+                        foreach (var g in groups)
+                        {
+                            GroupedContacts.Add(new ContactGroup(g.Key, g));
+                        }
+                    }
                 }
             }
             catch (ApiOfflineException)
@@ -235,13 +293,29 @@ namespace StaffSync.ViewModels
                 var list = query.ToList();
                 TotalCount = list.Count;
                 Contacts.Clear();
+                GroupedContacts.Clear();
+
                 foreach (var c in list)
                     Contacts.Add(c);
+
+                if (IsGrouped)
+                {
+                    var culture = new System.Globalization.CultureInfo("tr-TR");
+                    var groups = list
+                        .GroupBy(c => GetInitialLetter(c.DisplayName))
+                        .OrderBy(g => g.Key == "#" ? "ZZZ" : g.Key, StringComparer.Create(culture, false));
+
+                    foreach (var g in groups)
+                    {
+                        GroupedContacts.Add(new ContactGroup(g.Key, g));
+                    }
+                }
             }
             else
             {
                 TotalCount = 0;
                 Contacts.Clear();
+                GroupedContacts.Clear();
             }
         }
 
@@ -270,8 +344,33 @@ namespace StaffSync.ViewModels
                     _hasMore = result.HasMore;
                     TotalCount = result.TotalCount;
 
+                    var culture = new System.Globalization.CultureInfo("tr-TR");
+
                     foreach (var c in result.Items)
+                    {
                         Contacts.Add(c);
+
+                        if (IsGrouped)
+                        {
+                            var letter = GetInitialLetter(c.DisplayName);
+                            var group = GroupedContacts.FirstOrDefault(g => g.Key == letter);
+                            if (group != null)
+                            {
+                                group.Add(c);
+                            }
+                            else
+                            {
+                                var newGroup = new ContactGroup(letter, new[] { c });
+                                int insertIndex = 0;
+                                while (insertIndex < GroupedContacts.Count &&
+                                       string.Compare(GroupedContacts[insertIndex].Key, letter, culture, System.Globalization.CompareOptions.None) < 0)
+                                {
+                                    insertIndex++;
+                                }
+                                GroupedContacts.Insert(insertIndex, newGroup);
+                            }
+                        }
+                    }
                 }
                 else
                 {

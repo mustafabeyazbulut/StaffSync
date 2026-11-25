@@ -40,6 +40,22 @@ namespace StaffSync.ViewModels
         public partial string SortBy { get; set; } = "Name";
 
         [ObservableProperty]
+        public partial bool IsSortByName { get; set; } = true;
+
+        [ObservableProperty]
+        public partial bool IsSortByDepartment { get; set; }
+
+        [ObservableProperty]
+        public partial bool IsSortByJobTitle { get; set; }
+
+        partial void OnSortByChanged(string value)
+        {
+            IsSortByName = string.Equals(value, "Name", StringComparison.OrdinalIgnoreCase);
+            IsSortByDepartment = string.Equals(value, "Department", StringComparison.OrdinalIgnoreCase);
+            IsSortByJobTitle = string.Equals(value, "JobTitle", StringComparison.OrdinalIgnoreCase);
+        }
+
+        [ObservableProperty]
         public partial bool IsBusy { get; set; }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)

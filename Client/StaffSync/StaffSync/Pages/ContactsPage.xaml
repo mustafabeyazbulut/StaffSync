@@ -25,11 +25,13 @@
                            TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
                            FontSize="14"
                            ClearButtonVisibility="WhileEditing"
+                           SemanticProperties.Description="Arama kutusu"
+                           SemanticProperties.Hint="İsim, unvan veya departman arayın"
                            VerticalOptions="Center" />
                 </Grid>
             </Border>
 
-            <!-- Filtreleme Butonu ve Rozet -->
+            <!-- Filtreleme Butonu ve Rozet (En az 44x44 dokunma alanı) -->
             <Grid Grid.Column="1" WidthRequest="46" HeightRequest="46">
                 <Button Command="{Binding OpenFilterCommand}"
                         Text="⚙️"
@@ -38,20 +40,22 @@
                         CornerRadius="10"
                         Padding="0"
                         HeightRequest="46"
-                        WidthRequest="46" />
+                        WidthRequest="46"
+                        SemanticProperties.Description="Filtre ve sıralama ayarları"
+                        SemanticProperties.Hint="Filtre ekranını açar" />
                 <!-- Aktif Filtre Sayısı Rozeti -->
                 <Border Stroke="Transparent"
                         BackgroundColor="{StaticResource Danger}"
-                        StrokeShape="RoundRectangle 8"
-                        WidthRequest="18"
-                        HeightRequest="18"
+                        StrokeShape="RoundRectangle 10"
+                        WidthRequest="20"
+                        HeightRequest="20"
                         HorizontalOptions="End"
                         VerticalOptions="Start"
                         Margin="0,-2,-2,0"
                         IsVisible="{Binding HasActiveFilters}">
                     <Label Text="{Binding ActiveFilterCount}"
                            TextColor="White"
-                           FontSize="10"
+                           FontSize="11"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
                            VerticalOptions="Center" />
@@ -67,16 +71,17 @@
                 <Border Stroke="{StaticResource Primary}"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource DarkCard}}"
                         StrokeShape="RoundRectangle 16"
-                        Padding="10,4"
+                        Padding="10,2"
                         IsVisible="{Binding HasSelectedCompany}">
-                    <HorizontalStackLayout Spacing="6">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                         <Label Text="{Binding SelectedCompany}" FontSize="12"
                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                VerticalOptions="Center" />
                         <Button Text="✕" Command="{Binding ClearCompanyFilterCommand}"
                                 BackgroundColor="Transparent" Padding="0"
                                 TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                FontSize="10" WidthRequest="18" HeightRequest="18" />
+                                FontSize="12" WidthRequest="44" HeightRequest="44"
+                                SemanticProperties.Description="Şirket filtresini kaldır" />
                     </HorizontalStackLayout>
                 </Border>
 
@@ -89,8 +94,8 @@
                         <Border Stroke="{StaticResource Primary}"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource DarkCard}}"
                                 StrokeShape="RoundRectangle 16"
-                                Padding="10,4">
-                            <HorizontalStackLayout Spacing="6">
+                                Padding="10,2">
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                                 <Label Text="{Binding .}" FontSize="12"
                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                        VerticalOptions="Center" />
@@ -99,7 +104,8 @@
                                         CommandParameter="{Binding .}"
                                         BackgroundColor="Transparent" Padding="0"
                                         TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                        FontSize="10" WidthRequest="18" HeightRequest="18" />
+                                        FontSize="12" WidthRequest="44" HeightRequest="44"
+                                        SemanticProperties.Description="Departman filtresini kaldır" />
                             </HorizontalStackLayout>
                         </Border>
                     </DataTemplate>
@@ -110,9 +116,10 @@
                         Command="{Binding ClearAllFiltersCommand}"
                         BackgroundColor="Transparent"
                         TextColor="{StaticResource Danger}"
-                        FontSize="11"
-                        Padding="4,0"
-                        HeightRequest="32" />
+                        FontSize="12"
+                        Padding="8,0"
+                        HeightRequest="44"
+                        SemanticProperties.Description="Tüm filtreleri temizle" />
             </HorizontalStackLayout>
         </ScrollView>
 
@@ -141,112 +148,270 @@
                      Command="{Binding RefreshCommand}"
                      RefreshColor="{StaticResource Primary}">
 
-            <CollectionView ItemsSource="{Binding Contacts}"
-                            RemainingItemsThreshold="4"
-                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreContactsCommand}"
-                            SelectionMode="None">
+            <Grid ColumnDefinitions="*,Auto">
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:ContactDto">
-                        <Border Stroke="Transparent"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
-                                Margin="16,4"
-                                Padding="12"
-                                StrokeShape="RoundRectangle 12">
-                            <Border.Shadow>
-                                <Shadow Brush="#000000" Opacity="0.04" Offset="0,2" Radius="4" />
-                            </Border.Shadow>
+                <!-- A-Z Gruplu Liste (Name sıralamasında) -->
+                <CollectionView x:Name="GroupedListView"
+                                Grid.Column="0"
+                                ItemsSource="{Binding GroupedContacts}"
+                                IsGrouped="True"
+                                IsVisible="{Binding IsGrouped}"
+                                RemainingItemsThreshold="4"
+                                RemainingItemsThresholdReachedCommand="{Binding LoadMoreContactsCommand}"
+                                SelectionMode="None">
 
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=OpenDetailCommand}"
-                                    CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-
-                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                                <!-- Avatar / İsim Baş Harfleri -->
-                                <Border Grid.Column="0"
-                                        WidthRequest="46"
-                                        HeightRequest="46"
-                                        StrokeShape="RoundRectangle 23"
-                                        Stroke="Transparent"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
-                                        HorizontalOptions="Center"
-                                        VerticalOptions="Center">
-                                    <Label Text="{Binding Initials}"
-                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                                </Border>
-
-                                <!-- Bilgiler -->
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
-                                    <Label Text="{Binding DisplayName}"
-                                           FontSize="15"
-                                           FontAttributes="Bold"
-                                           LineBreakMode="TailTruncation"
-                                           TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
-
-                                    <Label Text="{Binding Subtitle}"
-                                           FontSize="12"
-                                           LineBreakMode="TailTruncation"
-                                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-
-                                    <!-- Dahili / Kısa Kod -->
-                                    <Label Text="{Binding Home, StringFormat='Dahili: {0}'}"
-                                           FontSize="11"
-                                           TextColor="{StaticResource Primary}"
-                                           IsVisible="{Binding HasShortCode}" />
-                                </VerticalStackLayout>
-
-                                <!-- Hızlı Arama Butonu -->
-                                <Button Grid.Column="2"
-                                        Text="📞"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=CallContactCommand}"
-                                        CommandParameter="{Binding .}"
-                                        IsVisible="{Binding HasPhone}"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
-                                        CornerRadius="22"
-                                        WidthRequest="44"
-                                        HeightRequest="44"
-                                        Padding="0"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="Center" />
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="vm:ContactGroup">
+                            <Grid Padding="16,6,16,4"
+                                  BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource DarkBackground}}">
+                                <Label Text="{Binding Key}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource Primary}" />
                             </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
 
-                <!-- Boş Liste -->
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout Spacing="12" Padding="40" VerticalOptions="Center" HorizontalOptions="Center">
-                        <Label Text="👥" FontSize="44" HorizontalOptions="Center" />
-                        <Label Text="Kayıt Bulunamadı"
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}" />
-                        <Label Text="Arama terimlerinizi veya seçtiğiniz filtreleri değiştirmeyi deneyebilirsiniz."
-                               FontSize="13"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ContactDto">
+                            <Border Stroke="Transparent"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                                    Margin="16,4"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12">
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Opacity="0.04" Offset="0,2" Radius="4" />
+                                </Border.Shadow>
 
-                <!-- Liste Sonu Yükleniyor Göstergesi -->
-                <CollectionView.Footer>
-                    <Grid HeightRequest="60" IsVisible="{Binding IsLoadingMore}">
-                        <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
-                                           Color="{StaticResource Primary}"
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=OpenDetailCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <!-- Avatar / İsim Baş Harfleri -->
+                                    <Border Grid.Column="0"
+                                            WidthRequest="46"
+                                            HeightRequest="46"
+                                            StrokeShape="RoundRectangle 23"
+                                            Stroke="Transparent"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding Initials}"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+
+                                    <!-- Bilgiler -->
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding DisplayName}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                                        <Label Text="{Binding Subtitle}"
+                                               FontSize="12"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                                        <!-- Dahili / Kısa Kod -->
+                                        <Label Text="{Binding Home, StringFormat='Dahili: {0}'}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource Primary}"
+                                               IsVisible="{Binding HasShortCode}" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Hızlı Arama Butonu (44x44 dokunma alanı) -->
+                                    <Button Grid.Column="2"
+                                            Text="📞"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=CallContactCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding HasPhone}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                            CornerRadius="22"
+                                            WidthRequest="44"
+                                            HeightRequest="44"
+                                            Padding="0"
+                                            SemanticProperties.Description="Kişiyi ara"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <!-- Boş Liste -->
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="12" Padding="40" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="👥" FontSize="44" HorizontalOptions="Center" />
+                            <Label Text="Kayıt Bulunamadı"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}" />
+                            <Label Text="Arama terimlerinizi veya seçtiğiniz filtreleri değiştirmeyi deneyebilirsiniz."
+                                   FontSize="13"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <!-- Liste Sonu Yükleniyor Göstergesi -->
+                    <CollectionView.Footer>
+                        <Grid HeightRequest="60" IsVisible="{Binding IsLoadingMore}">
+                            <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                               Color="{StaticResource Primary}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                        </Grid>
+                    </CollectionView.Footer>
+
+                </CollectionView>
+
+                <!-- Düz Liste (Departman/Unvan sıralamasında) -->
+                <CollectionView x:Name="FlatListView"
+                                Grid.Column="0"
+                                ItemsSource="{Binding Contacts}"
+                                IsGrouped="False"
+                                IsVisible="{Binding IsNotGrouped}"
+                                RemainingItemsThreshold="4"
+                                RemainingItemsThresholdReachedCommand="{Binding LoadMoreContactsCommand}"
+                                SelectionMode="None">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ContactDto">
+                            <Border Stroke="Transparent"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource DarkCard}}"
+                                    Margin="16,4"
+                                    Padding="12"
+                                    StrokeShape="RoundRectangle 12">
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Opacity="0.04" Offset="0,2" Radius="4" />
+                                </Border.Shadow>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=OpenDetailCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border Grid.Column="0"
+                                            WidthRequest="46"
+                                            HeightRequest="46"
+                                            StrokeShape="RoundRectangle 23"
+                                            Stroke="Transparent"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource AundeDeepBlue}}"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding Initials}"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                        <Label Text="{Binding DisplayName}"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+
+                                        <Label Text="{Binding Subtitle}"
+                                               FontSize="12"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                                        <Label Text="{Binding Home, StringFormat='Dahili: {0}'}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource Primary}"
+                                               IsVisible="{Binding HasShortCode}" />
+                                    </VerticalStackLayout>
+
+                                    <Button Grid.Column="2"
+                                            Text="📞"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ContactsViewModel}}, Path=CallContactCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding HasPhone}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray800}}"
+                                            CornerRadius="22"
+                                            WidthRequest="44"
+                                            HeightRequest="44"
+                                            Padding="0"
+                                            SemanticProperties.Description="Kişiyi ara"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Spacing="12" Padding="40" VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="👥" FontSize="44" HorizontalOptions="Center" />
+                            <Label Text="Kayıt Bulunamadı"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray800}, Dark={StaticResource White}}" />
+                            <Label Text="Arama terimlerinizi veya seçtiğiniz filtreleri değiştirmeyi deneyebilirsiniz."
+                                   FontSize="13"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.Footer>
+                        <Grid HeightRequest="60" IsVisible="{Binding IsLoadingMore}">
+                            <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                               Color="{StaticResource Primary}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                        </Grid>
+                    </CollectionView.Footer>
+
+                </CollectionView>
+
+                <!-- Sağ A-Z Harf Çubuğu (Sadece Gruplu Görünümde) -->
+                <ScrollView Grid.Column="1"
+                            IsVisible="{Binding IsGrouped}"
+                            VerticalScrollBarVisibility="Never"
+                            WidthRequest="32"
+                            Margin="0,0,4,0">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding AlphabetLetters}"
+                                         Spacing="1"
+                                         VerticalOptions="Center">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Grid WidthRequest="32" HeightRequest="22">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnLetterTapped" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding .}"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Primary}"
                                            HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                    </Grid>
-                </CollectionView.Footer>
+                                           VerticalOptions="Center"
+                                           SemanticProperties.Description="{Binding ., StringFormat='{0} harfine kaydır'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </ScrollView>
 
-            </CollectionView>
+            </Grid>
+
         </RefreshView>
 
     </Grid>

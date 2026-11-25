@@ -24,8 +24,8 @@
                             Padding="16,8">
                         <VerticalStackLayout Spacing="12">
                             <RadioButton Content="İsme Göre (A - Z)"
-                                         Value="Name"
-                                         IsChecked="{Binding SortBy, Converter={StaticResource InverseBoolConverter}, ConverterParameter=Name, FallbackValue=True}">
+                                         IsChecked="{Binding IsSortByName}"
+                                         GroupName="SortGroup">
                                 <RadioButton.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnSortByNameTapped" />
                                 </RadioButton.GestureRecognizers>
@@ -34,7 +34,8 @@
                             <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                             <RadioButton Content="Departmana Göre"
-                                         Value="Department">
+                                         IsChecked="{Binding IsSortByDepartment}"
+                                         GroupName="SortGroup">
                                 <RadioButton.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnSortByDeptTapped" />
                                 </RadioButton.GestureRecognizers>
@@ -43,7 +44,8 @@
                             <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                             <RadioButton Content="Unvana Göre"
-                                         Value="JobTitle">
+                                         IsChecked="{Binding IsSortByJobTitle}"
+                                         GroupName="SortGroup">
                                 <RadioButton.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnSortByTitleTapped" />
                                 </RadioButton.GestureRecognizers>
