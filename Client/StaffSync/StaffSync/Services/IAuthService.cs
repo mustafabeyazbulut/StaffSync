@@ -20,6 +20,7 @@ namespace StaffSync.Services
         private const string AccessTokenKey = "StaffSync_AccessToken";
         private const string RefreshTokenKey = "StaffSync_RefreshToken";
         private const string ExpirationKey = "StaffSync_TokenExpiration";
+        private const string DeviceIdKey = "StaffSync_DeviceId";
 
         private readonly HttpClient _httpClient;
         private readonly SemaphoreSlim _refreshLock = new(1, 1);
@@ -115,7 +116,7 @@ namespace StaffSync.Services
         {
             try
             {
-                var request = new LoginRequest { Email = email, Password = password };
+                var request = new LoginRequest { Email = email, Password = password, DeviceId = DeviceId };
                 var response = await _httpClient.PostAsJsonAsync($"{ApiConfig.BaseUrl.TrimEnd('/')}/api/Auth/Login", request);
 
                 if (!response.IsSuccessStatusCode)
@@ -178,7 +179,8 @@ namespace StaffSync.Services
                 var request = new RefreshTokenRequest
                 {
                     AccessToken = accessToken,
-                    RefreshToken = refreshToken
+                    RefreshToken = refreshToken,
+                    DeviceId = DeviceId
                 };
 
                 HttpResponseMessage response;
@@ -230,6 +232,24 @@ namespace StaffSync.Services
             finally
             {
                 _refreshLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Bu kurulumun kalıcı kimliği. Sunucu oturumu cihaz başına tutar: aynı hesapla başka bir
+        /// cihazdan giriş yapılması bu cihazın oturumunu düşürmez. Çıkışta silinmez.
+        /// </summary>
+        private static string DeviceId
+        {
+            get
+            {
+                var id = Preferences.Default.Get(DeviceIdKey, string.Empty);
+                if (string.IsNullOrEmpty(id))
+                {
+                    id = Guid.NewGuid().ToString("N");
+                    Preferences.Default.Set(DeviceIdKey, id);
+                }
+                return id;
             }
         }
 

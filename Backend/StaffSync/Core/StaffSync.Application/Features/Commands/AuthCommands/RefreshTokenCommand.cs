@@ -12,5 +12,8 @@ namespace StaffSync.Application.Features.Commands.AuthCommands
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+
+        /// <summary>Girişte gönderilen cihaz kimliği; anahtar bu cihazın oturumuyla karşılaştırılır.</summary>
+        public string? DeviceId { get; set; }
     }
 }

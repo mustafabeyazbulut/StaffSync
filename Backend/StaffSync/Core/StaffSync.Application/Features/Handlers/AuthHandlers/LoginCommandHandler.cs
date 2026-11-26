@@ -6,6 +6,8 @@ using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Results.AuthResults;
 using StaffSync.Application.Features.Rules.AuthRules;
+using StaffSync.Application.Features.Sessions;
+using StaffSync.Application.Interfaces.Repositories;
 using StaffSync.Application.Interfaces.Tokens;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
@@ -48,12 +50,23 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
             JwtSecurityToken token = await tokenService.CreateToken(user, roles); // token oluşturuyoruz
             string refreshToken = tokenService.GenerateRefreshToken(); // refresh token oluşturuyoruz
 
-            _ = int.TryParse(configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays); // refresh token geçerlilik süresini alıyoruz
+            // Oturum cihaz başına tutulur: bu cihazın oturumu yenilenir, kullanıcının diğer cihazları etkilenmez
+            string deviceId = SessionTokens.NormalizeDeviceId(request.DeviceId);
+            IReadRepository<UserSession> sessions = unitOfWork.GetReadRepository<UserSession>();
+            IWriteRepository<UserSession> sessionWriter = unitOfWork.GetWriteRepository<UserSession>();
 
-            user.RefreshToken = refreshToken; // kullanıcıya refresh token ekliyoruz
-            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays); // refresh token geçerlilik süresini ekliyoruz
+            UserSession? session = await sessions.GetAsync(x => x.UserId == user.Id && x.DeviceId == deviceId, enableTracking: true);
+            bool isNew = session is null;
+            session ??= new UserSession { UserId = user.Id, DeviceId = deviceId };
+            SessionTokens.Renew(session, refreshToken, SessionTokens.ValidityDays(configuration));
+            if (isNew) await sessionWriter.AddAysnc(session);
 
-            await userManager.UpdateAsync(user); // kullanıcıyı güncelliyoruz
+            // Süresi dolmuş eski cihaz oturumlarını temizle
+            DateTime now = DateTime.UtcNow;
+            foreach (UserSession expired in await sessions.GetAllAsync(x => x.UserId == user.Id && x.ExpiresAtUtc <= now, enableTracking: true))
+                await sessionWriter.HardDeleteAsync(expired);
+
+            await unitOfWork.SaveAsync();
             await userManager.UpdateSecurityStampAsync(user); // kullanıcı güvenlik damgasını güncelliyoruz
 
             string _token = new JwtSecurityTokenHandler().WriteToken(token); // tokeni yazıya çeviriyoruz

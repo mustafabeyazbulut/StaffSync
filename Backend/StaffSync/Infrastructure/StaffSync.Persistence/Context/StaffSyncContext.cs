@@ -18,6 +18,7 @@ namespace StaffSync.Persistence.Context
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ContactCorrection> ContactCorrections { get; set; }
         public DbSet<ContactCorrectionItem> ContactCorrectionItems { get; set; }
+        public DbSet<UserSession> UserSessions { get; set; }
 
         public override int SaveChanges()
         {

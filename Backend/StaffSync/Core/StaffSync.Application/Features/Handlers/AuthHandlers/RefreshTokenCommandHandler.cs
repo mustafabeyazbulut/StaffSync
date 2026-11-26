@@ -7,7 +7,9 @@ using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Exceptions.AuthExceptions;
 using StaffSync.Application.Features.Results.AuthResults;
 using StaffSync.Application.Features.Rules.AuthRules;
+using StaffSync.Application.Features.Sessions;
 using StaffSync.Application.Interfaces.Tokens;
+using Microsoft.Extensions.Configuration;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,12 +22,14 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
         private readonly AuthRules authRules;
         private readonly UserManager<User> userManager;
         private readonly ITokenService tokenService;
+        private readonly IConfiguration configuration;
         public RefreshTokenCommandHandler(AuthRules authRules, UserManager<User> userManager, ITokenService tokenService,
-            IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, httpContextAccessor)
+            IConfiguration configuration, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, httpContextAccessor)
         {
             this.authRules = authRules;
             this.userManager = userManager;
             this.tokenService = tokenService;
+            this.configuration = configuration;
         }
 
         public async Task<RefreshTokenCommandResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -44,16 +48,22 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
             string? email = principal?.FindFirstValue(ClaimTypes.Email);
             User? user = string.IsNullOrEmpty(email) ? null : await userManager.FindByEmailAsync(email);
 
-            await authRules.RefreshTokenShouldBeValid(user, request.RefreshToken); // refresh token bu kullanıcıya verilenle aynı olmalı
-            await authRules.RefreshTokenShouldNotBeExpired(user!.RefreshTokenExpiryTime); // refresh token süresi geçmiş ise hata fırlatıyoruz
+            // Anahtar bu cihazın oturumuna verilenle aynı olmalı; başka cihazların oturumları ayrıdır
+            string deviceId = SessionTokens.NormalizeDeviceId(request.DeviceId);
+            UserSession? session = user is null ? null : await unitOfWork.GetReadRepository<UserSession>()
+                .GetAsync(x => x.UserId == user.Id && x.DeviceId == deviceId, enableTracking: true);
 
-            IList<string> roles = await userManager.GetRolesAsync(user); // kullanıcının rollerini alıyoruz
+            await authRules.RefreshTokenShouldBeValid(session, request.RefreshToken);
+            await authRules.RefreshTokenShouldNotBeExpired(session!); // oturum süresi geçmiş ise hata fırlatıyoruz
 
-            JwtSecurityToken newAccessToken = await tokenService.CreateToken(user, roles); // yeni token oluşturuyoruz
+            IList<string> roles = await userManager.GetRolesAsync(user!); // kullanıcının rollerini alıyoruz
+
+            JwtSecurityToken newAccessToken = await tokenService.CreateToken(user!, roles); // yeni token oluşturuyoruz
             string newRefreshToken = tokenService.GenerateRefreshToken(); // yeni refresh token oluşturuyoruz
 
-            user.RefreshToken = newRefreshToken;
-            await userManager.UpdateAsync(user);
+            // Anahtar döner ve süre bugünden itibaren yeniden başlar (kayan süre)
+            SessionTokens.Renew(session!, newRefreshToken, SessionTokens.ValidityDays(configuration));
+            await unitOfWork.SaveAsync();
 
             return new()
             {

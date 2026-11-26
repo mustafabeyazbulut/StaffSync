@@ -16,7 +16,7 @@ Kullanıcı 2026-11-25'te: "antigravity değil senden istiyorum tasarımsal olar
   - Yüklenirken iskelet satırlar (`ShowSkeleton` + nabız animasyonu).
   - Harf çubuğunda harf balonu.
   - **Departman çipleri kaldırıldı** (kullanıcı istedi). XAML'den ve VM'den silindi; FilterOptions isteği de kalktı.
-- **Durum çubuğu:** Sayfa zemin rengine uyuyor (`MainActivity.UpdateStatusBar` + `AppShell.OnNavigated`). Modal sheet'lerde hâlâ beyaz, çözülmedi.
+- **Durum çubuğu (2026-11-26 çözüldü):** `MainActivity.UpdateStatusBar`, `App.PageAppearing` + `ModalPushed` (modal sayfa `Loaded` olunca) + `ModalPopped` + tema değişiminde `App.RefreshStatusBar()` ile çağrılır. Modallar Android'de ayrı DialogFragment penceresinde açılır: ana pencere en üstteki **opak** sayfanın rengini alır, modal pencerelerin durum çubuğu **saydam** bırakılır (yoksa uyarı kartının karartması iki kez biner). Simge açık/koyu seçimi karartılmış renge göre.
 - **Global stiller:** BoxView stili Transparent; Switch açıkken marka rengi.
 - **Senkron hatası düzeltildi:**
   - Kişiler rehbere yazılıyordu (120 kişi) ama `Settings.UNGROUPED_VISIBLE=0` olduğu için Rehber uygulamasında görünmüyordu.
@@ -44,9 +44,11 @@ Kullanıcı 2026-11-25'te: "antigravity değil senden istiyorum tasarımsal olar
 - Ölü kod: SettingsService içindeki ikinci önbellek (contacts_cache.json) silindi.
 - **Yayın notu:** App_Data/contact-photos sunucuda çalışma verisi → CanliIIS.pubxml'de App_Data atlama kuralı GEREKİR (global kural). Profil henüz yok.
 
+- **Açılış (2026-11-26):** Shell'in ilk öğesi `startup` (`Pages/StartupPage`, açılış ekranıyla aynı: marka zemini + `splash_mark` simgesi). `App` oturuma göre `//login`, `//permission-intro` ya da `//main/contacts`'a tek seferde gider; rehber arada görünüp girişe atlamaz.
+
 ## YARIM KALANLAR (devam buradan)
 1. `feature/backend-rehber` 2026-11-26da main.e birleştirildi (fast-forward) ve push edildi; çalışma artık main üzerinde. PR yok ([[solo-developer-no-pr]]).
-2. Modal (uyarı kartı, sheet'ler) açıkken durum çubuğu beyaz kalıyor.
+2. ~~Modal açıkken durum çubuğu beyaz~~ — çözüldü (2026-11-26).
 3. Gerçek Android cihazda (Samsung) Kişiler uygulamasında hesap görünüyor mu; iOS hiç denenmedi.
 4. Çevrimdışı mod testi yapılmadı.
 5. Kısa kod 1001 çeviricide kişiyle eşleşmiyor ("Create new contact" öneriyor) — Android kısa numaraları eşleştirmiyor olabilir, araştırılmadı.

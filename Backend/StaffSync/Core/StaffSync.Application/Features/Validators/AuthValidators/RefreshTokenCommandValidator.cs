@@ -1,20 +1,18 @@
 ﻿using FluentValidation;
-using StaffSync.Application.Features.Results.AuthResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StaffSync.Application.Features.Commands.AuthCommands;
+using StaffSync.Application.Features.Sessions;
 
 namespace StaffSync.Application.Features.Validators.AuthValidators
 {
-    public class RefreshTokenCommandValidator :AbstractValidator<RefreshTokenCommandResult>
+    public class RefreshTokenCommandValidator : AbstractValidator<RefreshTokenCommand>
     {
         public RefreshTokenCommandValidator()
         {
             RuleFor(x => x.AccessToken).NotEmpty();
 
             RuleFor(x => x.RefreshToken).NotEmpty();
+
+            RuleFor(x => x.DeviceId).MaximumLength(SessionTokens.DeviceIdMaxLength);
         }
     }
 }

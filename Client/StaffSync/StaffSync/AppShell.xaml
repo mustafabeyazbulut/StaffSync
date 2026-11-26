@@ -8,7 +8,15 @@
     Shell.NavBarIsVisible="False"
     Title="StaffSync">
 
-    <!-- Ana Sekmeler (TabBar - İlk öğe: giriş yapmış kullanıcı doğrudan burayı görür) -->
+    <!-- Açılış: oturum kontrolü bitene kadar açılış ekranıyla aynı görünen sayfa (App.xaml.cs yönlendirir) -->
+    <ShellContent
+        Route="startup"
+        Shell.FlyoutItemIsVisible="False"
+        Shell.TabBarIsVisible="False"
+        Shell.NavBarIsVisible="False"
+        ContentTemplate="{DataTemplate pages:StartupPage}" />
+
+    <!-- Ana Sekmeler -->
     <TabBar Route="main">
         <Tab Title="Rehber" Route="contacts">
             <Tab.Icon>

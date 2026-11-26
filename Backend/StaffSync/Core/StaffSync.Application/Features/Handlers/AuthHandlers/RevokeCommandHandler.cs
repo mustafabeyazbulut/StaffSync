@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using StaffSync.Application.Bases;
 using StaffSync.Application.Features.Commands.AuthCommands;
 using StaffSync.Application.Features.Rules.AuthRules;
+using StaffSync.Application.Interfaces.Repositories;
 using StaffSync.Application.Interfaces.UnitOfWorks;
 using StaffSync.Domain.Entities;
 using System;
@@ -30,8 +31,11 @@ namespace StaffSync.Application.Features.Handlers.AuthHandlers
             User user = await userManager.FindByEmailAsync(request.Email); // kullanıcıyı email adresine göre buluyoruz
             await authRules.EmailAddressShouldBeValid(user); // email adresi hatalı ise hata fırlatıyoruz
 
-            user.RefreshToken = null; // kullanıcı refresh token'ını siliyoruz
-            await userManager.UpdateAsync(user); // kullanıcıyı güncelliyoruz
+            // Kullanıcının tüm cihazlardaki oturumlarını kapatıyoruz
+            IWriteRepository<UserSession> sessionWriter = unitOfWork.GetWriteRepository<UserSession>();
+            foreach (UserSession session in await unitOfWork.GetReadRepository<UserSession>().GetAllAsync(x => x.UserId == user.Id, enableTracking: true))
+                await sessionWriter.HardDeleteAsync(session);
+            await unitOfWork.SaveAsync();
 
             return Unit.Value;
         }

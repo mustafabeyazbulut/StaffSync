@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Uygulama açılırken oturum kontrolü bitene kadar görünen sayfa. Sistem açılış ekranıyla aynı
+  görünür (marka zemini, ortada beyaz simge); böylece rehber ya da giriş ekranı arada titremez.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StaffSync.Pages.StartupPage"
+             BackgroundColor="{StaticResource Brand}"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False">
+
+    <Image Source="splash_mark.png"
+           WidthRequest="192"
+           HeightRequest="192"
+           HorizontalOptions="Center"
+           VerticalOptions="Center" />
+
+</ContentPage>
