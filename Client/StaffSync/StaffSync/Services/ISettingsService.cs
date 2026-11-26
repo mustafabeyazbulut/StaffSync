@@ -17,7 +17,7 @@ namespace StaffSync.Services
 
         /// <summary>
         /// Kullanıcı şirket hattı kullandığını bildirdi mi. Açıksa aramalar kısa kodla yapılır;
-        /// kapalıysa (varsayılan) cep numarasıyla — kısa kod şirket hattı dışında çalışmaz.
+        /// kapalıysa cep numarasıyla. Varsayılan açık (şirket hattı uygulaması); hattı olmayan Profil'den kapatır — kısa kod şirket hattı dışında çalışmaz.
         /// </summary>
         bool UsesCompanyLine { get; set; }
 
@@ -91,7 +91,7 @@ namespace StaffSync.Services
 
         public bool UsesCompanyLine
         {
-            get => Preferences.Default.Get(UsesCompanyLineKey, false);
+            get => Preferences.Default.Get(UsesCompanyLineKey, true);
             set => Preferences.Default.Set(UsesCompanyLineKey, value);
         }
 
