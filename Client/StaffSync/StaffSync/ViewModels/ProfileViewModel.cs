@@ -176,7 +176,7 @@ namespace StaffSync.ViewModels
                 var count = await _syncService.GetSyncedContactsCountAsync();
                 var confirmed = await _dialogService.ConfirmAsync(
                     "Rehber aktarımı kapatılsın mı?",
-                    $"AUNDE Rehber'in telefonunuza eklediği {count} şirket kişisi rehberinizden kaldırılacak. Kendi kişilerinize dokunulmaz.",
+                    $"StaffSync'in telefonunuza eklediği {count} şirket kişisi rehberinizden kaldırılacak. Kendi kişilerinize dokunulmaz.",
                     "Kapat ve kaldır",
                     destructive: true);
 
@@ -226,7 +226,7 @@ namespace StaffSync.ViewModels
                     IsSyncEnabled = false;
                     await _dialogService.AlertAsync(
                         "Rehber izni gerekiyor",
-                        "Şirket kişilerini telefonunuza ekleyebilmemiz için rehber izni gerekiyor. İzni dilediğiniz zaman telefonun Ayarlar > Uygulamalar > AUNDE Rehber bölümünden verebilirsiniz.");
+                        "Şirket kişilerini telefonunuza ekleyebilmemiz için rehber izni gerekiyor. İzni dilediğiniz zaman telefonun Ayarlar > Uygulamalar > StaffSync bölümünden verebilirsiniz.");
                     return;
                 }
 

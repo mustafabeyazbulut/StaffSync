@@ -22,9 +22,7 @@
 		
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<!-- Display name -->
-		<ApplicationTitle>AUNDE Rehber</ApplicationTitle>
-		<!-- iOS'ta tek ad var (CFBundleDisplayName), ana ekranda ikon altında kesilmesin diye kısa ad -->
-		<ApplicationTitle Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">Rehber</ApplicationTitle>
+		<ApplicationTitle>StaffSync</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.staffsync</ApplicationId>
@@ -55,7 +53,7 @@
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\applogo.svg" Color="#233C82" />
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splashlogo.svg" BaseSize="208,38" Color="#233C82" />
+		<MauiSplashScreen Include="Resources\Splash\splashlogo.svg" BaseSize="200,200" Color="#233C82" />
 		
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />

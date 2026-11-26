@@ -9,7 +9,7 @@ public class ContactMappingsTests
     private static Contact Sample() => new()
     {
         Id = 7, DisplayName = "Ayşe Kaya", ImageUrl = "img", Email = "ayse@x.com", TelephoneNumber = "+905320000000",
-        Home = "2145", Office = "GM", JobTitle = "İK Uzmanı", Department = "İnsan Kaynakları", Company = "AUNDE", ManagerName = "Mehmet Kurt"
+        Home = "2145", Office = "GM", JobTitle = "İK Uzmanı", Department = "İnsan Kaynakları", Company = "ACME", ManagerName = "Mehmet Kurt"
     };
 
     [Fact]
@@ -25,7 +25,7 @@ public class ContactMappingsTests
         Assert.Equal("GM", dto.Office);
         Assert.Equal("İK Uzmanı", dto.JobTitle);
         Assert.Equal("İnsan Kaynakları", dto.Department);
-        Assert.Equal("AUNDE", dto.Company);
+        Assert.Equal("ACME", dto.Company);
         Assert.Equal("Mehmet Kurt", dto.ManagerName);
     }
 

@@ -21,11 +21,11 @@ Kullanıcı 2026-11-25'te: "antigravity değil senden istiyorum tasarımsal olar
 - **Senkron hatası düzeltildi:**
   - Kişiler rehbere yazılıyordu (120 kişi) ama `Settings.UNGROUPED_VISIBLE=0` olduğu için Rehber uygulamasında görünmüyordu.
   - `AndroidContactSyncService.EnsureContactsVisible` eklendi; `EnsureAccount` içinden çağrılıyor.
-- **Uygulama adı "AUNDE Rehber"** (kullanıcı "Aunde Rehber" dedi, marka kuralı gereği büyük harf AUNDE). Değişen yerler:
-  - csproj ApplicationTitle, AndroidManifest label, strings.xml account_label, AppShell Title
-  - Login ve Permission metinleri, ProfileViewModel mesajları
-  - Eski "StaffSync" hesap/grup geçiş kodu 2026-11-25 akşamı **kaldırıldı** (uygulama canlıda değil, emülatör zaten taşındı). `EnsureAccount` artık "hesap yeni açıldıysa true" döner → tam senkron.
-- Ana ekran adı **"Rehber"** (Android: MainActivity `Label`, uygulama tam adı Ayarlar'da "AUNDE Rehber"; iOS: `ApplicationTitle` ios koşullu "Rehber").
+- **Uygulama adı her yerde "StaffSync"** (2026-11-26). **Repo herkese açık (GitHub public): içinde hiçbir şirkete ait marka/isim/logo/ekran görüntüsü olmaz.** Şirkete özel kopyayı kullanıcı ayrı repoda yapacak; marka dosyaları, planlar ve mockup'lar repodan çıkarılıp kullanıcının masaüstüne taşındı.
+  - Yerler: csproj ApplicationTitle (iOS'a özel kısa ad kaldırıldı), AndroidManifest label, MainActivity Label, strings.xml account_label, AppShell Title, Login/Permission metinleri, ProfileViewModel, Android AccountName, iOS GroupName.
+  - Android hesap tipi `com.companyname.staffsync` (ApplicationId ile aynı). Eski kurulum kaldırılıp yeniden kurulmalı.
+  - Giriş ekranında `staffsync_mark.svg`, ikon/açılış ekranında genel kişi simgesi. Renk paleti (#233C82 vb.) kaldı.
+  - Kişi şirketi boşsa telefona boş yazılıyor. Testlerde örnek şirket "ACME".
 
 ## 2026-11-25 akşam oturumu (emülatörde test edildi, commit edildi)
 - Senkron kilidi: ikinci çağrı atlanıp 0 dönmüyor, bekliyor. `SyncStateChangedMessage` (Messages/) ile Profil + Rehber "Son senkron"u anında güncelleniyor; `IContactSyncService.IsSyncRunning` eklendi. 0 değişiklikte "Rehberiniz güncel" mesajı.
@@ -52,4 +52,4 @@ Kullanıcı 2026-11-25'te: "antigravity değil senden istiyorum tasarımsal olar
 5. Kısa kod 1001 çeviricide kişiyle eşleşmiyor ("Create new contact" öneriyor) — Android kısa numaraları eşleştirmiyor olabilir, araştırılmadı.
 6. Fotoğraf yükleme ucu sadece Swagger'dan; admin ekranı yok (mobil kapsam dışı).
 
-Bkz. [[design-decisions-2026-11]], [[contact-sync-rules]], [[aunde-brand]].
+Bkz. [[design-decisions-2026-11]], [[contact-sync-rules]].

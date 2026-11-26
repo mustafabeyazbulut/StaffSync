@@ -131,7 +131,7 @@ namespace StaffSync.Controls
         // ---- Görünüm parçaları ----
 
         private static readonly Color Brand = Color.FromArgb("#233C82");
-        private static readonly Color Danger = Color.FromArgb("#BE1937");  // AUNDE Red 04
+        private static readonly Color Danger = Color.FromArgb("#BE1937");
         private static readonly Color Success = Color.FromArgb("#1B7F4B");
 
         private static (Color Accent, Color SoftLight, Color SoftDark) KindStyle(DialogKind kind) => kind switch

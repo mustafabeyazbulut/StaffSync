@@ -9,7 +9,7 @@ public class VCardWriterTests
     public void Ascii_contact_is_written_plain()
     {
         var c = new Contact { DisplayName = "Burak Demir", TelephoneNumber = "+905320000001", Home = "2001", Email = "burak@x.com",
-                              Company = "AUNDE", Department = "IT", JobTitle = "Sistem Uzmani" };
+                              Company = "ACME", Department = "IT", JobTitle = "Sistem Uzmani" };
 
         string expected =
             "BEGIN:VCARD\r\n" +
@@ -19,7 +19,7 @@ public class VCardWriterTests
             "TEL;CELL:+905320000001\r\n" +
             "TEL;WORK:2001\r\n" +
             "EMAIL;INTERNET:burak@x.com\r\n" +
-            "ORG:AUNDE;IT\r\n" +
+            "ORG:ACME;IT\r\n" +
             "TITLE:Sistem Uzmani\r\n" +
             "END:VCARD\r\n";
 

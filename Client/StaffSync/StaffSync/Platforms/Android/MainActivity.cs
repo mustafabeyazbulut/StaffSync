@@ -5,9 +5,7 @@ using AndroidX.Core.View;
 
 namespace StaffSync
 {
-    // Label: ana ekran/çekmecedeki ikon altı adı. "AUNDE Rehber" sığmayıp kesildiği için kısa ad;
-    // uygulamanın tam adı (Ayarlar > Uygulamalar) manifestteki application label'da kalır.
-    [Activity(Label = "Rehber", Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
+    [Activity(Label = "StaffSync", Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
     public class MainActivity : MauiAppCompatActivity
     {
         protected override void OnCreate(Bundle? savedInstanceState)

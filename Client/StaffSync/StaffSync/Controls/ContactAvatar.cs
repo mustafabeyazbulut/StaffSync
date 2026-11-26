@@ -4,18 +4,18 @@ namespace StaffSync.Controls
 {
     /// <summary>
     /// Yuvarlak kişi avatarı: fotoğraf varsa fotoğraf, yoksa baş harfler. Baş harf zemini kişiye göre
-    /// sabit bir AUNDE marka tonudur; böylece liste tek renk daire yığını gibi görünmez.
+    /// sabit bir marka tonudur; böylece liste tek renk daire yığını gibi görünmez.
     /// </summary>
     public class ContactAvatar : ContentView
     {
-        // AUNDE marka kitabı: (zemin, yazı)
+        // Marka paleti: (zemin, yazı)
         private static readonly (Color Back, Color Text)[] Palette =
         {
-            (Color.FromArgb("#233C82"), Colors.White),              // AUNDE Blue
-            (Color.FromArgb("#1E325A"), Colors.White),              // AUNDE Dark Blue
-            (Color.FromArgb("#324155"), Colors.White),              // Grey 04
-            (Color.FromArgb("#737D91"), Colors.White),              // Grey 03
-            (Color.FromArgb("#A0B9EB"), Color.FromArgb("#1E2D48")), // Mid Blue + Deep Blue
+            (Color.FromArgb("#233C82"), Colors.White),
+            (Color.FromArgb("#1E325A"), Colors.White),
+            (Color.FromArgb("#324155"), Colors.White),
+            (Color.FromArgb("#737D91"), Colors.White),
+            (Color.FromArgb("#A0B9EB"), Color.FromArgb("#1E2D48")),
         };
 
         public static readonly BindableProperty NameProperty = BindableProperty.Create(

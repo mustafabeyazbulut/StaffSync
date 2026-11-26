@@ -6,7 +6,7 @@ using Android.OS;
 
 namespace StaffSync.Platforms.Android.Services
 {
-    [Service(Exported = true, Name = "com.aunde.staffsync.AuthenticatorService")]
+    [Service(Exported = true, Name = "com.companyname.staffsync.AuthenticatorService")]
     [IntentFilter(new[] { "android.accounts.AccountAuthenticator" })]
     [MetaData("android.accounts.AccountAuthenticator", Resource = "@xml/authenticator")]
     public class AuthenticatorService : Service

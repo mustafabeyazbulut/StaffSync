@@ -4,7 +4,6 @@
 - [Paket lisans kararları](package-license-pins.md) — MediatR 12.x sabit; AutoMapper kaldırılacak, elle eşleme
 - [Mobil kapsam](mobile-scope.md) — mobil sadece rehber görüntüleme + senkron; kişi ekle/düzenle mobilde yok, mockup linki
 - [Rehber senkron kuralları](contact-sync-rules.md) — eklenen kişiler StaffSync'ten geldiği belli olur, senkron kapanınca hepsi silinir (Android hesap tipi / iOS grup)
-- [AUNDE marka kuralları](aunde-brand.md) — logo SVG'leri docs/brand/aunde-logo, renk kodları, logo kullanım kuralları, font
 - [Tasarım kararları ve DURUM (Kasım 2026)](design-decisions-2026-11.md) — spec + planlar, nerede kalındı (mobil düzeltmeler bitti, cihaz testi kaldı), tuşlu telefon vCard/CSV, hata bildirimi, repo korunur
 - [Şirket hattı ve kısa kod](company-line-shortcode.md) — kısa kod asıl aranan numara; Profil'deki şirket hattı ayarına göre ICallService karar verir
 - [Kod kalitesi kuralı](code-quality-rule.md) — Antigravity kodu: eski/obsolete hiçbir şey kalmaz, dokunulan yer iyileştirilir, MVVM+servis mimarisi korunur

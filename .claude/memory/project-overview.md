@@ -17,7 +17,7 @@ StaffSync: şirket içi personel rehberini (Contact) yönetip mobil cihazlara se
 Durum (2026-11-25):
 - Backend: Auth, Contact CRUD, sayfalı rehber, filtre seçenekleri, Changes (senkron), hatalı bilgi bildirimi, vCard/CSV dışa aktarım tamam.
 - README "Redis" diyor ama kodda Redis yok — planlanan, yapılmadı.
-- MAUI client MVVM + servis katmanıyla API'ye bağlandı (Antigravity yazdı), ama düzeltme bekliyor: `docs/superpowers/plans/2026-11-25-mobil-duzeltmeler.md`.
+- MAUI client MVVM + servis katmanıyla API'ye bağlandı (Antigravity yazdı); düzeltmeler ve tasarım rötuşları yapıldı (bkz. [[design-polish-by-claude]]).
 
 **Why:** Yeni oturumda projenin nerede kaldığını hızlıca bilmek için.
 **How to apply:** Client işinde önce düzeltme planının ne kadarının yapıldığına bak (git log). Bkz. [[backend-feature-conventions]], [[backend-gotchas]].

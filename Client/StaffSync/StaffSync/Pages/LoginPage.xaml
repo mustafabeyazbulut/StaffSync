@@ -12,19 +12,17 @@
 
         <!-- Üst Blok (Ortalanmış) -->
         <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Spacing="14">
-            <Image WidthRequest="176"
-                   HeightRequest="32"
+            <Image Source="staffsync_mark.svg"
+                   WidthRequest="56"
+                   HeightRequest="56"
                    Aspect="AspectFit"
                    HorizontalOptions="Start">
-                <Image.Source>
-                    <AppThemeBinding Light="aunde_logo_positive.svg" Dark="aunde_logo_negative.svg" />
-                </Image.Source>
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ChangeServerUrlCommand}" NumberOfTapsRequired="3" />
                 </Image.GestureRecognizers>
             </Image>
 
-            <Label Text="AUNDE Rehber"
+            <Label Text="StaffSync"
                    FontSize="32"
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light={StaticResource TextPrimaryLight}, Dark={StaticResource TextPrimaryDark}}"

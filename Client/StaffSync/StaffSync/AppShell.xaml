@@ -6,7 +6,7 @@
     xmlns:pages="clr-namespace:StaffSync.Pages"
     xmlns:utils="clr-namespace:StaffSync.Utils"
     Shell.NavBarIsVisible="False"
-    Title="AUNDE Rehber">
+    Title="StaffSync">
 
     <!-- Ana Sekmeler (TabBar - İlk öğe: giriş yapmış kullanıcı doğrudan burayı görür) -->
     <TabBar Route="main">

@@ -13,8 +13,8 @@ namespace StaffSync.Platforms.Android.Services
 {
     public class AndroidContactSyncService : IContactSyncService
     {
-        public const string AccountName = "AUNDE Rehber";
-        public const string AccountType = "com.aunde.staffsync";
+        public const string AccountName = "StaffSync";
+        public const string AccountType = "com.companyname.staffsync";
 
         private static readonly SemaphoreSlim _syncSemaphore = new(1, 1);
 
@@ -298,7 +298,7 @@ namespace StaffSync.Platforms.Android.Services
                             ops.Add(ContentProviderOperation.NewInsert(BuildSyncAdapterUri(ContactsContract.Data.ContentUri!))
                                 .WithValueBackReference(ContactsContract.Data.InterfaceConsts.RawContactId, rawIndex)
                                 .WithValue(ContactsContract.Data.InterfaceConsts.Mimetype, ContactsContract.CommonDataKinds.Organization.ContentItemType)
-                                .WithValue(ContactsContract.CommonDataKinds.Organization.Company, contact.Company ?? "AUNDE")
+                                .WithValue(ContactsContract.CommonDataKinds.Organization.Company, contact.Company ?? "")
                                 .WithValue(ContactsContract.CommonDataKinds.Organization.Title, contact.JobTitle ?? "")
                                 .WithValue(ContactsContract.CommonDataKinds.Organization.Department, contact.Department ?? "")
                                 .Build());

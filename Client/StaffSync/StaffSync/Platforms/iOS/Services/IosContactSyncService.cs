@@ -13,7 +13,7 @@ namespace StaffSync.Platforms.iOS.Services
     public class IosContactSyncService : IContactSyncService
     {
         private const string GroupIdPrefKey = "Ios_StaffSync_GroupId";
-        private const string GroupName = "AUNDE Rehber";
+        private const string GroupName = "StaffSync";
         private static readonly string MapFilePath = Path.Combine(FileSystem.AppDataDirectory, "ios_contact_map.json");
 
         private static readonly NSString[] KeysToFetch = new[]
@@ -305,7 +305,7 @@ namespace StaffSync.Platforms.iOS.Services
                             {
                                 mutable.GivenName = givenName;
                                 mutable.FamilyName = familyName;
-                                mutable.OrganizationName = contact.Company ?? "AUNDE";
+                                mutable.OrganizationName = contact.Company ?? "";
                                 mutable.DepartmentName = contact.Department ?? "";
                                 mutable.JobTitle = contact.JobTitle ?? "";
 
@@ -335,7 +335,7 @@ namespace StaffSync.Platforms.iOS.Services
                             {
                                 GivenName = givenName,
                                 FamilyName = familyName,
-                                OrganizationName = contact.Company ?? "AUNDE",
+                                OrganizationName = contact.Company ?? "",
                                 DepartmentName = contact.Department ?? "",
                                 JobTitle = contact.JobTitle ?? ""
                             };

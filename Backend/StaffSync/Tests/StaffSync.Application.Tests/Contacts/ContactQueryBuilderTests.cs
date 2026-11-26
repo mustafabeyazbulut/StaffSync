@@ -7,10 +7,10 @@ public class ContactQueryBuilderTests
 {
     private static IQueryable<Contact> Data() => new List<Contact>
     {
-        new() { Id = 1, DisplayName = "Burak Demir", JobTitle = "Sistem Uzmanı", Department = "Bilgi Teknolojileri", Company = "AUNDE", TelephoneNumber = "111", Home = "2001", Email = "burak@x.com" },
-        new() { Id = 2, DisplayName = "Ayşe Kaya", JobTitle = "İK Uzmanı", Department = "İnsan Kaynakları", Company = "AUNDE", TelephoneNumber = "222", Home = "2002", Email = "ayse@x.com" },
+        new() { Id = 1, DisplayName = "Burak Demir", JobTitle = "Sistem Uzmanı", Department = "Bilgi Teknolojileri", Company = "ACME", TelephoneNumber = "111", Home = "2001", Email = "burak@x.com" },
+        new() { Id = 2, DisplayName = "Ayşe Kaya", JobTitle = "İK Uzmanı", Department = "İnsan Kaynakları", Company = "ACME", TelephoneNumber = "222", Home = "2002", Email = "ayse@x.com" },
         new() { Id = 3, DisplayName = "Ahmet Yılmaz", JobTitle = "Satış Müdürü", Department = "Satış", Company = "Diğer AŞ", TelephoneNumber = "333", Home = "2003", Email = "ahmet@x.com" },
-        new() { Id = 4, DisplayName = "Silinmiş Kişi", JobTitle = "X", Department = "Satış", Company = "AUNDE", TelephoneNumber = "444", Home = "2004", Email = "s@x.com", IsDeleted = true },
+        new() { Id = 4, DisplayName = "Silinmiş Kişi", JobTitle = "X", Department = "Satış", Company = "ACME", TelephoneNumber = "444", Home = "2004", Email = "s@x.com", IsDeleted = true },
         new() { Id = 5, DisplayName = "Ahmet Yılmaz", JobTitle = null!, Department = null!, Company = null!, TelephoneNumber = null!, Home = null!, Email = null! },
     }.AsQueryable();
 
