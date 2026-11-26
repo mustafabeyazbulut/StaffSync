@@ -10,3 +10,4 @@
 - [Tasarım rötuşu + YARIM İŞLER](design-polish-by-claude.md) — tasarımı Claude yapar; son durum 2026-11-26: arama/fotoğraf/uyarı tasarımı bitti; commit edildi; push edildi; devam: modal durum çubuğu, gerçek cihaz
 - [Tek geliştirici, PR yok](solo-developer-no-pr.md) — kullanıcı tek başına; PR açma/sorma, ekip varsayma
 - [Gelecek: Exchange aktarımı](future-exchange-import.md) — ayrı uygulama Exchange→StaffSync DB; manuel ekleme de olacak; mevcut eksikler
+- [Public repo, markasız](public-repo-no-branding.md) — repo herkese açık; kod/docs/hafıza/commit mesajında şirket adı-logosu yok; eski geçmişe dokunulmaz
